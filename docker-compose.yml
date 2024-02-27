@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+#################################
+# Records of routes [DB]
+#################################
+  route_records_db:
+    container_name: route_records_db
+    build:
+      context: ./databases/routes_db
+      dockerfile: Dockerfile
+    env_file: ./databases/routes_db/db.env
+    volumes:
+      - database-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - 5433:5432
+#################################
+# Saved Routes [Microservice]
+#################################
+  saved_routes:
+    container_name: saved_routes
+    build:
+      context: ./backend/services/saved_routes
+      dockerfile: Dockerfile
+    ports:
+      - 5001:5001
+    depends_on:
+      route_records_db:
+        condition: service_healthy
+    environment:
+      DATABASE_URI: 'postgresql://is213:8CRjw8442oS@localhost:5433/is213'
+
+  
+
+
+
+volumes:
+  database-data:
