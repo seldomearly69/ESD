@@ -34,10 +34,30 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URI: 'postgresql://is213:8CRjw8442oS@localhost:5433/is213'
+#################################
+# user [Microservice]
+#################################
+  mysql:
+    image: mysql
+    restart: always 
+    environment:
+      - MYSQL_DATABASE=mydb
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=sample 
+      - MYSQL_PASSWORD=password
+    volumes:
+      - ./backend/services/user_service/db-dump:/docker-entrypoint-initdb.d
+      - database-data:/var/lib/mysql
 
+  user:
+    build: ./backend/services/user_service
+    depends_on:
+      - mysql
+    environment:
+      - dbURL=mysql+mysqlconnector://sample:password@mysql:3306/mydb
+    ports:
+      - "5002:5000"
   
-
-
 
 volumes:
   database-data:
