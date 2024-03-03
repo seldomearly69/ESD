@@ -60,18 +60,29 @@ services:
 #################################
 # FlightsDB [Microservice]
 #################################
-  flight:
-    container_name: flight
+  # flight:
+  #   container_name: flight
+  #   build:
+  #     context: ./backend/services/flight
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - 5003:5000
+  #   depends_on:
+  #     route_records_db:
+  #       condition: service_healthy
+  #   environment:
+  #     DATABASE_URI: 'postgresql://is213:8CRjw8442oS@localhost:5433/is213'
+
+#################################
+# JSTemplate [Microservice]
+#################################
+  jstemplate:
+    container_name: JSTemplate
     build:
-      context: ./backend/services/flight
+      context: ./backend/services/JSTemplate
       dockerfile: Dockerfile
     ports:
-      - 5003:5000
-    depends_on:
-      route_records_db:
-        condition: service_healthy
-    environment:
-      DATABASE_URI: 'postgresql://is213:8CRjw8442oS@localhost:5433/is213'
+      - 5005:5005
 
 
 volumes:
