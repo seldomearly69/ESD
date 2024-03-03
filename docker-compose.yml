@@ -57,7 +57,24 @@ services:
       - dbURL=mysql+mysqlconnector://sample:password@mysql:3306/mydb
     ports:
       - "5002:5000"
-  
+#################################
+# Saved Routes [Microservice]
+#################################
+  flight:
+    container_name: flight
+    build:
+      context: ./backend/services/flight
+      dockerfile: Dockerfile
+    ports:
+      - 5003:5000
+    depends_on:
+      route_records_db:
+        condition: service_healthy
+    environment:
+      DATABASE_URI: 'postgresql://is213:8CRjw8442oS@localhost:5433/is213'
+
 
 volumes:
   database-data:
+
+
