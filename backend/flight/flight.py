@@ -17,6 +17,7 @@ class Flight_booking(db.Model):
     flight_no = db.Column("flight_no",db.Integer)
     airline = db.Column("airline", db.String(100))
     departure_city = db.Column("departure_city", db.String(100))
+    departing_city = db.Column("departure_city", db.String(100))
     arrival_city = db.Column("arrival_city", db.String(100))
     #datetime(year,month,day,hour,minute,second,microsecond)
     departure = db.Column("departure", db.DateTime)
