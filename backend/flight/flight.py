@@ -16,8 +16,8 @@ class Flight_booking(db.Model):
     username = db.Column("username", db.String(100))
     flight_no = db.Column("flight_no",db.Integer)
     airline = db.Column("airline", db.String(100))
-    departing_city = db.Column("dcity", db.String(100))
-    arrival_city = db.Column("acity", db.String(100))
+    departure_city = db.Column("departure_city", db.String(100))
+    arrival_city = db.Column("arrival_city", db.String(100))
     #datetime(year,month,day,hour,minute,second,microsecond)
     departure = db.Column("departure", db.DateTime)
     arrival = db.Column("arrival", db.DateTime)
@@ -59,8 +59,13 @@ def find_by_user(booking_id):
             {
                 "code": 200,
                 "data": {
-                    "lats": r.lats,
-                    "longs": r.longs
+                    "username": r.username,
+                    "flight_no": r.flight_no,
+                    "airline": r.airline,
+                    "departure_city": r.departure_city,
+                    "arrival_city": r.arrival_city,
+                    "departure": r.departure,
+                    "arrival": r.arrival,
                 }
             }
         )
@@ -118,8 +123,13 @@ def update_record(booking_id):
         ), 400
 
     data = request.get_json()
-    r.lats = data.get('lats', r.lats)
-    r.longs = data.get('longs', r.longs)
+    r.username = data.get('username', r.username)
+    r.flight_no = data.get('flight_no', r.flight_no)
+    r.airline = data.get('airline', r.airline)
+    r.departure_city = data.get('departure_city', r.departure_city)
+    r.arrival_city = data.get('arrival_city', r.arrival_city)
+    r.departure = data.get('departure', r.departure)
+    r.arrival = data.get('arrival', r.arrival)
 
     try:
         db.session.commit()
