@@ -17,25 +17,36 @@ class Flight_booking(db.Model):
     flight_no = db.Column("flight_no",db.Integer)
     airline = db.Column("airline", db.String(100))
     departure_city = db.Column("departure_city", db.String(100))
-    departing_city = db.Column("departure_city", db.String(100))
     arrival_city = db.Column("arrival_city", db.String(100))
     #datetime(year,month,day,hour,minute,second,microsecond)
     departure = db.Column("departure", db.DateTime)
     arrival = db.Column("arrival", db.DateTime)
 
-    def __init__(self, username, flight_no, airline,departing_city, arrival_city, departure, arrival):
+    def __init__(self, username, flight_no, airline,departure_city, arrival_city, departure, arrival):
         self.username = username
         self.flight_no = flight_no
         self.airline  = airline
-        self.departing_city = departing_city
+        self.departure_city = departure_city
         self.arrival_city = arrival_city
         self.departure = departure
         self.arrival = arrival
 
+    def json(self):
+        return {
+            "booking_id": self.booking_id,
+            "username": self.username,
+            "flight_no": self.flight_no,
+            "airline": self.airline,
+            "departure_city": self.departure_city,
+            "arrival_city": self.arrival_city,
+            "departure": self.departure.strftime("%Y-%m-%d %H:%M:%S"),
+            "arrival": self.arrival.strftime("%Y-%m-%d %H:%M:%S"),
+        }
+
     def __repr__(self):
         return f'<Username: {self.username}> - <BookingId: {self.booking_id}>'
 
-
+#Get all records
 @app.route("/all_flights")
 def get_all():
     allRecords = Flight_booking.query.all()
@@ -50,9 +61,10 @@ def get_all():
             "message": "There are no records."
         }
     ), 404
-   
-@app.route("/route/<int:booking_id>")
-def find_by_user(booking_id):
+
+#Find booking by id
+@app.route("/flight/<int:booking_id>")
+def find_booking(booking_id):
     r = Flight_booking.query.filter_by(booking_id=booking_id).first()
 
     if r:
@@ -77,7 +89,8 @@ def find_by_user(booking_id):
         }
     ), 404
 
-@app.route("/route/<int:booking_id>", methods=['POST'])
+#Create Record
+@app.route("/flight/<int:booking_id>", methods=['POST'])
 def create_record(booking_id):
     r = Flight_booking.query.filter_by(booking_id=booking_id).all()
     if r:
@@ -89,7 +102,7 @@ def create_record(booking_id):
         ), 400
 
     data = request.get_json()
-    record = Flight_booking(booking_id, **data)
+    record = Flight_booking(**data)
 
     try:
         db.session.add(record)
@@ -112,7 +125,8 @@ def create_record(booking_id):
         }
     ), 201
 
-@app.route("/route/<int:booking_id>", methods=['PUT'])
+#Update Record
+@app.route("/flight/<int:booking_id>", methods=['PUT'])
 def update_record(booking_id):
     r = Flight_booking.query.filter_by(booking_id=booking_id).first()
     if not r:
@@ -152,8 +166,8 @@ def update_record(booking_id):
         }
     ), 201
 
-
-@app.route("/route/<int:booking_id>", methods=['DELETE'])
+#Delete Record
+@app.route("/flight/<int:booking_id>", methods=['DELETE'])
 def delete_record(booking_id):
     r = Flight_booking.query.filter_by(booking_id=booking_id).first()
     if not r:
@@ -187,5 +201,5 @@ def delete_record(booking_id):
     ), 201
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5001, debug=True)
+    app.run(host='0.0.0.0', port=5002, debug=True)
         
