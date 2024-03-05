@@ -57,21 +57,62 @@ services:
       - dbURL=mysql+mysqlconnector://sample:password@mysql:3306/mydb
     ports:
       - "5002:5000"
+
+#################################
+# HotelDB [Microservice]
+#################################
+  Hotel:
+    container_name: Hotel
+    build: backend/hotel
+    ports:
+      - "5002:5001"
+    depends_on:
+      - hotel-db
+    environment:
+      - FLASK_APP=flight.py
+      - FLASK_RUN_HOST=0.0.0.0
+      - FLASK_RUN_PORT=5002
+      - DATABASE_URI=mysql+mysqlconnector://root:root@mysql-db:3306/hoteldb
+
+  hotel-db:
+    image: mysql:latest
+    container_name: mysql-db
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=hoteldb
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+    volumes:
+      - hotel-mysql-data:/var/lib/mysql
+
 #################################
 # FlightsDB [Microservice]
 #################################
-  # flight:
-  #   container_name: flight
-  #   build:
-  #     context: ./backend/services/flight
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - 5003:5000
-  #   depends_on:
-  #     route_records_db:
-  #       condition: service_healthy
-  #   environment:
-  #     DATABASE_URI: 'postgresql://is213:8CRjw8442oS@localhost:5433/is213'
+  FlightsDB:
+    container_name: Flights
+    build: backend/flight
+    ports:
+      - "5002:5002"
+    depends_on:
+      - flight-db
+    environment:
+      - FLASK_APP=flight.py
+      - FLASK_RUN_HOST=0.0.0.0
+      - FLASK_RUN_PORT=5002
+      - DATABASE_URI=mysql+mysqlconnector://root:root@mysql-db:3306/flightdb
+
+  flight-db:
+    image: mysql:latest
+    container_name: mysql-db
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=flightdb
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+    volumes:
+      - flight-mysql-data:/var/lib/mysql
 
 #################################
 # JSTemplate [Microservice]
