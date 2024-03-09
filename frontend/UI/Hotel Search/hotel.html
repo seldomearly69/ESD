@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Search</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Hotel Search</h1>
+        <form id="search-form">
+            <label for="checkin-date">Check-in Date:</label>
+            <input type="date" id="checkin-date" name="checkin-date" required>
+
+            <label for="checkout-date">Checkout Date:</label>
+            <input type="date" id="checkout-date" name="checkout-date" required>
+
+            <label for="query">Query:</label>
+            <input type="text" id="query" name="query" placeholder="Enter your search query" required>
+
+            <label for="gl">Country Code:</label>
+            <input type="text" id="gl" name="gl" placeholder="Enter country code (e.g., US)" required>
+
+            <button type="submit">Search</button>
+        </form>
+
+        <div id="results">
+            <!-- Search results will be displayed here -->
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
