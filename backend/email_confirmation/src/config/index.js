@@ -1,6 +1,10 @@
 module.exports = {
     rabbitMQ: {
-      url: 'amqp://localhost', 
+      url: 'amqp://user:password@rabbitmq:5672',
+      user: 'user',
+      password: 'password',
+      host:'rabbitmq',
+      port:'5672'
     },
     emailService: {
       service: 'gmail', // Example: Gmail
