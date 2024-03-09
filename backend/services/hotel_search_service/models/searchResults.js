@@ -196,7 +196,7 @@ const hotelSchema = new mongoose.Schema({
 });
 
     
-const hotelSearchResultsSchema = new mongoose.Schema({
+const hotel_search = new mongoose.Schema({
     searchParams: {
         type: mongoose.Schema.Types.Mixed,
         required: [true, "Pls provide what you are searching for."],
@@ -205,4 +205,4 @@ const hotelSearchResultsSchema = new mongoose.Schema({
     cachedResult: [hotelSchema]
 })
 
-module.exports = new mongoose.model("SearchResults", hotelSearchResultsSchema);
+module.exports = new mongoose.model("HotelSearch", hotel_search);

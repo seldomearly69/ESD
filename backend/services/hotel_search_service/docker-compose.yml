@@ -2,13 +2,13 @@ version: "3.9"
 
 
 services:
-  hotelSearch:
+  hotelsearch:
     container_name: hotelFinder
     build: ./
     ports:
       - 5003:3000
     environment:
-      - mongoURL=mongodb://ak:password@mongo:27017/
+      - mongoURL=mongodb+srv://ryanlee99324:BrImAqgUaXaNuEz6@esdproj.r2bp9gh.mongodb.net/
       - serpapiKey=f3f6e4266e8a55e158eccff91716b1033839ff2368200bf47edd94ef78e8484b
     volumes:
       - ./:/usr/src/app

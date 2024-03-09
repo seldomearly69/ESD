@@ -3,7 +3,7 @@ const mongoose = require("mongoose")
 const Hotel = require("./models/searchResults");
 const { getJson } = require("serpapi");
 
-//function to connect to DB 65e57e98e4a23d46e7a18c04
+//function to connect to DB 
 const connectDB = async (url) => {
     max_tries = 20;
     attempt = 0;
@@ -14,6 +14,7 @@ const connectDB = async (url) => {
             break
         }catch(err){
             console.log("Connection to DB failed.Trying again...");
+            console.log(err)
             attempt+=1;
         }
     }
