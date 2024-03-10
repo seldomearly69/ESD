@@ -9,7 +9,7 @@ app = Flask(__name__)
 CORS(app)
 
 app.config["MONGO_URI"] = "mongodb://localhost:27017/hoteldb"
-mongo = MongoClient(app)
+mongo = MongoClient(app.config["MONGO_URI"])
 
 @app.route("/all_hotels")
 def get_all():
