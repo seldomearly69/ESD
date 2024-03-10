@@ -37,7 +37,7 @@ services:
 #################################
 # user [Microservice]
 #################################
-  mysql:
+  user_service:
     image: mysql
     restart: always 
     environment:
@@ -48,11 +48,13 @@ services:
     volumes:
       - ./backend/services/user_service/db-dump:/docker-entrypoint-initdb.d
       - database-data:/var/lib/mysql
-
-  user:
+#################################
+# user_db [DB]
+#################################
+  user_db:
     build: ./backend/services/user_service
     depends_on:
-      - mysql
+      - user_service
     environment:
       - dbURL=mysql+mysqlconnector://sample:password@mysql:3306/mydb
     ports:
@@ -61,9 +63,9 @@ services:
 #################################
 # HotelSearch [Microservice]
 #################################
-  hotelsearch:
+  hotel_search:
       container_name: hotelFinder
-      build: ./backend/services/hotel_search
+      build: ./backend/services/hotel_search_service
       ports:
         - 5003:3000
       environment:
@@ -73,22 +75,22 @@ services:
 #################################
 # HotelDB [Microservice]
 #################################
-  Hotel:
+  hotel:
     container_name: Hotel
     build: backend/hotel
     ports:
-      - "5002:5001"
+      - "5004:5004"
     depends_on:
-      - hotel-db
+      - hotel_db
     environment:
       - FLASK_APP=flight.py
       - FLASK_RUN_HOST=0.0.0.0
-      - FLASK_RUN_PORT=5002
+      - FLASK_RUN_PORT=5004
       - DATABASE_URI=mysql+mysqlconnector://root:root@mysql-db:3306/hoteldb
 
-  hotel-db:
+  hotel_db:
     image: mysql:latest
-    container_name: mysql-db
+    container_name: hotel_db
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=root
@@ -99,24 +101,27 @@ services:
       - hotel-mysql-data:/var/lib/mysql
 
 #################################
-# FlightsDB [Microservice]
+# Flights [Microservice]
 #################################
-  FlightsDB:
+  flights:
     container_name: Flights
     build: backend/flight
     ports:
-      - "5002:5002"
+      - "5005:5005"
     depends_on:
-      - flight-db
+      - flight_db
     environment:
       - FLASK_APP=flight.py
       - FLASK_RUN_HOST=0.0.0.0
-      - FLASK_RUN_PORT=5002
+      - FLASK_RUN_PORT=5005
       - DATABASE_URI=mysql+mysqlconnector://root:root@mysql-db:3306/flightdb
 
-  flight-db:
+#################################
+# Flights_db [DB]
+#################################
+  flight_db:
     image: mysql:latest
-    container_name: mysql-db
+    container_name: flights_db
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=root
@@ -135,10 +140,23 @@ services:
       context: ./backend/services/JSTemplate
       dockerfile: Dockerfile
     ports:
-      - 5005:5005
+      - 5006:5006
+
+#################################
+# flight_search [Microservice]
+#################################
+  flight_search:
+    container_name: flight_search
+    build:
+      context: ./backend/services/flight_search
+      dockerfile: Dockerfile
+    ports:
+      - 5007:5007
 
 
 volumes:
   database-data:
+  hotel-mysql-data:
+  flight-mysql-data:
 
 
