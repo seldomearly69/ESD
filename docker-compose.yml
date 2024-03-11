@@ -204,6 +204,9 @@ services:
 
 
 volumes:
+  database-data:
+  hotel-mysql-data:
+  flight-mysql-data:
   rabbitmq_data:
 
 networks:
