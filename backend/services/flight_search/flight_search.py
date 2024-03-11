@@ -37,12 +37,13 @@ def connect_to_db():
 
 client = connect_to_db()
 db = client["flightsearches"]
-coll = db["flightsearches"]
 
-@app.route("/search")
+
+@app.route("/flights")
 def search():
-
+    
     data = request.get_json()
+
     params = {
     "engine": "google_flights",
     "departure_id": data["departure_id"],
@@ -57,21 +58,39 @@ def search():
     "adults": data["adults"],
     "children": data["children"],
     "max_price": data["max_price"],
-
-
     }
     if "departure_key" in data:
         params["departure_key"] = data["departure_key"]
+    
+
+    coll = db[data["username"]]
+
+    temp = params
+    temp["output"] = "json"
+    temp["source"] = "python"
+    result = coll.find_one({"searchParams": temp})
+    print(result, flush=True)
+    if result:
+        print("hi", flush=True)
+        return result["cachedResult"]
+
     search = GoogleSearch(params)
     results = search.get_dict()
-    return jsonify(results)
 
+    result = coll.insert_one({"searchParams": params, "cachedResult": results})
+    return jsonify(results)
     
-def search_cache():
-    oid = ObjectId("65ec2b7ebb9ea281df58560c")
-    result = coll.find_one({"_id": oid})
-    print(result, flush=True)
-    return
+    
+@app.route("/drop")
+def drop_cache():
+    coll = db[request.get_json()["username"]]
+    coll.drop()
+    return "success"
+
+
+
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5007, debug=True)

@@ -1,64 +1,64 @@
 version: "3.9"
 
 services:
-# #################################
-# # Records of routes [DB]
-# #################################
-#   route_records_db:
-#     container_name: route_records_db
-#     build:
-#       context: ./databases/routes_db
-#       dockerfile: Dockerfile
-#     env_file: ./databases/routes_db/db.env
-#     volumes:
-#       - database-data:/var/lib/mysql
-#     healthcheck:
-#       test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
-#       interval: 10s
-#       timeout: 5s
-#       retries: 5
-#     ports:
-#       - 5433:5432
-# #################################
-# # Saved Routes [Microservice]
-# #################################
-#   saved_routes:
-#     container_name: saved_routes
-#     build:
-#       context: ./backend/services/saved_routes
-#       dockerfile: Dockerfile
-#     ports:
-#       - 5001:5001
-#     depends_on:
-#       route_records_db:
-#         condition: service_healthy
-#     environment:
-#       DATABASE_URI: 'postgresql://is213:8CRjw8442oS@localhost:5433/is213'
-# #################################
-# # user [Microservice]
-# #################################
-#   user_service:
-#     image: mysql
-#     restart: always 
-#     environment:
-#       - MYSQL_DATABASE=mydb
-#       - MYSQL_ROOT_PASSWORD=root
-#       - MYSQL_USER=sample 
-#       - MYSQL_PASSWORD=password
-#     volumes:
-#       - ./backend/services/user_service/db-dump:/docker-entrypoint-initdb.d
-#       - database-data:/var/lib/mysql
-# #################################
-# # user_db [DB]
-# #################################
-#   user_db:
-#     build: ./backend/services/user_service
-#     depends_on:
-#       - user_service
-#     environment:
-#       - dbURL=mysql+mysqlconnector://sample:password@mysql:3306/mydb
-#     ports:
-#       - "5002:5000"
+#################################
+# Records of routes [DB]
+#################################
+  route_records_db:
+    container_name: route_records_db
+    build:
+      context: ./databases/routes_db
+      dockerfile: Dockerfile
+    env_file: ./databases/routes_db/db.env
+    volumes:
+      - database-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - 5433:5432
+#################################
+# Saved Routes [Microservice]
+#################################
+  saved_routes:
+    container_name: saved_routes
+    build:
+      context: ./backend/services/saved_routes
+      dockerfile: Dockerfile
+    ports:
+      - 5001:5001
+    depends_on:
+      route_records_db:
+        condition: service_healthy
+    environment:
+      DATABASE_URI: 'postgresql://is213:8CRjw8442oS@localhost:5433/is213'
+#################################
+# user [Microservice]
+#################################
+  user_service:
+    image: mysql
+    restart: always 
+    environment:
+      - MYSQL_DATABASE=mydb
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=sample 
+      - MYSQL_PASSWORD=password
+    volumes:
+      - ./backend/services/user_service/db-dump:/docker-entrypoint-initdb.d
+      - database-data:/var/lib/mysql
+#################################
+# user_db [DB]
+#################################
+  user_db:
+    build: ./backend/services/user_service
+    depends_on:
+      - user_service
+    environment:
+      - dbURL=mysql+mysqlconnector://sample:password@mysql:3306/mydb
+    ports:
+      - "5002:5000"
 
 #################################
 # HotelSearch [Microservice]
@@ -72,75 +72,75 @@ services:
         - mongoURL=mongodb+srv://ryanlee99324:BrImAqgUaXaNuEz6@esdproj.r2bp9gh.mongodb.net/
         - serpapiKey=f3f6e4266e8a55e158eccff91716b1033839ff2368200bf47edd94ef78e8484b
 
-# #################################
-# # HotelDB [Microservice]
-# #################################
-  # hotel:
-  #   container_name: Hotel
-  #   build: backend/hotel
-  #   ports:
-  #     - "5004:5004"
-  #   depends_on:
-  #     - hotel_db
-  #   environment:
-  #     - FLASK_APP=flight.py
-  #     - FLASK_RUN_HOST=0.0.0.0
-  #     - FLASK_RUN_PORT=5004
-  #     - DATABASE_URI=mysql+mysqlconnector://root:root@mysql-db:3306/hoteldb
+#################################
+# HotelDB [Microservice]
+#################################
+  hotel:
+    container_name: Hotel
+    build: backend/hotel
+    ports:
+      - "5004:5004"
+    depends_on:
+      - hotel_db
+    environment:
+      - FLASK_APP=flight.py
+      - FLASK_RUN_HOST=0.0.0.0
+      - FLASK_RUN_PORT=5004
+      - DATABASE_URI=mysql+mysqlconnector://root:root@mysql-db:3306/hoteldb
 
-  # hotel_db:
-  #   image: mysql:latest
-  #   container_name: hotel_db
-  #   restart: always
-  #   environment:
-  #     - MYSQL_ROOT_PASSWORD=root
-  #     - MYSQL_DATABASE=hoteldb
-  #     - MYSQL_USER=root
-  #     - MYSQL_PASSWORD=root
-  #   volumes:
-  #     - hotel-mysql-data:/var/lib/mysql
+  hotel_db:
+    image: mysql:latest
+    container_name: hotel_db
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=hoteldb
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+    volumes:
+      - hotel-mysql-data:/var/lib/mysql
 
-# #################################
-# # Flights [Microservice]
-# #################################
-#   flights:
-#     container_name: Flights
-#     build: backend/flight
-#     ports:
-#       - "5005:5005"
-#     depends_on:
-#       - flight_db
-#     environment:
-#       - FLASK_APP=flight.py
-#       - FLASK_RUN_HOST=0.0.0.0
-#       - FLASK_RUN_PORT=5005
-#       - DATABASE_URI=mysql+mysqlconnector://root:root@mysql-db:3306/flightdb
+#################################
+# Flights [Microservice]
+#################################
+  flights:
+    container_name: Flights
+    build: backend/flight
+    ports:
+      - "5005:5005"
+    depends_on:
+      - flight_db
+    environment:
+      - FLASK_APP=flight.py
+      - FLASK_RUN_HOST=0.0.0.0
+      - FLASK_RUN_PORT=5005
+      - DATABASE_URI=mysql+mysqlconnector://root:root@mysql-db:3306/flightdb
 
-# #################################
-# # Flights_db [DB]
-# #################################
-#   flight_db:
-#     image: mysql:latest
-#     container_name: flights_db
-#     restart: always
-#     environment:
-#       - MYSQL_ROOT_PASSWORD=root
-#       - MYSQL_DATABASE=flightdb
-#       - MYSQL_USER=root
-#       - MYSQL_PASSWORD=root
-#     volumes:
-#       - flight-mysql-data:/var/lib/mysql
+#################################
+# Flights_db [DB]
+#################################
+  flight_db:
+    image: mysql:latest
+    container_name: flights_db
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=flightdb
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+    volumes:
+      - flight-mysql-data:/var/lib/mysql
 
-# #################################
-# # JSTemplate [Microservice]
-# #################################
-#   jstemplate:
-#     container_name: JSTemplate
-#     build:
-#       context: ./backend/services/JSTemplate
-#       dockerfile: Dockerfile
-#     ports:
-#       - 5006:5006
+#################################
+# JSTemplate [Microservice]
+#################################
+  jstemplate:
+    container_name: JSTemplate
+    build:
+      context: ./backend/services/JSTemplate
+      dockerfile: Dockerfile
+    ports:
+      - 5006:5006
 
 #################################
 # flight_search [Microservice]
