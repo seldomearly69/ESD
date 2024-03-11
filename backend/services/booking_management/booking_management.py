@@ -16,7 +16,7 @@ def search():
     fresponse = None
     hresponse = None
     if "flight" in data:
-        fresponse = requests.get("http://flight_search:5007/search", json = data["flight"])
+        fresponse = requests.get("http://flight_search:5007/flights", json = data["flight"])
         if (fresponse.status_code == 200):
             fresponse = fresponse.json()
 
