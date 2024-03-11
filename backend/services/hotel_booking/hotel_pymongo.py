@@ -6,7 +6,8 @@ app = Flask(__name__)
 
 app.config['MONGO_URI'] = 'mongodb+srv://ryanlee99324:BrImAqgUaXaNuEz6@esdproj.r2bp9gh.mongodb.net/Hotel'
 mongo = PyMongo(app)
-print(mongo)
+
+
 class Hotel:
     @staticmethod
     def json(booking):
@@ -57,13 +58,18 @@ def delete_bookings():
 
     city_name = data["city"]
     hotel_name = data["hotel"]
-
-    result = mongo.db.Hotel.delete_many({"city": city_name, "hotel": hotel_name})
+    dates = data["dates"]
+        
+    deleted_bookings_cursor = mongo.db.Hotel.find({"city": city_name, "hotel": hotel_name, "checkin": {"$in": dates}})
+    deleted_bookings_data = [Hotel.json(booking) for booking in deleted_bookings_cursor]
+    
+    
+    result = mongo.db.Hotel.delete_many({"city": city_name, "hotel": hotel_name, "checkin": {"$in": dates}})
 
     if result.deleted_count > 0:
-        return jsonify({"message": "Bookings deleted successfully."}), 200
+        return jsonify({"deleted_bookings": deleted_bookings_data}), 200
 
     return jsonify({"message": "No matching bookings found."}), 404
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5009, debug=True)

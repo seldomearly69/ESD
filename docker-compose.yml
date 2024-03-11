@@ -164,10 +164,47 @@ services:
     ports:
       - 5008:5008
 
+#################################
+# Hotel Booking [Microservice]
+#################################
+  hotel_booking:
+    container_name: hotel_booking
+    build:
+      context: ./backend/services/hotel_booking
+      dockerfile: Dockerfile
+    ports:
+      - 5009:5009
+
+#################################
+# Hotel Management [Microservice]
+#################################
+  hotel_management:
+    container_name: hotel_management
+    build:
+      context: ./backend/services/hotel_management
+      dockerfile: Dockerfile
+    ports:
+      - 5010:5010
+      
+#################################
+# RabbitMQ 
+#################################
+  rabbitmq:
+    container_name: stupid_rabbit
+    image: "rabbitmq:3-management"
+    ports:
+      - "15672:15672"  # Expose RabbitMQ management interface
+      - "5672:5672"    # Expose RabbitMQ main port
+    environment:
+      - RABBITMQ_DEFAULT_USER=username
+      - RABBITMQ_DEFAULT_PASS=password
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+
+
 volumes:
-  database-data:
-  hotel-mysql-data:
-  flight-mysql-data:
+  rabbitmq_data:
 
 networks:
   internal_network:
