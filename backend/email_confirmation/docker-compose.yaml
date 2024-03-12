@@ -1,44 +1,30 @@
 version: '3.8'
+
 services:
   rabbitmq:
     image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
     environment:
       RABBITMQ_DEFAULT_USER: user
       RABBITMQ_DEFAULT_PASS: password
-    ports:
-      - "5672:5672"  # AMQP protocol
-      - "15672:15672"  # Management interface
+
+  setup:
+    build: ./setup
+    depends_on:
+      - rabbitmq
 
   email_publisher:
-    build:
-      context: ./email_publisher
-      dockerfile: Dockerfile
+    build: ./email_publisher
     ports:
       - "5002:5002"
-    environment:
-      RABBITMQ_HOST: rabbitmq
     depends_on:
-      - rabbitmq
+      - setup
 
   email_consumer:
-    build:
-      context: ./email_consumer
-      dockerfile: Dockerfile
-    environment:
-      RABBITMQ_HOST: rabbitmq
-      EMAIL_USER: booking.t4.g6@gmail.com
-      EMAIL_PASS: aggyeynwnrpvvcqc
-    depends_on:
-      - rabbitmq
-
-  send_test_email:
-    build:
-      context: ./send_test_email
-      dockerfile: Dockerfile
+    build: ./email_consumer
     ports:
-      - "8000:8000"
+      - "5001:5001"
     depends_on:
       - email_publisher
-
-volumes:
-  rabbitmq_data:

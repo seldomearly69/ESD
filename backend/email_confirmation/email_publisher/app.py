@@ -1,24 +1,20 @@
 from flask import Flask, request, jsonify
 import pika
 import os
+import amqp_connection
 
 
 
 app = Flask(__name__)
 
+connection=amqp_connection.create_connection()
+channel=connection.channel()
 @app.route('/publish', methods=['POST'])
 def publish():
     message = request.json
-    # Establish a connection with RabbitMQ server
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host=os.getenv("RABBITMQ_HOST", "localhost")))
-    channel = connection.channel()
-
-    # Declare a queue
-    channel.queue_declare(queue='emailQueue', durable=True)
-
     # Publish message
-    channel.basic_publish(exchange='',
-                          routing_key='emailQueue',
+    channel.basic_publish(exchange='email_exchange',
+                          routing_key='confirmation.email',
                           body=str(message),
                           properties=pika.BasicProperties(
                              delivery_mode=2,  # make message persistent
