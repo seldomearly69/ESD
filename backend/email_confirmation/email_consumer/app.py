@@ -3,6 +3,7 @@ import pika, os, threading, smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import amqp_connection
+import time
 
 queue_name="email_queue"
 
@@ -27,11 +28,15 @@ def callback(ch, method, properties, body):
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 def start_consuming(channel):
-    
-    
-    channel.basic_consume(queue='email_queue', on_message_callback=callback)
-    channel.start_consuming()
-
+    tries=0
+    while tries<=12:
+        try:
+            channel.basic_consume(queue='email_queue', on_message_callback=callback)
+            channel.start_consuming()
+        except:
+            print("Cannot connect. Trying again")
+            tries+=1
+            time.sleep(5)
 @app.route('/')
 def index():
     return "Email Consumer Running"

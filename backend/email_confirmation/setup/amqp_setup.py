@@ -2,7 +2,7 @@ import time
 import pika
 from os import environ
 
-hostname = "localhost" 
+hostname = "rabbitmq" 
 port = 5672            
 exchangename = "email_exchange" 
 exchangetype = "topic"
@@ -19,10 +19,11 @@ def create_connection(max_retries=12, retry_interval=5):
     while retries < max_retries:
         try:
             print('amqp_setup: Trying connection')
+            credentials=pika.PlainCredentials(username="user",password="password")
             # connect to the broker and set up a communication channel in the connection
             connection = pika.BlockingConnection(pika.ConnectionParameters
                                 (host=hostname, port=port,
-                                 heartbeat=3600, blocked_connection_timeout=3600)) # these parameters to prolong the expiration time (in seconds) of the connection
+                                 heartbeat=3600, blocked_connection_timeout=3600,credentials=credentials)) # these parameters to prolong the expiration time (in seconds) of the connection
                 # Note about AMQP connection: various network firewalls, filters, gateways (e.g., SMU VPN on wifi), may hinder the connections;
                 # If "pika.exceptions.AMQPConnectionError" happens, may try again after disconnecting the wifi and/or disabling firewalls.
                 # If see: Stream connection lost: ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)
@@ -51,10 +52,10 @@ def create_channel(connection):
     return channel
 
 #function to create queue
-def create_queue(queue_name):
+def create_queue(channel):
     print('amqp_setup:create queues')
-    channel.queue_declare(queue=queue_name,durable=True)
-    channel.queue_bind(exchange=exchangename,queue=queue_name,routing_key="*.email")
+    channel.queue_declare(queue="email_queue",durable=True)
+    channel.queue_bind(exchange=exchangename,queue="email_queue",routing_key="*.email")
 
 
 
@@ -63,6 +64,6 @@ def create_queue(queue_name):
 if __name__ == "__main__":  # execute this program only if it is run as a script (not by 'import')   
     connection = create_connection()
     channel = create_channel(connection)
-    create_queue("email_queue")
+    create_queue(channel)
     
     

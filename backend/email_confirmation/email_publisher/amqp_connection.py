@@ -2,9 +2,10 @@ import time
 import pika
 
 
-hostname = "localhost" # default hostname
+hostname = "rabbitmq" # default hostname
 port = 5672            # default port
-
+user="user"
+password="password"
 # Instead of hardcoding the values, we can also get them from the environ as shown below
 # hostname = environ.get('hostname') #localhost
 # port = environ.get('port')         #5672 
@@ -22,9 +23,10 @@ def create_connection(max_retries=12, retry_interval=5):
         try:
             print('amqp_connection: Trying connection')
             # connect to the broker
+            credentials=pika.PlainCredentials(user,password)
             connection = pika.BlockingConnection(pika.ConnectionParameters
                                 (host=hostname, port=port,
-                                 heartbeat=3600, blocked_connection_timeout=3600)) # these parameters to prolong the expiration time (in seconds) of the connection
+                                 heartbeat=3600, blocked_connection_timeout=3600,credentials=credentials)) # these parameters to prolong the expiration time (in seconds) of the connection
                 # Note about AMQP connection: various network firewalls, filters, gateways (e.g., SMU VPN on wifi), may hinder the connections;
                 # If "pika.exceptions.AMQPConnectionError" happens, may try again after disconnecting the wifi and/or disabling firewalls.
                 # If see: Stream connection lost: ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)
@@ -44,18 +46,6 @@ def create_connection(max_retries=12, retry_interval=5):
     
     return connection
 
-# function to check if the exchange exists
-def check_exchange(channel, exchangename, exchangetype):
-    try:    
-        channel.exchange_declare(exchangename, exchangetype, durable=True, passive=True) 
-            # passive (bool): If set, the server will reply with Declare-Ok if the 
-            # exchange already exists with the same name, and raise an error if not. 
-            # The client can use this to check whether an exchange exists without 
-            # modifying the server state.            
-    except Exception as e:
-        print('Exception:', e)
-        return False
-    return True
 
 
 
