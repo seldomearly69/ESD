@@ -10,6 +10,7 @@ COPY . /app
 # Install any needed packages specified in requirements.txt
 # Ensure you have Flask and pika listed in your requirements.txt file
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install pika
 
 
 # Make port 5002 available to the world outside this container

@@ -20,11 +20,11 @@ services:
     ports:
       - "5002:5002"
     depends_on:
-      - rabbitmq
+      - setup
 
   email_consumer:
     build: ./email_consumer
     ports:
       - "5001:5001"
     depends_on:
-      - rabbitmq
+      - setup
