@@ -18,6 +18,7 @@ class Hotel:
             "checkin": booking["checkin"],
             "checkout": booking["checkout"]
         }
+    
 @app.route("/")
 def greeting():
     return jsonify({"code": 200, "message": "HEllo."}), 200

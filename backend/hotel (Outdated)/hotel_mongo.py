@@ -16,15 +16,18 @@ def connect_to_db():
     max_retries = 30
     retries = 0
 
+#apBxz258V1HCEmEb
+
     while retries < max_retries:
         try:
             # Update the MongoDB connection details
-            client = MongoClient('mongodb+srv://dbUser:<password>@hoteldb.pg6h1hf.mongodb.net/?retryWrites=true&w=majority&appName=Hoteldb')
+            client = MongoClient('mongodb+srv://brendan:apBxz258V1HCEmEb@esd.qq3dsm4.mongodb.net/?retryWrites=true&w=majority&appName=ESD')
             # Try to run a simple command to check if the database is reachable
             client.admin.command('ping')
             print("Database is reachable.")
             return client
         except ConnectionFailure as e:
+            print(e)
             print(f"Database not ready yet. Retrying... ({retries}/{max_retries})")
             retries += 1
             time.sleep(1)
