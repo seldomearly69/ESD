@@ -1,7 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_pymongo import PyMongo
 from bson import ObjectId
-
+from datetime import datetime
+import json
 app = Flask(__name__)
 
 app.config['MONGO_URI'] = 'mongodb+srv://ryanlee99324:BrImAqgUaXaNuEz6@esdproj.r2bp9gh.mongodb.net/flight'
@@ -21,20 +22,36 @@ class Hotel:
             "arrival": booking["arrival"]
         }
     
-#Get all flights
+def customEncoder(o):
+    if isinstance(o, ObjectId):
+        return str(o)
+    if isinstance(o, datetime):
+        return o.isoformat()
+    raise TypeError(f'Object of type {o.__class__.__name__} is not JSON serializable')
 @app.route("/all_flights")
 def get_all():
     allRecords = mongo.db.flight.find()
 
-    if allRecords:
-        return jsonify([record for record in allRecords])
+    try:
+        # Convert all records to a list of dicts with JSON serializable ObjectId
+        records = json.loads(json.dumps([record for record in allRecords], default=customEncoder))
 
-    return jsonify(
-        {
-            "code": 404,
-            "message": "There are no records."
-        }
-    ), 404
+        if records:
+            return jsonify(records)
+
+        return jsonify(
+            {
+                "code": 404,
+                "message": "There are no records."
+            }
+        ), 404
+    except Exception as e:
+        return jsonify(
+            {
+                "code": 500,
+                "message": str(e)
+            }
+        ), 500
 
 #Find Booking
 @app.route("/flight/<ObjectId:_id>")

@@ -21,5 +21,6 @@ EXPOSE 5001
 ENV EMAIL_USER=booking.t4.g6@gmail.com
 ENV EMAIL_PASSWORD=aggyeynwnrpvvcqc
 
+ENV FLASK_APP=app.py
 # Run app.py when the container launches
 CMD ["python", "./app.py"]
