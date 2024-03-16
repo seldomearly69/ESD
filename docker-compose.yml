@@ -1,64 +1,61 @@
 version: "3.9"
 
 services:
-#################################
-# Records of routes [DB]
-#################################
-  route_records_db:
-    container_name: route_records_db
-    build:
-      context: ./databases/routes_db
-      dockerfile: Dockerfile
-    env_file: ./databases/routes_db/db.env
-    volumes:
-      - database-data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    ports:
-      - 5433:5432
-#################################
-# Saved Routes [Microservice]
-#################################
-  saved_routes:
-    container_name: saved_routes
-    build:
-      context: ./backend/services/saved_routes
-      dockerfile: Dockerfile
-    ports:
-      - 5001:5001
-    depends_on:
-      route_records_db:
-        condition: service_healthy
-    environment:
-      DATABASE_URI: 'postgresql://is213:8CRjw8442oS@localhost:5433/is213'
-#################################
-# user [Microservice]
-#################################
-  user_service:
-    image: mysql
-    restart: always 
-    environment:
-      - MYSQL_DATABASE=mydb
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_USER=sample 
-      - MYSQL_PASSWORD=password
-    volumes:
-      - ./backend/services/user_service/db-dump:/docker-entrypoint-initdb.d
-      - database-data:/var/lib/mysql
-#################################
-# user_db [DB]
-#################################
-  user_db:
-    build: ./backend/services/user_service
-    depends_on:
-      - user_service
-    environment:
-      - dbURL=mysql+mysqlconnector://sample:password@mysql:3306/mydb
-    ports:
-      - "5002:5000"
+# #################################
+# # Records of routes [DB]
+# #################################
+#   route_records_db:
+#     container_name: route_records_db
+#     build:
+#       context: ./databases/routes_db
+#       dockerfile: Dockerfile
+#     env_file: ./databases/routes_db/db.env
+#     volumes:
+#       - database-data:/var/lib/mysql
+#     healthcheck:
+#       test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+#       interval: 10s
+#       timeout: 5s
+#       retries: 5
+#     ports:
+#       - 5433:5432
+# #################################
+# # Saved Routes [Microservice]
+# #################################
+#   saved_routes:
+#     container_name: saved_routes
+#     build:
+#       context: ./backend/services/saved_routes
+#       dockerfile: Dockerfile
+#     ports:
+#       - 5001:5001
+#     environment:
+#       DATABASE_URI: 'postgresql://is213:8CRjw8442oS@localhost:5433/is213'
+# #################################
+# # user [Microservice]
+# #################################
+#   user_service:
+#     image: mysql
+#     restart: always 
+#     environment:
+#       - MYSQL_DATABASE=mydb
+#       - MYSQL_ROOT_PASSWORD=root
+#       - MYSQL_USER=sample 
+#       - MYSQL_PASSWORD=password
+#     volumes:
+#       - ./backend/services/user_service/db-dump:/docker-entrypoint-initdb.d
+#       - database-data:/var/lib/mysql
+# #################################
+# # user_db [DB]
+# #################################
+#   user_db:
+#     build: ./backend/services/user_service
+#     depends_on:
+#       - user_service
+#     environment:
+#       - dbURL=mysql+mysqlconnector://sample:password@mysql:3306/mydb
+#     ports:
+#       - "5002:5000"
 
 #################################
 # HotelSearch [Microservice]
@@ -72,33 +69,33 @@ services:
         - mongoURL=mongodb+srv://ryanlee99324:BrImAqgUaXaNuEz6@esdproj.r2bp9gh.mongodb.net/
         - serpapiKey=f3f6e4266e8a55e158eccff91716b1033839ff2368200bf47edd94ef78e8484b
 
-#################################
-# HotelDB [Microservice]
-#################################
-  hotel:
-    container_name: Hotel
-    build: backend/hotel
-    ports:
-      - "5004:5004"
-    depends_on:
-      - hotel_db
-    environment:
-      - FLASK_APP=flight.py
-      - FLASK_RUN_HOST=0.0.0.0
-      - FLASK_RUN_PORT=5004
-      - DATABASE_URI=mysql+mysqlconnector://root:root@mysql-db:3306/hoteldb
+# #################################
+# # HotelDB [Microservice]
+# #################################
+#   hotel:
+#     container_name: Hotel
+#     build: backend/hotel
+#     ports:
+#       - "5004:5004"
+#     depends_on:
+#       - hotel_db
+#     environment:
+#       - FLASK_APP=flight.py
+#       - FLASK_RUN_HOST=0.0.0.0
+#       - FLASK_RUN_PORT=5004
+#       - DATABASE_URI=mysql+mysqlconnector://root:root@mysql-db:3306/hoteldb
 
-  hotel_db:
-    image: mysql:latest
-    container_name: hotel_db
-    restart: always
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=hoteldb
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=root
-    volumes:
-      - hotel-mysql-data:/var/lib/mysql
+#   hotel_db:
+#     image: mysql:latest
+#     container_name: hotel_db
+#     restart: always
+#     environment:
+#       - MYSQL_ROOT_PASSWORD=root
+#       - MYSQL_DATABASE=hoteldb
+#       - MYSQL_USER=root
+#       - MYSQL_PASSWORD=root
+#     volumes:
+#       - hotel-mysql-data:/var/lib/mysql
 
 #################################
 # Flights [Microservice]
@@ -108,39 +105,37 @@ services:
     build: backend/flight
     ports:
       - "5005:5005"
-    depends_on:
-      - flight_db
     environment:
       - FLASK_APP=flight.py
       - FLASK_RUN_HOST=0.0.0.0
       - FLASK_RUN_PORT=5005
       - DATABASE_URI=mysql+mysqlconnector://root:root@mysql-db:3306/flightdb
 
-#################################
-# Flights_db [DB]
-#################################
-  flight_db:
-    image: mysql:latest
-    container_name: flights_db
-    restart: always
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=flightdb
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=root
-    volumes:
-      - flight-mysql-data:/var/lib/mysql
+# #################################
+# # Flights_db [DB]
+# #################################
+#   flight_db:
+#     image: mysql:latest
+#     container_name: flights_db
+#     restart: always
+#     environment:
+#       - MYSQL_ROOT_PASSWORD=root
+#       - MYSQL_DATABASE=flightdb
+#       - MYSQL_USER=root
+#       - MYSQL_PASSWORD=root
+#     volumes:
+#       - flight-mysql-data:/var/lib/mysql
 
-#################################
-# JSTemplate [Microservice]
-#################################
-  jstemplate:
-    container_name: JSTemplate
-    build:
-      context: ./backend/services/JSTemplate
-      dockerfile: Dockerfile
-    ports:
-      - 5006:5006
+# #################################
+# # JSTemplate [Microservice]
+# #################################
+#   jstemplate:
+#     container_name: JSTemplate
+#     build:
+#       context: ./backend/services/JSTemplate
+#       dockerfile: Dockerfile
+#     ports:
+#       - 5006:5006
 
 #################################
 # flight_search [Microservice]
@@ -153,64 +148,142 @@ services:
     ports:
       - 5007:5007
 
-#################################
-# booking_management [Microservice]
-#################################
-  booking_management:
-    container_name: booking_management
-    build:
-      context: ./backend/services/booking_management
-      dockerfile: Dockerfile
-    ports:
-      - 5008:5008
+# #################################
+# # booking_management [Microservice]
+# #################################
+#   booking_management:
+#     container_name: booking_management
+#     build:
+#       context: ./backend/services/booking_management
+#       dockerfile: Dockerfile
+#     ports:
+#       - 5008:5008
 
-#################################
-# Hotel Booking [Microservice]
-#################################
-  hotel_booking:
-    container_name: hotel_booking
-    build:
-      context: ./backend/services/hotel_booking
-      dockerfile: Dockerfile
-    ports:
-      - 5009:5009
+# #################################
+# # Hotel Booking [Microservice]
+# #################################
+#   hotel_booking:
+#     container_name: hotel_booking
+#     build:
+#       context: ./backend/services/hotel_booking
+#       dockerfile: Dockerfile
+#     ports:
+#       - 5009:5009
 
-#################################
-# Hotel Management [Microservice]
-#################################
-  hotel_management:
-    container_name: hotel_management
-    build:
-      context: ./backend/services/hotel_management
-      dockerfile: Dockerfile
-    ports:
-      - 5010:5010
+# #################################
+# # Hotel Management [Microservice]
+# #################################
+#   hotel_management:
+#     container_name: hotel_management
+#     build:
+#       context: ./backend/services/hotel_management
+#       dockerfile: Dockerfile
+#     ports:
+#       - 5010:5010
       
-#################################
-# RabbitMQ 
-#################################
-  rabbitmq:
-    container_name: stupid_rabbit
-    image: "rabbitmq:3-management"
-    ports:
-      - "15672:15672"  # Expose RabbitMQ management interface
-      - "5672:5672"    # Expose RabbitMQ main port
+# #################################
+# # RabbitMQ 
+# #################################
+#   rabbitmq:
+#     container_name: stupid_rabbit
+#     image: "rabbitmq:3-management"
+#     ports:
+#       - "15672:15672"  # Expose RabbitMQ management interface
+#       - "5672:5672"    # Expose RabbitMQ main port
+#     environment:
+#       - RABBITMQ_DEFAULT_USER=username
+#       - RABBITMQ_DEFAULT_PASS=password
+#     volumes:
+#       - rabbitmq_data:/var/lib/rabbitmq
+
+
+ #######################################
+  # Postgres: The database used by Kong
+  #######################################
+  kong-database:
+    image: postgres:15 # tested 20231101; Ref: https://docs.konghq.com/gateway/latest/support/third-party/
+    platform: linux/amd64  # <- required for Mac M1 chip. Otherwise, can remove
+    restart: always
+    networks:
+      - kong-net
     environment:
-      - RABBITMQ_DEFAULT_USER=username
-      - RABBITMQ_DEFAULT_PASS=password
+      POSTGRES_DB: kong
+      POSTGRES_USER: kong
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "kong"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
+      - pgdata:/var/lib/postgresql/data
 
+  #######################################
+  # Kong database migration
+  #######################################
+  kong-migration:
+    image: kong/kong-gateway:3.2.2.5 # tested 20231101
+    platform: linux/amd64  # <- required for Mac M1 chip. Otherwise, can remove
+    command: "kong migrations bootstrap"
+    restart: on-failure
+    networks:
+      - kong-net
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: kong-database
+      KONG_PG_USER: kong
+      KONG_PG_PASSWORD: password
+    depends_on:
+      - kong-database
 
+  #######################################
+  # Kong: The API Gateway
+  #######################################
+  kong:
+    image: kong/kong-gateway:3.2.2.5 # tested 20231101
+    platform: linux/amd64  # <- required for Mac M1 chip. Otherwise, can remove
+    restart: always
+    networks:
+      - kong-net
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: kong-database
+      KONG_PG_USER: kong
+      KONG_PG_PASSWORD: password
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001
+      KONG_ADMIN_GUI_URL: http://localhost:8002
+    depends_on:
+      - kong-migration
+    ports: # https://docs.konghq.com/gateway/latest/production/networking/default-ports/
+      - "8000:8000" # Takes incoming HTTP traffic from Consumers, and forwards it to upstream Services.
+      - "8443:8443" # Takes incoming HTTPS traffic from Consumers, and forwards it to upstream Services.
+      - "8001:8001" # Admin API. Listens for calls from the command line over HTTP.
+      - "8444:8444" # Admin API. Listens for calls from the command line over HTTPS.
+      - "8002:8002" # Kong Manager (GUI). Listens for HTTP traffic.
+      - "8445:8445" # Kong Manager (GUI). Listens for HTTPS traffic.
+      - "8003:8003" # Dev Portal. Listens for HTTP traffic, assuming Dev Portal is enabled.
+      - "8446:8446" # Dev Portal. Listens for HTTP traffic, assuming Dev Portal is enabled.
+      - "8004:8004" # Dev Portal /files traffic over HTTPS, assuming the Dev Portal is enabled.
+      - "8447:8447" # Dev Portal /files traffic over HTTPS, assuming the Dev Portal is enabled.
 
 volumes:
   database-data:
   hotel-mysql-data:
   flight-mysql-data:
   rabbitmq_data:
+  pgdata: 
 
 networks:
   internal_network:
     driver: bridge
+  kong-net:
+    driver: bridge
+    name: kong-net
 
 

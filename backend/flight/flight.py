@@ -1,205 +1,150 @@
 from flask import Flask, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
+from flask_pymongo import PyMongo
+from bson import ObjectId
 from datetime import datetime
-
+import json
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/flightdb'
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-db = SQLAlchemy(app)
-app.app_context().push()
+app.config['MONGO_URI'] = 'mongodb+srv://ryanlee99324:BrImAqgUaXaNuEz6@esdproj.r2bp9gh.mongodb.net/flight'
+mongo = PyMongo(app)
 
-#Flight Bookings Table
-class Flight_booking(db.Model):
-    booking_id = db.Column("id",db.Integer, primary_key=True)
-    username = db.Column("username", db.String(100))
-    flight_no = db.Column("flight_no",db.Integer)
-    airline = db.Column("airline", db.String(100))
-    departure_city = db.Column("departure_city", db.String(100))
-    arrival_city = db.Column("arrival_city", db.String(100))
-    #datetime(year,month,day,hour,minute,second,microsecond)
-    departure = db.Column("departure", db.DateTime)
-    arrival = db.Column("arrival", db.DateTime)
 
-    def __init__(self, username, flight_no, airline,departure_city, arrival_city, departure, arrival):
-        self.username = username
-        self.flight_no = flight_no
-        self.airline  = airline
-        self.departure_city = departure_city
-        self.arrival_city = arrival_city
-        self.departure = departure
-        self.arrival = arrival
-
-    def json(self):
+class Hotel:
+    @staticmethod
+    def json(booking):
         return {
-            "booking_id": self.booking_id,
-            "username": self.username,
-            "flight_no": self.flight_no,
-            "airline": self.airline,
-            "departure_city": self.departure_city,
-            "arrival_city": self.arrival_city,
-            "departure": self.departure.strftime("%Y-%m-%d %H:%M:%S"),
-            "arrival": self.arrival.strftime("%Y-%m-%d %H:%M:%S"),
+            "username": booking["username"],
+            "flight_no": booking["flight_no"],
+            "airline": booking["airline"],
+            "departure_city": booking["departure_city"],
+            "arrival_city": booking["arrivial_city"],
+            "departure": booking["departure"],
+            "arrival": booking["arrival"]
         }
-
-    def __repr__(self):
-        return f'<Username: {self.username}> - <BookingId: {self.booking_id}>'
-
-#Get all records
+    
+def customEncoder(o):
+    if isinstance(o, ObjectId):
+        return str(o)
+    if isinstance(o, datetime):
+        return o.isoformat()
+    raise TypeError(f'Object of type {o.__class__.__name__} is not JSON serializable')
 @app.route("/all_flights")
 def get_all():
-    allRecords = Flight_booking.query.all()
+    allRecords = mongo.db.flight.find()
 
-    if len(allRecords):
-        return jsonify([record.json() for record in allRecords])
+    try:
+        # Convert all records to a list of dicts with JSON serializable ObjectId
+        records = json.loads(json.dumps([record for record in allRecords], default=customEncoder))
 
-        
-    return jsonify(
-        {
-            "code": 404,
-            "message": "There are no records."
-        }
-    ), 404
+        if records:
+            return jsonify(records)
 
-#Find booking by id
-@app.route("/flight/<int:booking_id>")
-def find_booking(booking_id):
-    r = Flight_booking.query.filter_by(booking_id=booking_id).first()
-
-    if r:
         return jsonify(
             {
-                "code": 200,
-                "data": {
-                    "username": r.username,
-                    "flight_no": r.flight_no,
-                    "airline": r.airline,
-                    "departure_city": r.departure_city,
-                    "arrival_city": r.arrival_city,
-                    "departure": r.departure,
-                    "arrival": r.arrival,
-                }
+                "code": 404,
+                "message": "There are no records."
+            }
+        ), 404
+    except Exception as e:
+        return jsonify(
+            {
+                "code": 500,
+                "message": str(e)
+            }
+        ), 500
+
+#Find Booking
+@app.route("/flight/<string:_id>")
+def find_booking(_id):
+
+    try:
+        r = mongo.db.flight.find_one({"_id" : ObjectId(_id)})
+        r["_id"] = str(r["_id"])
+        return jsonify(
+            {
+                "code": 200, 
+                "data": r
             }
         )
-    return jsonify(
-        {
-            "code": 404,
-            "message": "Record not found."
-        }
-    ), 404
+    except Exception as e:
+        return jsonify(
+                {
+                    "code": 404,
+                    "error": str(e),
+                    "message": "Record not found"
+                }
+            ), 404
+    
+    
+    
+
 
 #Create Record
-@app.route("/flight/<int:booking_id>", methods=['POST'])
-def create_record(booking_id):
-    r = Flight_booking.query.filter_by(booking_id=booking_id).all()
-    if r:
-        return jsonify(
-            {
-                "code": 400,
-                "message": "Record already exists for this user. Use PUT method if you are trying to update the record."
-            }
-        ), 400
-
+@app.route("/flight", methods=['POST'])
+def create_record():
     data = request.get_json()
-    record = Flight_booking(**data)
+    r = mongo.db.flight.find_one(data)
+    if r:
+        return jsonify({"code": 400, "message": "Record already exists. Use PUT method if you are trying to update the record."}), 400
 
-    try:
-        db.session.add(record)
-        db.session.commit()
-    except:
-        return jsonify(
-            {
-                "code": 500,
-                "data": {
-                    "booking_id": booking_id
-                },
-                "message": "An error occurred creating the record."
-            }
-        ), 500
-
+    
+    mongo.db.flight.insert_one(data)
+    data["_id"] = customEncoder(data["_id"])
     return jsonify(
         {
-            "code": 201,
-            "data": record.json()
+            "code": 201, 
+            "data": data
         }
     ), 201
+
 
 #Update Record
-@app.route("/flight/<int:booking_id>", methods=['PUT'])
-def update_record(booking_id):
-    r = Flight_booking.query.filter_by(booking_id=booking_id).first()
-    if not r:
-        return jsonify(
-            {
-                "code": 400,
-                "message": "Record does not exist for this user. Use POST to create a new record."
-            }
-        ), 400
-
+@app.route("/flight/<string:_id>", methods=['PUT'])
+def update_record(_id):
     data = request.get_json()
-    r.username = data.get('username', r.username)
-    r.flight_no = data.get('flight_no', r.flight_no)
-    r.airline = data.get('airline', r.airline)
-    r.departure_city = data.get('departure_city', r.departure_city)
-    r.arrival_city = data.get('arrival_city', r.arrival_city)
-    r.departure = data.get('departure', r.departure)
-    r.arrival = data.get('arrival', r.arrival)
-
     try:
-        db.session.commit()
-    except:
+        r = mongo.db.flight.find_one({"_id" : ObjectId(_id)})
+        mongo.db.flight.update_one({"_id": ObjectId(_id)}, {"$set": data})
+        data["_id"] = str(r["_id"])
         return jsonify(
             {
-                "code": 500,
-                "data": {
-                    "booking_id": booking_id
-                },
-                "message": "An error occurred updating the record."
+                "code": 201, 
+                "data": data
             }
-        ), 500
+        ), 201
+    except Exception as e:
+        return jsonify(
+            {
+                "code": 400, 
+                "message": "Record does not exist for this user. Use POST to create a new record.",
+                "error": str(e)
+            }
+            ), 400
 
-    return jsonify(
-        {
-            "code": 201,
-            "data": r.json()
-        }
-    ), 201
+    
+
+
 
 #Delete Record
-@app.route("/flight/<int:booking_id>", methods=['DELETE'])
-def delete_record(booking_id):
-    r = Flight_booking.query.filter_by(booking_id=booking_id).first()
-    if not r:
+@app.route("/flight/<string:_id>", methods=['DELETE'])
+def delete_record(_id):
+
+    r = mongo.db.flight.delete_one({"_id": ObjectId(_id)})
+    if r.deleted_count== 1:
         return jsonify(
             {
-                "code": 400,
-                "message": "Record does not exist for this user."
+                "code": 201, 
+                "message": "Deleted successfully!"
             }
-        ), 400
-
-    try:
-        db.session.delete(r)
-        db.session.commit()
-    except:
-        return jsonify(
-            {
-                "code": 500,
-                "data": {
-                    "booking_id": booking_id
-                },
-                "message": "An error occurred deleting the record."
-            }
-        ), 500
-
+        ), 201
     return jsonify(
         {
-            "code": 201,
-            "data": r.json(),
-            "message": "Deleted successfully!"
+            "code": 400, 
+            "message": "Record does not exist for this user."
         }
-    ), 201
+    ), 400
+
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5002, debug=True)
-        
+    app.run(host='0.0.0.0', port=5005, debug=True)
