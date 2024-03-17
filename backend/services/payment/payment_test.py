@@ -5,7 +5,7 @@ import stripe
 app = Flask(__name__)
 
 # Set your Stripe API key here
-stripe.api_key = 'YOUR_STRIPE_SECRET_KEY'
+stripe.api_key = 'sk_test_51Op0OtL12QL7JE0ghziI2xjPzuEigrx7p8PJn7HhSF5dUiBf6gJGoeL4olTe5IKswoesxuuJfLMAKhzx5yNOi7AE00LMZM7S4M'
 
 @app.route('/create_payment', methods=['POST'])
 def create_payment():
