@@ -13,6 +13,7 @@ class Hotel:
     def json(booking):
         return {
             "username": booking["username"],
+            "email": booking["email"],
             "hotel": booking["hotel"],
             "city": booking["city"],
             "checkin": booking["checkin"],
@@ -41,6 +42,7 @@ def create_hotel_booking():
 
     if mongo.db.Hotel.find_one({
         "username": data["username"],
+        "email": data["email"],
         "hotel": data["hotel"],
         "city": data["city"],
         "checkin": data["checkin"],
