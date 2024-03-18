@@ -31,31 +31,16 @@ services:
 #       - 5001:5001
 #     environment:
 #       DATABASE_URI: 'postgresql://is213:8CRjw8442oS@localhost:5433/is213'
-# #################################
-# # user [Microservice]
-# #################################
-#   user_service:
-#     image: mysql
-#     restart: always 
-#     environment:
-#       - MYSQL_DATABASE=mydb
-#       - MYSQL_ROOT_PASSWORD=root
-#       - MYSQL_USER=sample 
-#       - MYSQL_PASSWORD=password
-#     volumes:
-#       - ./backend/services/user_service/db-dump:/docker-entrypoint-initdb.d
-#       - database-data:/var/lib/mysql
-# #################################
-# # user_db [DB]
-# #################################
-#   user_db:
-#     build: ./backend/services/user_service
-#     depends_on:
-#       - user_service
-#     environment:
-#       - dbURL=mysql+mysqlconnector://sample:password@mysql:3306/mydb
-#     ports:
-#       - "5002:5000"
+#################################
+# User [Microservice]
+#################################
+  user:
+      container_name: user
+      build: ./backend/services/user_service
+      ports:
+        - 5002:5002
+      environment:
+        - mongoURL=mongodb+srv://ryanlee99324:BrImAqgUaXaNuEz6@esdproj.r2bp9gh.mongodb.net/
 
 #################################
 # HotelSearch [Microservice]

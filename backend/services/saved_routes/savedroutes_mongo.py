@@ -5,7 +5,7 @@ from bson import ObjectId
 app = Flask(__name__)
 
 app.config['MONGO_URI'] = 'mongodb+srv://ryanlee99324:BrImAqgUaXaNuEz6@esdproj.r2bp9gh.mongodb.net/'
-mongo = PyMongo(app)
+mongo = PyMongo(app).db.Users
 
 
 class Hotel:
