@@ -8,20 +8,6 @@ app = Flask(__name__)
 
 app.config['MONGO_URI'] = 'mongodb+srv://ryanlee99324:BrImAqgUaXaNuEz6@esdproj.r2bp9gh.mongodb.net/flight'
 mongo = PyMongo(app)
-
-
-class Hotel:
-    @staticmethod
-    def json(booking):
-        return {
-            "username": booking["username"],
-            "flight_no": booking["flight_no"],
-            "airline": booking["airline"],
-            "departure_city": booking["departure_city"],
-            "arrival_city": booking["arrivial_city"],
-            "departure": booking["departure"],
-            "arrival": booking["arrival"]
-        }
     
 def customEncoder(o):
     if isinstance(o, ObjectId):
