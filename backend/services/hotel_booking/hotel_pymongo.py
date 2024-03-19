@@ -55,6 +55,7 @@ def create_hotel_booking():
 
     return jsonify({"code": 201, "data": Hotel.json(booking)}), 201
 
+
 @app.route("/bookings/", methods=['DELETE'])
 def delete_bookings():
     data = request.get_json()
@@ -73,6 +74,8 @@ def delete_bookings():
         return jsonify({"deleted_bookings": deleted_bookings_data}), 200
 
     return jsonify({"message": "No matching bookings found."}), 404
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5009, debug=True)
