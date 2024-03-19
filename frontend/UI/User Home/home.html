@@ -24,7 +24,7 @@
         <div class="options">
             <div id="flight-option" class="option">
                 <h3>Search for Flights</h3>
-                <form action="/flights" method="GET">
+                <form>
                     <!-- Flight search fields -->
                     <label for="from-date">From Date:</label>
                     <input type="date" id="from-date" name="from-date" required>
@@ -48,8 +48,10 @@
             
             <div id="hotel-option" class="option hidden">
                 <h3>Search for Hotels</h3>
-                <form action="/hotels" method="GET">
+                <form id="hotel-search-form">
                     <!-- Hotel search fields -->
+                    <label for="query">Query:</label>
+                    <input type="text" id="query" name="query" placeholder="Enter your search query">
                     <label for="check-in-date">Check-in Date:</label>
                     <input type="date" id="check-in-date" name="check-in-date" required>
                     <label for="check-out-date">Check-out Date:</label>
@@ -58,7 +60,11 @@
                     <input type="number" id="hotel-adults" name="hotel-adults" min="1" value="1" required>
                     <label for="hotel-children">Children:</label>
                     <input type="number" id="hotel-children" name="hotel-children" min="0" value="0" required>
-                    <button type="submit">Search</button>
+                    
+                    <label for="country-code">Country:</label>
+                    <select id="country-code" name="country-code"></select>
+                        
+                        <button type="submit">Search</button>
                 </form>
             </div>
         </div>
@@ -67,6 +73,6 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 </html>

@@ -1,23 +1,37 @@
-document.getElementById('search-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const checkinDate = document.getElementById('checkin-date').value;
-    const checkoutDate = document.getElementById('checkout-date').value;
-    const query = document.getElementById('query').value;
-    const gl = document.getElementById('gl').value;
+
+import countries from "../resources/countries.js";
+    const select = document.getElementById("country-code");
+    for (let key in countries){
+        let option = document.createElement("option");
+        option.value = countries[key];
+        option.textContent = key;
+        select.appendChild(option);
+    }
+var params = JSON.parse(sessionStorage.getItem("hParams"));
+const paramNames = ["query","check-in-date","check-out-date","hotel-adults","hotel-children","country-code"]
+async function search(){
+    for (let p of paramNames){
+        params[p] = document.getElementById(p).value
+    }
+    let b = JSON.stringify({
+                
+        q: params["query"],
+        gl: params["country-code"],
+        hl: "en",
+        currency: "SGD",
+        check_in_date: params["check-in-date"],
+        check_out_date: params["check-out-date"],
+        adults: Number(params["hotel-adults"]),
+        children: Number(params["hotel-children"]),
+    });
 
     try {
-        const response = await fetch('/hotels', {
+        const response = await fetch('http://localhost:5003/hotels', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                checkin_date: checkinDate,
-                checkout_date: checkoutDate,
-                q: query,
-                gl: gl
-            })
+            body: b
         });
 
         const data = await response.json();
@@ -59,4 +73,27 @@ document.getElementById('search-form').addEventListener('submit', async (e) => {
     } catch (error) {
         console.error('Error:', error);
     }
+    return;
+}
+
+
+
+if (params === null){
+
+    window.location.href = "../User Home/home.html";
+}else{
+    console.log(params);
+    
+    for (let p of paramNames){
+
+        document.getElementById(p).value = params[p];
+    }
+    search();
+}
+
+document.getElementById('search-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    search();
 });
+
+

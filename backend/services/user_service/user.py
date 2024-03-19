@@ -7,7 +7,7 @@ from flask_cors import CORS
 import json
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 app.config['MONGO_URI'] = 'mongodb+srv://ryanlee99324:BrImAqgUaXaNuEz6@esdproj.r2bp9gh.mongodb.net/Users'
 mongo = PyMongo(app).db.users
@@ -27,11 +27,13 @@ def register_user():
         ), 400
     encoded_password = data["password"].encode('utf-8')
     data["password"] = bcrypt.hashpw(encoded_password, bcrypt.gensalt())
+    data["usertype"] = "customer"
     mongo.insert_one(data)
     return jsonify(
         {
             "code": 201,
             "data": data_dup
+            
         }
             ), 201
 
@@ -54,6 +56,7 @@ def login():
             "code": 200,
             "data": {
                 "email": data["email"],
+                "usertype": result["usertype"]
                 }
             }), 200
     else:

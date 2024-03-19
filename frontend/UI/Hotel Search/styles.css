@@ -27,7 +27,9 @@ label {
 }
 
 input[type="date"],
-input[type="text"] {
+input[type="text"],
+input[type="number"],
+select{
     width: 100%;
     padding: 8px;
     font-size: 16px;

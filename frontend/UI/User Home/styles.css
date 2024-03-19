@@ -67,6 +67,12 @@ body {
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     transition: opacity 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+}
+
+.option form{
+    flex-grow: 1;
 }
 
 .option.hidden {
@@ -85,12 +91,13 @@ body {
     margin-bottom: 5px;
 }
 
-.option input {
-    width: calc(100% - 20px);
+.option input,
+.option select {
+    width: 100%;
     padding: 8px;
-    margin-bottom: 10px;
+    font-size: 16px;
+    border-radius: 5px;
     border: 1px solid #ccc;
-    border-radius: 3px;
 }
 
 .option button {
@@ -101,6 +108,7 @@ body {
     border-radius: 3px;
     cursor: pointer;
     transition: background-color 0.3s;
+    margin-top: 25px;
 }
 
 .option button:hover {
