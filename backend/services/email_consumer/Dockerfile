@@ -10,7 +10,6 @@ COPY . /app
 # Install any needed packages specified in requirements.txt
 # Ensure you have Flask, pika, and any other dependencies listed in your requirements.txt file
 RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install pika
 
 
 # Define environment variables for email credentials

@@ -1,58 +1,61 @@
-from flask import Flask, jsonify
-import pika, os, threading, smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import smtplib
 import amqp_connection
 import time
 import json
 
 queue_name="email_queue"
-app = Flask(__name__)
+booking_email = "annamalaisivagami93@gmail.com"
+app_password = "qlszfkphiumzkrgp"
 
 def send_email(recipient, subject, body):
-    
-    msg = MIMEMultipart()
-    msg['From'] = os.getenv('booking.t4.g6@gmail.com')
-    msg['To'] = recipient
-    msg['Subject'] = subject
-    message = body
-    msg.attach(MIMEText(message, 'plain'))
-    server = smtplib.SMTP('smtp.gmail.com', 587)  
-    server.starttls()
-    server.login(msg['From'], os.getenv('aggy eynw nrpv vcqc'))
-    server.sendmail(msg['From'], msg['To'], msg.as_string())
-    server.quit()
+    try:
+        # Create message container
+        msg = MIMEMultipart()
+        msg['From'] = booking_email
+        msg['To'] = recipient
+        msg['Subject'] = subject
+
+        # Add body to email
+        msg.attach(MIMEText(body, 'plain'))
+
+        # Establish SMTP connection
+        with smtplib.SMTP('smtp.gmail.com', 587) as server:
+            server.starttls()
+            server.login(booking_email, app_password)
+            server.sendmail(booking_email, recipient, msg.as_string())
+
+        print("Email sent successfully!")
+    except Exception as e:
+        print("An error occurred while sending the email:", e)
 
 def callback(ch, method, properties, body):
 
-        
-        email_data = json.loads(body.decode('utf-8'))  # Assuming JSON is used for message serialization
+        print(body)
+        corrected_body = body.decode('utf-8').replace("'", '"')
+        email_data = json.loads(corrected_body) # Assuming JSON is used for message serialization
         print(email_data)
+        print("Callback was triggered....")
         send_email(email_data['email'], email_data['subject'], email_data['message'])
-        print()
         
-
-
+        
 def start_consuming(channel):
     tries=0
     while tries<=12:
         try:
             channel.basic_consume(queue='email_queue', on_message_callback=callback,auto_ack=True)
             channel.start_consuming()
-        except:
-            print("Cannot connect. Trying again")
+        except Exception as e:
+            print("Cannot connect. Trying again...")
+            print(e)
             tries+=1
             time.sleep(5)
-            
-@app.route('/')
-def index():
-    return jsonify({"code": 200, "message": "HEllo."}), 200
-
+    
 if __name__ == '__main__':
-    # print("activity_log: Getting Connection")
-    # connection=amqp_connection.create_connection()
-    # print("activity_log: Connection established successfully")
-    # channel=connection.channel()
-    # start_consuming(channel)
-    app.run(host='0.0.0.0', port=5011, debug=True)
+    print("activity_log: Getting Connection")
+    connection=amqp_connection.create_connection()
+    print("activity_log: Connection established successfully")
+    channel=connection.channel()
+    start_consuming(channel)
 

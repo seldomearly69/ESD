@@ -169,6 +169,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - 5009:5009
+    environment:
+      PYTHONUNBUFFERED: 1
 
 # #################################
 # Hotel Management [Microservice]
@@ -181,7 +183,11 @@ services:
     ports:
       - 5010:5010
     depends_on:
-      - setup
+      rabbitmq:
+        restart: true
+        condition: service_started
+    environment:
+      PYTHONUNBUFFERED: 1
       
 #################################
 # RabbitMQ 
@@ -197,14 +203,8 @@ services:
       - RABBITMQ_DEFAULT_PASS=password
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
-
-#################################
-# Rabbit MQ Set up
-#################################
-  setup:
-    build: ./backend/services/setup
-    depends_on:
-      - rabbitmq
+      - ./rabbitmq_definitions.json:/etc/rabbitmq/rabbitmq_definitions.json
+      - ./rabbitmq.config:/etc/rabbitmq/rabbitmq.config
 
 #################################
 # Email Consumer service
@@ -214,7 +214,11 @@ services:
     ports:
       - "5011:5011"
     depends_on:
-      - setup
+      - rabbitmq
+    environment:
+      PYTHONUNBUFFERED: 1
+        
+
 
 
 # #######################################
