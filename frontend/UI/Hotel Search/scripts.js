@@ -46,12 +46,7 @@ async function search(){
             const cachedResult = data.cachedData;
             const hotels = cachedResult.cachedResult;
             hotels.forEach(hotel => {
-                const hotelElement = document.createElement('div');
-                hotelElement.innerHTML = `
-                    <h2>${hotel.name}</h2>
-                    <p>${hotel.description}</p>
-                    <!-- Add more hotel details here -->
-                `;
+                const hotelElement = createHotelCard(hotel);
                 resultsContainer.appendChild(hotelElement);
             });
         } else if (data && data.data) {
@@ -59,12 +54,7 @@ async function search(){
             const freshResult = data.data;
             const hotels = freshResult.cachedResult;
             hotels.forEach(hotel => {
-                const hotelElement = document.createElement('div');
-                hotelElement.innerHTML = `
-                    <h2>${hotel.name}</h2>
-                    <p>${hotel.description}</p>
-                    <!-- Add more hotel details here -->
-                `;
+                const hotelElement = createHotelCard(hotel);
                 resultsContainer.appendChild(hotelElement);
             });
         } else {
@@ -95,5 +85,58 @@ document.getElementById('search-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     search();
 });
+
+// Scroll to top button functionality
+const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+
+window.addEventListener('scroll', () => {
+    // Show button when user scrolls down 200px from the top of the page
+    if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+        scrollToTopBtn.style.display = 'block';
+    } else {
+        scrollToTopBtn.style.display = 'none';
+    }
+});
+
+scrollToTopBtn.addEventListener('click', () => {
+    // Scroll to the top of the page smoothly
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+});
+
+
+function createHotelCard(hotel) {
+    const hotelElement = document.createElement('div');
+    hotelElement.classList.add('hotel-card');
+    let desc = hotel.description;
+    if (desc === undefined){
+        desc = "A " + hotel.type;
+        if (hotel.nearby_places.length > 0){
+            desc += " near " + hotel.nearby_places[0].name;
+        }
+    }
+    hotelElement.innerHTML = `
+        <h2>${hotel.name}</h2>
+        <p>${desc}</p>
+        <!-- Add more hotel details here -->
+    `;
+    
+    // Add event listener to the "Add to Booking Basket" button
+    hotelElement.addEventListener('click', () => {
+        seeHotelDetails(hotel);
+    });
+
+    return hotelElement;
+}
+
+function seeHotelDetails(hotel) {
+    sessionStorage.setItem("hInfo",JSON.stringify(hotel));
+    console.log(hotel);
+    window.location.href = "../Hotel Info/info.html";
+
+}
+
 
 

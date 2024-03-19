@@ -18,15 +18,18 @@ body {
     padding: 10px 0;
 }
 
-.navbar .container {
+.navbar-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
     height: 8vh;
+    padding: 0 20px;
 }
 
-.navbar h1 {
-    margin: 0;
+.navbar-brand {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.5rem;
 }
 
 .nav-links {
@@ -49,6 +52,10 @@ body {
 
 .nav-links li a:hover {
     color: #ffa500;
+}
+
+a:visited {
+    color: inherit; /* Use the same color as the default text color */
 }
 
 /* Options styles */
@@ -108,7 +115,7 @@ body {
     border-radius: 3px;
     cursor: pointer;
     transition: background-color 0.3s;
-    margin-top: 25px;
+    margin-top: 10px;
 }
 
 .option button:hover {
@@ -176,29 +183,3 @@ body {
     background-color: #0056b3;
 }
 
-.start-container {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-#start-button {
-    padding: 15px 30px;
-    font-size: 20px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-#start-button:hover {
-    background-color: #0056b3;
-}
-
-a:visited {
-    color: inherit; /* Use the same color as the default text color */
-}
