@@ -133,17 +133,18 @@ services:
   #   ports:
   #     - 5007:5007
 
-# #################################
-# # booking_management [Microservice]
-# #################################
-#   booking_management:
-#     container_name: booking_management
-#     build:
-#       context: ./backend/services/booking_management
-#       dockerfile: Dockerfile
-#     ports:
-#       - 5008:5008
-
+#################################
+# booking_management [Microservice]
+#################################
+  booking_management:
+    container_name: booking_management
+    build:
+      context: ./backend/services/booking_management
+      dockerfile: Dockerfile
+    ports:
+      - 5008:5008
+    environment:
+      PYTHONUNBUFFERED: 1
 # #################################
 # # Hotel Booking [Microservice]
 # #################################

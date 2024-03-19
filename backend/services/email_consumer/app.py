@@ -6,8 +6,8 @@ import time
 import json
 
 queue_name="email_queue"
-booking_email = "annamalaisivagami93@gmail.com"
-app_password = "qlszfkphiumzkrgp"
+booking_email = "esdt04g6@gmail.com"
+app_password = "alzqxkgqkzetuhbk"
 
 def send_email(recipient, subject, body):
     try:
@@ -58,4 +58,3 @@ if __name__ == '__main__':
     print("activity_log: Connection established successfully")
     channel=connection.channel()
     start_consuming(channel)
-

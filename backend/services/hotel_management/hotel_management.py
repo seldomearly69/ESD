@@ -79,6 +79,7 @@ def delete_booking():
         deleted_bookings = result["deleted_bookings"]
         print("sending email to inform user that their booking has been deleted...")
         for booking in deleted_bookings:
+            print(booking)
             # TO-DO--> send the deleted booking as message to amqp broker, broker passes to 
             # email microservice when it comes online???
             email_to_send = {
