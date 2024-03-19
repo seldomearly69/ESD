@@ -1,29 +1,32 @@
-document.getElementById("registrationForm").addEventListener("submit", function(event) {
+document.getElementById("register-form").addEventListener("submit", function(event) {
     event.preventDefault();
     
-    var username = document.getElementById("regUsername").value;
-    var password = document.getElementById("regPassword").value;
+    var email = document.getElementById("email").value;
+    var password = document.getElementById("password").value;
     
     // Perform registration request
-    fetch("/register", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            username: username,
-            password_hash: password
+    if (document.getElementById("confirm-password").value==password){
+        fetch("http://localhost:5002/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({email,password})
         })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.code === 201) {
-            document.getElementById("message").innerText = "Registration successful!";
-        } else {
-            document.getElementById("message").innerText = data.message;
-        }
-    })
-    .catch(error => {
-        console.error("Error:", error);
-    });
+        .then(response => {
+            if (response.status == 201){
+                alert("Registration Successful!");
+                window.location.href = '../Login/login.html';
+            }
+            if (response.status == 400){
+                throw new Error('Account already exists!');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error.message);
+            document.getElementById('error-message').textContent = error.message;
+        });
+    }else{
+        document.getElementById('error-message').textContent = "Password mismatch";
+    }
 });
