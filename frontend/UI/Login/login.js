@@ -10,23 +10,26 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'Content-Type': 'application/json'
             },
+            mode: "cors",
             body: JSON.stringify({ email, password })
         })
         .then(response => {
-            if (response.ok){
-                
-                // window.location.href = '/dashboard'; // Redirect to dashboard upon successful login
-                window.location.href = '../Registration/register.html';
-            }
+            
             if (response.status == 404){
                 throw new Error('User does not exist');
             }
             if (response.status == 400){
                 throw new Error('Wrong password');
             }
+            return response.json();
+        })
+        .then(data=>{
 
-
-            
+            sessionStorage.setItem('email', email);
+            console.log(data);
+            if (data.data.usertype == "customer"){
+                window.location.href = '../User Home/home.html';
+            }
         })
         .catch(error => {
             console.error('Error:', error.message);
