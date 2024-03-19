@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Stripe Payment</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        /* Add some styling for the form */
+        #payment-form {
+            width: 300px;
+            padding: 25px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin: auto;
+            margin-top: 50px;
+        }
+        #card-element {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <form id="payment-form">
+        <div id="card-element">
+            <!-- Stripe Elements will go here -->
+        </div>
+        <button type="submit">Pay</button>
+        <div id="card-errors" role="alert"></div>
+    </form>
+
+    <script>
+        // Your Stripe public key
+        var stripe = Stripe('pk_test_51Op0OtL12QL7JE0gJTw6uqWwOwO8Ik9EDEa6S39Ef2znnSslMAz31UAbnPaqKQ0BdMLP3Oxn16QiqmDsc19JMA2A00tRo1uDkN');
+        var elements = stripe.elements();
+        var card = elements.create('card');
+        card.mount('#card-element');
+
+        card.on('change', function(event) {
+            var displayError = document.getElementById('card-errors');
+            if (event.error) {
+                displayError.textContent = event.error.message;
+            } else {
+                displayError.textContent = '';
+            }
+        });
+
+        var form = document.getElementById('payment-form');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            fetch('/create_payment_intent', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({amount: 2000}) // $20.00
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(data => {
+                console.log(data); // Log to see if clientSecret is present
+                const clientSecret = data.clientSecret;
+                
+                
+           
+                stripe.confirmCardPayment(clientSecret, {
+                    payment_method: {card: card}
+                })
+                .then(function(result) {
+                    if (result.error) {
+                        console.log(result.error.message);
+                    } else {
+                        if (result.paymentIntent.status === 'succeeded') {
+                            console.log('Payment succeeded!');
+                        }
+                    }
+                });
+            ;
+        });
+    })
+    </script>
+</body>
+</html>
