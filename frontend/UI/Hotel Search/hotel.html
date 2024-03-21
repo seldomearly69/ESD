@@ -3,58 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hotel Search</title>
+    <title>Hotel Search - Travel Management App</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <nav class="navbar">
+    <nav class="navbar" id="navbar">
         <div class="navbar-container">
-            <a href="../User Home/home.html" class="navbar-brand">Travel Management App</a>
+            <a style = "text-decoration: none;" href="../User Home/home.html">
+                <h1>Travel Management App</h1>
+            </a>
             <ul class="nav-links">
-                <li><a href="#">My Bookings</a></li>
+                <li><a href="#">MyBookings</a></li>
                 <li><a href="#">Route Planner</a></li>
             </ul>
         </div>
     </nav>
-    <div class="container">
-        <h1>Hotel Search</h1>
-        <form id="search-form">
+
+    <div class="container hotel-search-container">
+        <h2>Search for Hotels</h2>
+        <form id="hotel-search-form" class="search-form">
             <div class="form-group">
-                <label for="query">Query:</label>
-                <input type="text" id="query" name="query" placeholder="Enter your search query" required>
+                <label for="query">Hotel or Destination:</label>
+                <input type="text" id="query" name="hotel-query" placeholder="Enter hotel name or destination" required>
             </div>
             <div class="form-group">
                 <label for="check-in-date">Check-in Date:</label>
                 <input type="date" id="check-in-date" name="check-in-date" required>
             </div>
             <div class="form-group">
-                <label for="check-out-date">Checkout Date:</label>
+                <label for="check-out-date">Check-out Date:</label>
                 <input type="date" id="check-out-date" name="check-out-date" required>
             </div>
-            <div class="form-group">
-                <label for="hotel-adults">Adults:</label>
-                <input type="number" id="hotel-adults" name="hotel-adults" min="1" value="1" required>
-            </div>
-            <div class="form-group">
-                <label for="hotel-children">Children:</label>
-                <input type="number" id="hotel-children" name="hotel-children" min="0" value="0" required>
-            </div>
-            <div class="form-group">
-                <label for="country-code">Country:</label>
-                <select id="country-code" name="country-code">
-                    <!-- Options will be populated dynamically -->
-                </select>
-            </div>
-            <button type="submit">Search</button>
+            <button type="submit" class="search-button">Search Hotels</button>
         </form>
+        <div id="loading-indicator" class="loading hidden">Loading...</div>
+        <div id="hotel-results" class="results hidden"></div>
 
-        <div id="results" class="results">
-            <!-- Search results will be displayed here -->
-        </div>
-        <!-- Scroll to top button -->
-        <button id="scrollToTopBtn" class="scroll-top-btn">&#8679;</button>
     </div>
 
-    <script type="module" src="scripts.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
+

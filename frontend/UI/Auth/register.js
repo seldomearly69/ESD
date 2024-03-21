@@ -1,8 +1,9 @@
+
 document.getElementById("register-form").addEventListener("submit", function(event) {
     event.preventDefault();
-    
-    var email = document.getElementById("email").value;
-    var password = document.getElementById("password").value;
+    const errorDiv = document.getElementById('auth-error')
+    var email = document.getElementById("register-email").value;
+    var password = document.getElementById("register-password").value;
     
     // Perform registration request
     if (document.getElementById("confirm-password").value==password){
@@ -16,7 +17,7 @@ document.getElementById("register-form").addEventListener("submit", function(eve
         .then(response => {
             if (response.status == 201){
                 alert("Registration Successful!");
-                window.location.href = '../Login/login.html';
+                window.location.href = 'login.html';
             }
             if (response.status == 400){
                 throw new Error('Account already exists!');
@@ -24,9 +25,14 @@ document.getElementById("register-form").addEventListener("submit", function(eve
         })
         .catch(error => {
             console.error('Error:', error.message);
-            document.getElementById('error-message').textContent = error.message;
-        });
+            errorDiv.innerHTML = error.message;
+            errorDiv.classList.remove('hidden');
+            errorDiv.classList.add('show');
+            });
     }else{
-        document.getElementById('error-message').textContent = "Password mismatch";
+        
+        errorDiv.innerHTML = "Password mismatch";
+        errorDiv.classList.remove('hidden');
+        errorDiv.classList.add('show');
     }
 });

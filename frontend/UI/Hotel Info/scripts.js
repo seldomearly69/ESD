@@ -40,3 +40,14 @@ for (let p of hotel.nearby_places){
     
     nearbyPlacesList.appendChild(placeElement);
 }
+
+// Make booking
+
+window.addEventListener('scroll', () => {
+    // Show button when user scrolls down 200px from the top of the page
+    if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+        scrollToTopBtn.style.display = 'block';
+    } else {
+        scrollToTopBtn.style.display = 'none';
+    }
+});

@@ -2,8 +2,8 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('login-form').addEventListener('submit', function(event) {
         event.preventDefault();
 
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
 
         fetch('http://localhost:5002/login', {
             method: 'POST',
@@ -33,7 +33,11 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             console.error('Error:', error.message);
-            document.getElementById('error-message').textContent = error.message;
+            const errorDiv = document.getElementById('auth-error')
+            errorDiv.innerHTML = error.message;
+            errorDiv.classList.remove('hidden');
+            errorDiv.classList.add('show');
+
         });
     });
 });
