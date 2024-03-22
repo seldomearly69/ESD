@@ -1,5 +1,15 @@
 var airports = [];
 
+function convertTime(mins){
+  mins = parseInt(mins);
+  let hrs = Math.floor(mins/60);
+  if (hrs>0){
+    return String(hrs) + "H " + String(mins%60) + "m";
+  }
+  return String(mins%60) + "m";
+  
+}
+
 fetch("../resources/airports.txt")
   .then(response => {
     if (!response.ok) {
@@ -62,48 +72,39 @@ $(document).ready(function() {
   // Other JavaScript code
 });
 
-// function createFlightCard(flight) {
-//   const flightElement = document.createElement('div');
-//   flightElement.classList.add('flight-card');
-//   let desc = hotel.description;
-//   if (desc === undefined){
-//       desc = "A " + hotel.type;
-//       if (hotel.nearby_places.length > 0){
-//           desc += " near " + hotel.nearby_places[0].name;
-//       }else{
-//           desc += "in the middle of nowhere"
-//       }
-//   }
-//   flightElement.innerHTML = `
-//       <div class="flight-info">
-//           <div class="airports">
-//               <span class="departure-airport">JFK</span> to <span class="arrival-airport">LAX</span>
-//           </div>
-//           <div class="flight-timing">
-//               <span class="departure-time">08:00 AM</span> - <span class="arrival-time">11:00 AM</span>
-//           </div>
-//           <div class="flight-duration">Duration: 6h</div>
-//           <div class="layovers">1 layover (ORD)</div>
-//       </div>
-//       <div class="flight-cost">
-//           $349 per pax
-//       </div>
-//   `;
+function createFlightCard(flight) {
+  const flightElement = document.createElement('div');
+  flightElement.classList.add('flight-card');
+  flight.flights.forEach((f, i)=>{
+    
+    flightElement.innerHTML += `<div class="flight-segment">
+        <span class="flight-airports">${f.departure_airport.id} → ${f.arrival_airport.id}</span>
+        <span class="flight-timings">${f.departure_airport.time.slice(-4)} - ${f.arrival_airport.time.slice(-4)}</span>
+    </div>`
+    if (i<flight.layovers.length){
+      console.log(flight.layovers[i].duration);
+      let layover = convertTime(flight.layovers[i].duration);
+      flightElement.innerHTML += `<div class="layover-info">Layover: ${layover} at ${flight.layovers[i].id}</div>`;
+    }
+    
+  })
+  flightElement.innerHTML += `<span class="flight-duration">${convertTime(flight.total_duration)}</span>`;
+  flightElement.innerHTML += `<div class="total-cost">Total: $${flight.price}</div>`;
   
-//   // Add event listener to the "Add to Booking Basket" button
-//   hotelElement.addEventListener('click', () => {
-//       seeHotelDetails(hotel);
-//   });
+  // Add event listener to the "Add to Booking Basket" button
+  flightElement.addEventListener('click', () => {
+      seeHotelDetails(flight);
+  });
 
-//   return hotelElement;
-// }
+  return flightElement;
+}
 
-// function seeHotelDetails(hotel) {
-//   sessionStorage.setItem("hInfo",JSON.stringify(hotel));
-//   console.log(hotel);
-//   window.location.href = "../Hotel Info/info.html";
+function seeHotelDetails(flight) {
+  sessionStorage.setItem("hInfo",JSON.stringify(flight));
+  console.log(flight);
+  // window.location.href = "../Hotel Info/info.html";
 
-// }
+}
 
 document.addEventListener("DOMContentLoaded", function() {
   const flightSearchForm = document.getElementById("flight-search-form");
@@ -161,32 +162,29 @@ document.addEventListener("DOMContentLoaded", function() {
       const data = await response.json();
       console.log(data);
 
-  //     // Display search results
-  //     const resultsContainer = document.getElementById('hotel-results');
-  //     resultsContainer.innerHTML = ''; // Clear previous results
+      // Display search results
+      const resultsContainer = document.getElementById('flight-results');
+      resultsContainer.innerHTML = ''; // Clear previous results
 
-  //     if (data && data.cachedData) {
-  //         // Display cached results
-  //         const cachedResult = data.cachedData;
-  //         const hotels = cachedResult.cachedResult;
-  //         hotels.forEach(hotel => {
-  //             const hotelElement = createHotelCard(hotel);
-  //             resultsContainer.appendChild(hotelElement);
-  //         });
-  //     } else if (data && data.data) {
-  //         // Display fresh results
-  //         const freshResult = data.data;
-  //         const hotels = freshResult.cachedResult;
-  //         hotels.forEach(hotel => {
-  //             const hotelElement = createHotelCard(hotel);
-  //             resultsContainer.appendChild(hotelElement);
-  //         });
-  //     } else {
-  //         resultsContainer.innerHTML = 'No results found.';
-  //     }
+      if (data) {
+          let flights = [];
+          if ("best_flights" in data){
+            flights = data.best_flights;
+            console.log(flights);
+          }else{
+            flights = data.other_flights;
+            console.log(flights,1);
+          }
+          flights.forEach(flight => {
+              const flightElement = createFlightCard(flight);
+              resultsContainer.appendChild(flightElement);
+          });
+      } else {
+          resultsContainer.innerHTML = 'No results found.';
+      }
 
-  //     document.getElementById('loading-indicator').classList.add('hidden');
-  //     resultsContainer.classList.remove('hidden');
+      document.getElementById('loading-indicator').classList.add('hidden');
+      resultsContainer.classList.remove('hidden');
   });
   
 });

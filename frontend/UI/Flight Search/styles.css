@@ -148,10 +148,13 @@ input[type="text"], input[type="date"], input[type="number"], select{
 .results {
     margin-top: 30px;
     padding-top: 20px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    display: flex;
+    flex-direction: column;
     gap: 20px;
     align-items: stretch;
+    background: #f4f9f4;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
 .result-item {
@@ -195,4 +198,84 @@ input[type="text"], input[type="date"], input[type="number"], select{
     color: #ef233c; /* Accent color for price */
     font-weight: bold;
     padding: 10px 15px;
+}
+
+.flight-card {
+    /* margin-top: 20px; */
+
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    padding: 20px;
+    background: #ffffff;
+    color: #333;
+
+}
+
+.flight-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.flight-segment{
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e0e0e0;
+}
+.layover-info, .total-cost {
+
+    color: #82c596; /* Softer, more complementary blue */
+    font-style: normal;
+    margin: 10px 0;
+}
+
+.flight-segment:last-child, .total-cost {
+    border-bottom: none;
+}
+
+.flight-airports, .flight-timings, .flight-duration, .flight-cost {
+    color: #616161;
+    display: inline-block;
+    margin-right: 10px;
+    font-weight: normal;
+}
+
+.flight-airports {
+
+    font-weight: bold;
+    color: #333; /* A softer gold color for price */
+}
+
+.flight-airports{
+    font-size: 18px;
+}
+.flight-timings, .flight-duration{
+    font-size: 16px;
+}
+
+.layover-info {
+    color: #ef233c;
+    font-style: italic;
+}
+
+.total-cost {
+
+    font-size: 20px;
+    font-weight: bold;
+    text-align: right;
+    width: 100%;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .results {
+        box-shadow: none;
+        background: none;
+    }
+
+    .flight-card {
+        margin-top: 15px;
+    }
 }
