@@ -125,13 +125,13 @@ services:
 #################################
 # flight_search [Microservice]
 #################################
-  # flight_search:
-  #   container_name: flight_search
-  #   build:
-  #     context: ./backend/services/flight_search
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - 5007:5007
+  flight_search:
+    container_name: flight_search
+    build:
+      context: ./backend/services/flight_search
+      dockerfile: Dockerfile
+    ports:
+      - 5007:5007
 
 #################################
 # booking_management [Microservice]

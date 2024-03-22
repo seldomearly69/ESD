@@ -1,7 +1,7 @@
 var hotel = JSON.parse(sessionStorage.getItem("hInfo"));
 
 if (hotel === null){
-    window.location.href = "../User Home/home.html";
+    window.location.href = "../Nav/home.html";
 }
 console.log(hotel);
 document.getElementsByClassName("hotel-name")[0].innerHTML = hotel.name;
@@ -14,7 +14,7 @@ if (hotel.extracted_hotel_class !== undefined){
     document.getElementsByClassName("hotel-class")[0].innerHTML = hotel.type.charAt(0).toUpperCase() + hotel.type.slice(1);
 }
 
-document.getElementsByClassName("lowest-rate")[0].innerHTML = "From $" + hotel.rate_per_night.lowest.slice(4) + " per night";
+document.getElementsByClassName("lowest-rate")[0].innerHTML = "From " + hotel.rate_per_night.lowest + " per night";
 document.getElementsByClassName("check-in-out")[0].innerHTML = "Check-in: " + hotel.check_in_time + " | Check-out: " + hotel.check_out_time;
 const amenities = document.getElementsByClassName("amenities-list")[0];
 for (let a of hotel.amenities){
@@ -41,13 +41,17 @@ for (let p of hotel.nearby_places){
     nearbyPlacesList.appendChild(placeElement);
 }
 
-// Make booking
 
-window.addEventListener('scroll', () => {
-    // Show button when user scrolls down 200px from the top of the page
-    if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
-        scrollToTopBtn.style.display = 'block';
-    } else {
-        scrollToTopBtn.style.display = 'none';
-    }
+document.addEventListener("DOMContentLoaded", function() {
+    const bookBtn = document.getElementsByClassName("book-now")[0];
+
+    bookBtn.addEventListener("click", function(event) {
+        event.preventDefault(); // Prevent the default form submission
+        if (sessionStorage.getItem('fInfo') === null){
+            window.location.href = '../Nav/flight.html';
+        }else{
+            window.location.href = '../Booking/booking.html';
+        }
+    });
+    
 });

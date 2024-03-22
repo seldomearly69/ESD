@@ -1,3 +1,7 @@
+// if (sessionStorage.getItem("email") !== null){
+//     windows.location.href("../Nav/home.html");
+// }
+
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('login-form').addEventListener('submit', function(event) {
         event.preventDefault();
@@ -28,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
             sessionStorage.setItem('email', email);
             console.log(data);
             if (data.data.usertype == "customer"){
-                window.location.href = '../User Home/home.html';
+                window.location.href = '../Nav/home.html';
             }
         })
         .catch(error => {

@@ -18,14 +18,18 @@ body {
 }
 
 .hotel-info {
-    background-color: #fff;
-    border-radius: 15px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin-top: 20px;
 }
 
 .header {
     text-align: center;
+}
+.header, .details, .ratings, .nearby-places, .rooms-booking {
+    margin-bottom: 20px;
 }
 
 .hotel-name {
@@ -87,7 +91,7 @@ body {
 }
 
 .rooms-booking input {
-    width: 100%;
+    width: 98%;
     padding: 10px;
     font-size: 16px;
     border-radius: 5px;
@@ -153,10 +157,15 @@ body {
 }
 
 /* Navbar Styles (unchanged) */
+/* Navbar styles */
 .navbar {
-    background-color: #333;
-    color: #fff;
-    padding: 10px 0;
+    background-color: #2b2d42; /* Darker shade for contrast */
+    color: white;
+    padding: 1rem 2rem;
+}
+
+.navbar h1 {
+    margin: 0;
 }
 
 .navbar-container {
@@ -185,14 +194,14 @@ body {
 }
 
 .nav-links li a {
-    color: #fff;
     text-decoration: none;
     font-weight: bold;
     transition: color 0.3s;
+    color: #8d99ae;
 }
 
-.nav-links li a:hover {
-    color: #ffa500;
+.nav-links li a:hover, .nav-links li a:focus {
+    color: #ef233c; /* Bright accent color for interactivity */
 }
 
 a:visited {

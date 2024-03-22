@@ -28,6 +28,11 @@
     <div class="container flight-search-container">
         <h2>Search for Flights</h2>
         <form id="flight-search-form" class="search-form">
+            <div class="form-group" id="type">
+                <br><label>Flight Type:</label>
+                <label><input type="radio" name="flight-type" value="2" checked> One-Way</label>
+                <label><input type="radio" name="flight-type" value="1"> Return</label>
+            </div>
             <div class="form-group">
                 <label for="departure-airport">Departure Airport:</label>
                 <input type="text" id="departure-airport" name="departure-airport" required>
@@ -40,16 +45,16 @@
                 <label for="from-date">From Date:</label>
                 <input type="date" id="from-date" name="from-date" required>
             </div>
-            <div class="form-group">
+            <div class="form-group" id = "to-date-group">
                 <label for="to-date">To Date:</label>
                 <input type="date" id="to-date" name="to-date" required>
             </div>
             <div class="form-group">
                 <label for="travel-class">Travel Class:</label>
                 <select id="travel-class" name="travel-class" required>
-                    <option value="economy">Economy</option>
-                    <option value="business">Business</option>
-                    <option value="first">First Class</option>
+                    <option value="1">Economy</option>
+                    <option value="2">Business</option>
+                    <option value="3">First Class</option>
                 </select>
             </div>
             <div class="form-group">
