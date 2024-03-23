@@ -50,6 +50,9 @@ document.addEventListener("DOMContentLoaded", function() {
         if (sessionStorage.getItem('fInfo') === null){
             window.location.href = '../Nav/flight.html';
         }else{
+            let temp = sessionStorage.getItem("hInfo")
+            temp.num_rooms = document.getElementById("num-rooms").value;
+            sessionStorage.setItem("hInfo", temp);
             window.location.href = '../Booking/booking.html';
         }
     });

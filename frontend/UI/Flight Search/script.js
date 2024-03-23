@@ -1,5 +1,6 @@
 var airports = [];
-
+let params = {};
+let today = new Date();
 function convertTime(mins){
   mins = parseInt(mins);
   let hrs = Math.floor(mins/60);
@@ -8,6 +9,65 @@ function convertTime(mins){
   }
   return String(mins%60) + "m";
   
+}
+
+async function callFlightSearch(params){
+  const resultsContainer = document.getElementById('flight-results');
+  resultsContainer.classList.add('hidden');
+  document.getElementById('loading-indicator').classList.remove('hidden');
+  resultsContainer.innerHTML = ''; // Clear previous results
+  
+  if (new Date(params.outbound_date) < today){
+    resultsContainer.innerHTML = "<div class='error'>Dates cannot be in the past</div>";
+  }else if ("return_date" in params && new Date(params.return_date) < new Date(params.outbound_date)){
+    resultsContainer.innerHTML = "<div class='error'>To Date cannot be earlier than From Date</div>";
+  }else{
+    const response = await fetch('http://localhost:5007/flights', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      mode: "cors",
+      body: JSON.stringify(params)
+    })
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log(data);
+
+    // Display search results
+    
+    console.log(sessionStorage.getItem("fInfo"));
+    if (sessionStorage.getItem("fInfo") !== null){
+      resultsContainer.innerHTML += `<div><h2>Pick Arriving Flight</h2></div>`;
+    }else{
+      resultsContainer.innerHTML += `<div><h2>Pick Departing Flight</h2></div>`;
+    }
+    if (data && !("error" in data)) {
+        let flights = [];
+        if ("best_flights" in data){
+          flights = data.best_flights;
+        }else{
+          flights = data.other_flights;
+        }
+        flights.forEach(flight => {
+            const flightElement = createFlightCard(flight);
+            resultsContainer.appendChild(flightElement);
+        });
+    } else {
+      if (data.error.includes("Google Flights")){
+        resultsContainer.innerHTML = "<div class='error'>No results found.</div>";
+      }else{
+        resultsContainer.innerHTML = "<div class='error'>" + data.error + "</div>";
+      }
+        
+    }
+  }
+  
+
+  document.getElementById('loading-indicator').classList.add('hidden');
+  resultsContainer.classList.remove('hidden');
 }
 
 fetch("../resources/airports.txt")
@@ -81,7 +141,7 @@ function createFlightCard(flight) {
         <span class="flight-airports">${f.departure_airport.id} → ${f.arrival_airport.id}</span>
         <span class="flight-timings">${f.departure_airport.time.slice(-4)} - ${f.arrival_airport.time.slice(-4)}</span>
     </div>`
-    if (i<flight.layovers.length){
+    if ("layovers"in flight && i<flight.layovers.length){
       console.log(flight.layovers[i].duration);
       let layover = convertTime(flight.layovers[i].duration);
       flightElement.innerHTML += `<div class="layover-info">Layover: ${layover} at ${flight.layovers[i].id}</div>`;
@@ -93,16 +153,27 @@ function createFlightCard(flight) {
   
   // Add event listener to the "Add to Booking Basket" button
   flightElement.addEventListener('click', () => {
-      seeHotelDetails(flight);
+    chooseFlight(flight, flightElement.outerHTML);
   });
 
   return flightElement;
 }
 
-function seeHotelDetails(flight) {
-  sessionStorage.setItem("hInfo",JSON.stringify(flight));
-  console.log(flight);
-  // window.location.href = "../Hotel Info/info.html";
+function chooseFlight(flight, flightElement) {
+  if (sessionStorage.getItem("fInfo") == null){
+    sessionStorage.setItem("fInfo",JSON.stringify([{data: flight, html:flightElement}]));
+    params.departure_token = flight.departure_token;
+    callFlightSearch(params);
+  }else{
+    const fInfo = JSON.parse(sessionStorage.getItem("fInfo"));
+    sessionStorage.setItem("fInfo",JSON.stringify(fInfo.concat([{data: flight, html:flightElement}])));
+    if (sessionStorage.getItem("hInfo")!=null){
+      window.location.href = "../Booking/booking.html";
+    }else{
+      window.location.href = "../Nav/hotel.html";
+    }
+    
+  }
 
 }
 
@@ -111,7 +182,8 @@ document.addEventListener("DOMContentLoaded", function() {
   
   flightSearchForm.addEventListener("submit", async function(event) {
       event.preventDefault(); // Prevent the default form submission
-      const params = {
+      sessionStorage.removeItem("fInfo");
+      params = {
         engine:"google_flights",
         currency: "SGD",
         hl: "en",
@@ -144,47 +216,10 @@ document.addEventListener("DOMContentLoaded", function() {
       params.email = sessionStorage.getItem("email");
       console.log(params);
 
-      document.getElementById('loading-indicator').classList.remove('hidden');
-
       // Call backend to search
+      callFlightSearch(params);
       
-      const response = await fetch('http://localhost:5007/flights', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json'
-          },
-          mode: "cors",
-          body: JSON.stringify(params)
-      })
-      if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      console.log(data);
-
-      // Display search results
-      const resultsContainer = document.getElementById('flight-results');
-      resultsContainer.innerHTML = ''; // Clear previous results
-
-      if (data) {
-          let flights = [];
-          if ("best_flights" in data){
-            flights = data.best_flights;
-            console.log(flights);
-          }else{
-            flights = data.other_flights;
-            console.log(flights,1);
-          }
-          flights.forEach(flight => {
-              const flightElement = createFlightCard(flight);
-              resultsContainer.appendChild(flightElement);
-          });
-      } else {
-          resultsContainer.innerHTML = 'No results found.';
-      }
-
-      document.getElementById('loading-indicator').classList.add('hidden');
-      resultsContainer.classList.remove('hidden');
+      
   });
   
 });

@@ -11,8 +11,9 @@ function createHotelCard(hotel) {
         }
     }
     hotelElement.innerHTML = `
-        <img src="${hotel.images[0].thumbnail}" alt="Hotel Thumbnail" class="hotel-image">
+        
         <div class="result-item">
+            <img src="${hotel.images[0].thumbnail}" alt="Hotel Thumbnail" class="hotel-image">
             <h3 class="hotel-name">${hotel.name}</h3>
             <p class="hotel-description">${desc}</p>
             <div class="hotel-price">

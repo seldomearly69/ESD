@@ -27,28 +27,8 @@ body, html {
     max-width: 400px;
     margin: 20px;
     position: relative;
-    z-index: 500;
+    z-index: 1;
     
-}
-
-.auth-card::before {
-    content: "";
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.4), transparent);
-    transform: rotate(25deg);
-    transition: all 0.7s ease;
-    z-index: 0;
-}
-
-.auth-card:hover::before {
-    top: -20%;
-    left: -20%;
-    right: 20%;
-    bottom: 20%;
 }
 
 /* Form Group Enhancements */
@@ -77,7 +57,8 @@ body, html {
 }
 
 .auth-button {
-    
+    display:block;
+    position:relative;
     width: 100%;
     padding: 10px;
     border-radius: 4px;
