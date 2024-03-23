@@ -1,0 +1,13 @@
+{
+    "main": "error_handling.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node error_handling.js"
+    },
+    "dependencies": {
+        "express": "^4.18.3"
+    }
+}
+    
+    
+    

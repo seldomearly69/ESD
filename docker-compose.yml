@@ -22,15 +22,15 @@ services:
 # #################################
 # # Saved Routes [Microservice]
 # #################################
-#   saved_routes:
-#     container_name: saved_routes
-#     build:
-#       context: ./backend/services/saved_routes
-#       dockerfile: Dockerfile
-#     ports:
-#       - 5001:5001
-#     environment:
-#       DATABASE_URI: 'postgresql://is213:8CRjw8442oS@localhost:5433/is213'
+  saved_routes:
+    container_name: saved_routes
+    build:
+      context: ./backend/services/saved_routes
+      dockerfile: Dockerfile
+    ports:
+      - 5001:5001
+    environment:
+      DATABASE_URI: 'postgresql://is213:8CRjw8442oS@localhost:5433/is213'
 #################################
 # User [Microservice]
 #################################
@@ -123,6 +123,31 @@ services:
 #       - 5006:5006
 
 #################################
+
+#################################
+# route_service [Microservice]
+#################################
+  route_service:
+    container_name: route_service
+    build:
+      context: ./backend/services/route_service
+      dockerfile: Dockerfile
+    ports:
+      - 5005:5005
+
+#################################
+# error_handling [Microservice]
+#################################
+  error_handling:
+    container_name: error_handling
+    build:
+      context: ./backend/services/error_handling_service
+      dockerfile: Dockerfile
+    ports:
+      - 5006:5006
+
+
+#################################
 # flight_search [Microservice]
 #################################
   flight_search:
@@ -204,6 +229,7 @@ services:
     environment:
       PYTHONUNBUFFERED: 1
         
+
 
 
 
