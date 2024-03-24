@@ -36,7 +36,6 @@ def callback(ch, method, properties, body):
         corrected_body = body.decode('utf-8').replace("'", '"')
         email_data = json.loads(corrected_body) # Assuming JSON is used for message serialization
         print(email_data)
-        print("Callback was triggered....")
         send_email(email_data['email'], email_data['subject'], email_data['message'])
         
         
