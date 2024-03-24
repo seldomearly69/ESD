@@ -5,7 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Booking Confirmation - Travel Management App</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://js.stripe.com/v3/"></script> <!-- Include Stripe JS -->
+    <style>
+        /* Add some styling for the form */
+        #payment-form {
+            width: 300px;
+            padding: 25px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin: auto;
+            margin-top: 50px;
+        }
+        #card-element {
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar" id="navbar">
@@ -23,9 +38,66 @@
     <div class="container booking-container">
         <h2>Your Selection</h2>
         <div class="selection"></div>
-        <button type="button" class="confirm-button">Confirm Booking</button>
+        <!-- Stripe Payment Form -->
+        <form id="payment-form">
+            <div id="card-element">
+                <!-- Stripe Elements will go here -->
+            </div>
+            <button type="submit">Pay</button>
+            <div id="card-errors" role="alert"></div>
+        </form>
     </div>
 
-    <script src="scripts.js"></script>
+    <script>
+        // Your Stripe public key
+        var stripe = Stripe('pk_test_51Op0OtL12QL7JE0gJTw6uqWwOwO8Ik9EDEa6S39Ef2znnSslMAz31UAbnPaqKQ0BdMLP3Oxn16QiqmDsc19JMA2A00tRo1uDkN');
+        var elements = stripe.elements();
+        var card = elements.create('card');
+        card.mount('#card-element');
+
+        card.on('change', function(event) {
+            var displayError = document.getElementById('card-errors');
+            if (event.error) {
+                displayError.textContent = event.error.message;
+            } else {
+                displayError.textContent = '';
+            }
+        });
+
+        var form = document.getElementById('payment-form');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            var totalAmount=document.getElementsByClassName("total")[0]
+            var amountInCents=parseInt(totalAmount)*100
+            fetch('/payment', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({amount: amountInCents})
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(data => {
+                console.log(data); // Log to see if clientSecret is present
+                const clientSecret = data.clientSecret;
+
+                stripe.confirmCardPayment(clientSecret, {
+                    payment_method: {card: card}
+                })
+                .then(function(result) {
+                    if (result.error) {
+                        console.log(result.error.message);
+                    } else {
+                        if (result.paymentIntent.status === 'succeeded') {
+                            console.log('Payment succeeded!');
+                            fetch( '/booking'
+
+                            )
+                        }
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

@@ -19,13 +19,13 @@ def create_payment_intent():
     try:
         intent = stripe.PaymentIntent.create(
             amount=data['amount'],  # Amount in cents
-            currency=data.get('currency', 'usd'),  # Default to USD
+            currency=data.get('currency', 'sgd'),  # Default to USD
             
         )
         payments_collection.insert_one({
             'payment_intent_id': intent.id,
             'amount': data['amount'],
-            'currency': data.get('currency', 'usd'),
+            'currency': data.get('currency', 'sgd'),
             'status': 'created'
         })
         

@@ -29,25 +29,17 @@ def search():
 
     return jsonify({"flight": fresponse, "hotel": hresponse})
 
-@app.route("/book")
-def make_booking():
+@app.route("/payment")
+def make_payment():
+    
     data = request.get_json()
-    flight = data.get("flight", None)
-    hotel = data.get("hotel", None)
-    amt = 0
-    if flight:
-        amt += flight["price"]
-    if hotel:
-        amt += hotel["price"]
+    amt= data["amount"]
 
-    requests.post("", json.dumps({"amount": amt, "currency": "sgd"}))
-    # TO-DO:
-    #     Send amount for payment
-    #     Send flight booking to database
-    #     Send hotel booking to database
-
-
+    requests.post("http://payment/create_payment_intent", json.dumps({"amount": amt, "currency": "sgd"}))
+    
     return
+
+    
 
 
 #Email part
