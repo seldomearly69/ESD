@@ -37,9 +37,9 @@ if (sessionStorage.getItem("fInfo") !== null){
     });
 }
 
-<<<<<<< Updated upstream
+
 document.getElementsByClassName("selection")[0].innerHTML+="<div class='total' id='amount'> 750 </div>"
-=======
+
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementsByClassName('confirm-button')[0].addEventListener('click', function(event) {
         event.preventDefault();
@@ -69,4 +69,4 @@ document.addEventListener('DOMContentLoaded', function() {
     
     });
 });
->>>>>>> Stashed changes
+
