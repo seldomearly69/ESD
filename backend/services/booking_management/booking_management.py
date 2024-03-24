@@ -32,23 +32,13 @@ def search():
 @app.route("/payment", methods=["POST"])
 def make_payment():
     data = request.get_json()
-<<<<<<< Updated upstream
     amt = data["amount"]
-=======
-    flight = data.get("flight", None)
-    hotel = data.get("hotel", None)
-    amt = 0
-    if flight:
-        amt += flight["price"]
-    if hotel:
-        amt += hotel["price"]
 
     # requests.post("", json.dumps({"amount": amt, "currency": "sgd"}))
     # TO-DO:
     #     Send amount for payment
     #     Send flight booking to database
     #     Send hotel booking to database
->>>>>>> Stashed changes
 
 
     payment_service_url = "http://payment/create_payment_intent"  # assuming docker compose is run and payment service name is set to payment
