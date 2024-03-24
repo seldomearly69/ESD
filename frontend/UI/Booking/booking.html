@@ -64,40 +64,37 @@
             }
         });
 
-        var form = document.getElementById('payment-form');
         form.addEventListener('submit', function(event) {
-            event.preventDefault();
-            var totalAmount=document.getElementsByClassName("total")[0]
-            var amountInCents=parseInt(totalAmount)*100
-            fetch('/payment', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({amount: amountInCents})
-            })
-            .then(function(response) {
-                return response.json();
-            })
-            .then(data => {
-                console.log(data); // Log to see if clientSecret is present
-                const clientSecret = data.clientSecret;
+    event.preventDefault();
+    var totalAmount = document.getElementById('amount');
+    var amountInCents = parseInt(totalAmount) * 100;
 
-                stripe.confirmCardPayment(clientSecret, {
-                    payment_method: {card: card}
-                })
-                .then(function(result) {
-                    if (result.error) {
-                        console.log(result.error.message);
-                    } else {
-                        if (result.paymentIntent.status === 'succeeded') {
-                            console.log('Payment succeeded!');
-                            fetch( '/booking'
+    fetch('/payment', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({amount: amountInCents})
+    })
+    .then(function(response) {
+        return response.json();
+    })
+    .then(data => {
+        const clientSecret = data.clientSecret; // Use the client secret from the response
 
-                            )
-                        }
-                    }
-                });
-            });
+        stripe.confirmCardPayment(clientSecret, {
+            payment_method: {card: card}
+        })
+        .then(function(result) {
+            if (result.error) {
+                console.log(result.error.message);
+            } else {
+                if (result.paymentIntent.status === 'succeeded') {
+                    console.log('Payment succeeded!');
+                    // 2nd end point
+                }
+            }
         });
+    });
+});
     </script>
 </body>
 </html>

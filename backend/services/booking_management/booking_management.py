@@ -29,15 +29,23 @@ def search():
 
     return jsonify({"flight": fresponse, "hotel": hresponse})
 
-@app.route("/payment")
+@app.route("/payment", methods=["POST"])
 def make_payment():
-    
     data = request.get_json()
-    amt= data["amount"]
+    amt = data["amount"]
 
-    requests.post("http://payment/create_payment_intent", json.dumps({"amount": amt, "currency": "sgd"}))
-    
-    return
+
+    payment_service_url = "http://payment/create_payment_intent"  # assuming docker compose is run and payment service name is set to payment
+
+   
+    response = requests.post(payment_service_url, json={"amount": amt})
+
+    if response.status_code == 200:
+       
+        client_secret = response.json().get('clientSecret')
+        return jsonify({"clientSecret": client_secret}), 200
+    else:
+        return jsonify({"error": "Failed to create payment intent"}), response.status_code
 
     
 

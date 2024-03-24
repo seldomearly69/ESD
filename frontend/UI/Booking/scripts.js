@@ -36,4 +36,4 @@ if (sessionStorage.getItem("fInfo") !== null){
     });
 }
 
-document.getElementsByClassName("selection")[0].innerHTML+="<div class='total'> 750 </div>"
+document.getElementsByClassName("selection")[0].innerHTML+="<div class='total' id='amount'> 750 </div>"
