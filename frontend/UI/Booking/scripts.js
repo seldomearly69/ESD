@@ -72,7 +72,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }).catch(errpr=>{
             console.log(error);
         })
-    
     });
 });
 
