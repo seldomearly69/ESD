@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request, send_from_directory
 import stripe
 from pymongo import MongoClient
-app = Flask(__name__, static_url_path='', static_folder='.')
+app = Flask(__name__)
 mongo_client = MongoClient('mongodb+srv://ryanlee99324:BrImAqgUaXaNuEz6@esdproj.r2bp9gh.mongodb.net/') 
 db = mongo_client['payment_db']  
 payments_collection = db['payments']  
