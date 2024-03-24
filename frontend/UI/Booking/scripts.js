@@ -38,10 +38,10 @@ if (sessionStorage.getItem("fInfo") !== null){
 }
 
 
-document.getElementsByClassName("selection")[0].innerHTML+="<div class='total' id='amount'> 750 </div>"
+// document.getElementsByClassName("selection")[0].innerHTML+="<div class='total' id='amount'> 750 </div>"
 
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementsByClassName('confirm-button')[0].addEventListener('click', function(event) {
+    document.getElementById('payment-form').addEventListener('submit', function(event) {
         event.preventDefault();
 
         let body = {};
@@ -51,19 +51,25 @@ document.addEventListener('DOMContentLoaded', function() {
         if (hInfo != null){
             body.hotel = {"hotel": hInfo};
         }
+        body.dayTime = new Date();
+        body.email = sessionStorage.getItem("email");
+        console.log(body);
         fetch('http://127.0.0.1:5008/confirm_booking', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            mode: "no-cors",
-            body: JSON.stringify(body)
+            mode: "cors",
+            body: JSON.stringify({body})
         })
         .then(response => {
             
-            console.log(response)
-            return response.json();
-        }).catch(error=>{
+            if (response.status == 201){
+                return response.json();
+            }
+        }).then(data=>{
+            console.log(data);
+        }).catch(errpr=>{
             console.log(error);
         })
     

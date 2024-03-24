@@ -57,24 +57,29 @@ def make_payment():
 
 @app.route("/confirm_booking", methods = ["POST"])
 def confirm_booking():
+    
     data = request.get_json()
+    data = data["body"]
+    headers = {'Content-Type': 'application/json'}
     if ("flight" in data):
-        fBooking = {"departure": data["flight"][0]}
+        fBooking = data["flight"]
+        fBooking["dayTime"] = data["dayTime"]
+        fBooking["email"] = data["email"]
+        response = requests.post("http://host.docker.internal:5005/flight", json.dumps(fBooking), headers = headers)
 
-        if len(data["flight"] == 2):
-            fBooking["arrival"] = data["flight"][1]
-        
-        response = requests.post("http://flights:5000/flight",json.dumps(fBooking))
         if response.status_code != 201:
-            raise Exception("Something went wrong with flight booking")
-    
+            return jsonify({"message": "Error inserting into flight booking"}), response.status_code
+
     if ("hotel" in data):
-        hBooking = data["hotel"]
-        response = requests.post("http://hotel_booking:5009/bookings", hBooking)
+        hBooking = {}
+        hBooking["hotel"] = data["hotel"]["hotel"]
+        hBooking["dayTime"] = data["dayTime"]
+        hBooking["email"] = data["email"]
+        
+        response = requests.post("http://host.docker.internal:5009/bookings", json.dumps(hBooking), headers = headers)
         if response.status_code != 201:
-            raise Exception("Something went wrong with hotel booking")
-    
-    
+            return jsonify({"message": "Error inserting into hotel booking"}),response.status_code
+
     return jsonify(
         {
             "code": 201,
