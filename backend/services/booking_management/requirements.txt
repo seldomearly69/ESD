@@ -1,6 +1,6 @@
 Flask==3.0.1
 Flask-SQLAlchemy==3.1.1
-Flask-CORS==3.0.10
+Flask-Cors==4.0.0
 pymongo==4.6.2
 requests==2.31.0
 google-search-results==2.4.2

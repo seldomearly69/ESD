@@ -1,3 +1,6 @@
+let checkin = "";
+let checkout = "";
+
 function createHotelCard(hotel) {
     const hotelElement = document.createElement('div');
     hotelElement.classList.add('hotel-card');
@@ -14,10 +17,12 @@ function createHotelCard(hotel) {
         
         <div class="result-item">
             <img src="${hotel.images[0].thumbnail}" alt="Hotel Thumbnail" class="hotel-image">
+            <div class = "hotel-wrapper">
             <h3 class="hotel-name">${hotel.name}</h3>
             <p class="hotel-description">${desc}</p>
-            <div class="hotel-price">
-                <span>$${hotel.rate_per_night.lowest}</span> per night
+            </div>
+            <div class="sub-total">
+                <span>${hotel.rate_per_night.lowest}</span> per night
             </div>
         </div>
     `;
@@ -31,6 +36,7 @@ function createHotelCard(hotel) {
 }
 
 function seeHotelDetails(hotel) {
+    hotel.stay = [checkin,checkout];
     sessionStorage.setItem("hInfo",JSON.stringify(hotel));
     console.log(hotel);
     window.location.href = "../Hotel Info/info.html";
@@ -43,7 +49,8 @@ document.addEventListener("DOMContentLoaded", function() {
     hotelSearchForm.addEventListener("submit", async function(event) {
         event.preventDefault(); // Prevent the default form submission
         document.getElementById('loading-indicator').classList.remove('hidden');
-
+        checkin = document.getElementById("check-in-date").value;
+        checkout = document.getElementById("check-out-date").value
         // Call backend to search
         
         const response = await fetch('http://localhost:5003/hotels', {
@@ -55,8 +62,8 @@ document.addEventListener("DOMContentLoaded", function() {
                     gl: "SG",
                     hl: "en",
                     currency: "SGD",
-                    check_in_date: document.getElementById("check-in-date").value,
-                    check_out_date: document.getElementById("check-out-date").value,
+                    check_in_date: checkin,
+                    check_out_date: checkout,
                     adults : 2,
                     children: 0
                     })

@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request, send_from_directory
 import stripe
 from pymongo import MongoClient
-app = Flask(__name__, static_url_path='', static_folder='.')
+app = Flask(__name__)
 mongo_client = MongoClient('mongodb+srv://ryanlee99324:BrImAqgUaXaNuEz6@esdproj.r2bp9gh.mongodb.net/') 
 db = mongo_client['payment_db']  
 payments_collection = db['payments']  
@@ -19,13 +19,13 @@ def create_payment_intent():
     try:
         intent = stripe.PaymentIntent.create(
             amount=data['amount'],  # Amount in cents
-            currency=data.get('currency', 'usd'),  # Default to USD
+            currency=data.get('currency', 'sgd'),  # Default to USD
             
         )
         payments_collection.insert_one({
             'payment_intent_id': intent.id,
             'amount': data['amount'],
-            'currency': data.get('currency', 'usd'),
+            'currency': data.get('currency', 'sgd'),
             'status': 'created'
         })
         

@@ -12,7 +12,7 @@ body, html {
     box-sizing: border-box;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #edf2f7; /* Soft gray background */
-    color: #333;
+    color: #2b2d42;
 }
 
 /* Navbar styles */
@@ -148,83 +148,87 @@ input[type="text"], input[type="date"], input[type="number"], select{
     }
 }
 
-.flight-card {
-    /* margin-top: 20px; */
+.result-header{
+ margin-top: 20px;   
+}
 
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+.flight-card {
+    margin-top: 20px;
     cursor: pointer;
-    padding: 20px;
     background: #ffffff;
     color: #333;
-
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease-in-out;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .flight-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
-.flight-segment{
-    margin-bottom: 15px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #e0e0e0;
-}
-.layover-info, .total-cost {
-
-    color: #82c596; /* Softer, more complementary blue */
-    font-style: normal;
-    margin: 10px 0;
+.flight-wrapper{
+    padding: 15px;
 }
 
-.flight-segment:last-child, .total-cost {
+.flight-segment {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eaeaea; /* Lighter border for a softer look */
+}
+
+.flight-segment:last-child {
     border-bottom: none;
 }
 
 .flight-airports, .flight-timings, .flight-duration, .flight-cost {
+    display: block; /* Change to block for better readability */
+    margin: 5px 0;
     color: #616161;
-    display: inline-block;
-    margin-right: 10px;
-    font-weight: normal;
 }
 
 .flight-airports {
-
-    font-weight: bold;
-    color: #333; /* A softer gold color for price */
-}
-
-.flight-airports{
     font-size: 18px;
+    color: #333;
+    font-weight: bold;
 }
-.flight-timings, .flight-duration{
+
+.flight-timings, .flight-duration {
     font-size: 16px;
 }
 
 .layover-info {
-    color: #ef233c;
+    font-size: 14px;
+    color: #82c596; /* Matching the softer green for complementary details */
     font-style: italic;
+    margin: 10px 0;
 }
 
-.total-cost {
-
-    font-size: 20px;
+.sub-total {
+    font-size: 18px;
     font-weight: bold;
+    color: #4caf50; /* Change to a friendly green for the price, softer than the red */
     text-align: right;
-    width: 100%;
+    padding: 15px;
+    background-color: #f0f2f5; /* Softer grey background for the price section */
+    border-top: 1px solid #eaeaea; /* Subtle separator */
 }
 
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    .results {
-        box-shadow: none;
-        background: none;
-    }
+/* Ensuring consistency in padding and spacing */
+.flight-card > span{
+    padding: 10px 0;
+}
 
+/* Responsive Adjustments for better mobile viewing */
+@media (max-width: 768px) {
     .flight-card {
         margin-top: 15px;
+        padding: 15px;
     }
 }
+
 
