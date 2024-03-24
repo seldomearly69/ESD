@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Search - Travel Management App</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Include jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Include jQuery UI library -->
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <!-- Include jQuery UI CSS (optional for styling) -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="navbar-container">
+            <a style = "text-decoration: none;" href="../Nav/home.html">
+                <h1>Travel Management App</h1>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#">MyBookings</a></li>
+                <li><a href="#">Route Planner</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container flight-search-container">
+        <h2>Search for Flights</h2>
+        <form id="flight-search-form" class="search-form">
+            <div class="form-group" id="type">
+                <br><label>Flight Type:</label>
+                <label><input type="radio" name="flight-type" value="2" checked> One-Way</label>
+                <label><input type="radio" name="flight-type" value="1"> Return</label>
+            </div>
+            <div class="form-group">
+                <label for="departure-airport">Departure Airport:</label>
+                <input type="text" id="departure-airport" name="departure-airport" required>
+            </div>
+            <div class="form-group">
+                <label for="arrival-airport">Arrival Airport:</label>
+                <input type="text" id="arrival-airport" name="arrival-airport" required>
+            </div>
+            <div class="form-group">
+                <label for="from-date">From Date:</label>
+                <input type="date" id="from-date" name="from-date" required>
+            </div>
+            <div class="form-group" id = "to-date-group">
+                <label for="to-date">To Date:</label>
+                <input type="date" id="to-date" name="to-date" required>
+            </div>
+            <div class="form-group">
+                <label for="travel-class">Travel Class:</label>
+                <select id="travel-class" name="travel-class" required>
+                    <option value="1">Economy</option>
+                    <option value="2">Business</option>
+                    <option value="3">First Class</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="adults">Adults:</label>
+                <input type="number" id="adults" name="adults" min="1" value="1" required>
+            </div>
+            <div class="form-group">
+                <label for="children">Children:</label>
+                <input type="number" id="children" name="children" min="0" value="0" required>
+            </div>
+            <div class="form-group">
+                <label for="max-price">Max Price:</label>
+                <input type="number" id="max-price" name="max-price" min="0" required>
+            </div>
+            <button type="submit" class="search-button">Search Flights</button>
+        </form>
+        <div id="loading-indicator" class="loading hidden">Loading...</div>
+        <div id="flight-results" class="results hidden"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

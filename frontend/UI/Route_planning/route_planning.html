@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Route Optimizer</title>
+
+
+    <!-- TO DO: TRANSFER MAPBOX AND MAPBOX DIRECTIONS INTO .JS FILES-->
+
+    <!-- Mapbox -->
+    <script src='https://api.mapbox.com/mapbox-gl-js/v3.0.0-beta.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v3.0.0-beta.1/mapbox-gl.css' rel='stylesheet' />
+
+    <!-- Mapbox Directions -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.css" type="text/css">
+
+    <style>
+        /* Global styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        /* Container styles */
+        .container {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px;
+        }
+
+        /* Form styles */
+        .form {
+            flex: 1;
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form h1 {
+            margin-top: 0;
+        }
+
+        .form input[type="search"] {
+            width: calc(100% - 20px);
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .form select {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            appearance: none;
+        }
+
+        .form button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .form button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Time of Day styles */
+        .time-of-day {
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .time-of-day h3 {
+            margin-top: 0;
+        }
+
+        .time-of-day button {
+            margin-bottom: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .time-of-day button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Map styles */
+        .map {
+            flex: 2;
+            height: 600px;
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Location input styles */
+        .location-input {
+            margin-bottom: 10px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container">
+
+        <!-- Left Side: Form -->
+        <div class="form">
+            <form id="locationForm">
+                <h1>Route Optimizer</h1>
+                
+                <div id="locationInputs">
+                    <!-- The first location input field -->
+                    <div class="location-input">
+                        <label for="location1">Location 1:</label>
+                        <input type="search" name="location" onchange="checkLocationValidity(this)" required>
+                        <div id="imageGallery"></div>
+                    </div>
+                </div>
+                <select id="transportModes">
+                    <option value="driving-traffic">Car-Live</option>
+                    <option value="driving" selected>Car</option>
+                    <option value="cycling">Cycle</option>
+                    <option value="walking">Walk</option>
+                </select>
+
+                <button type="button" onclick="addLocationInput()">Add Location</button>
+                <button type="submit">Calculate Distance</button>
+                <button type="button" id="optimizeRouteButton">Optimize Route!</button>
+                <button id="tourButton">Bring me for a Tour!</button>
+            </form>
+        </div>
+
+        <!-- Middle: Time of Day -->
+        <div class="time-of-day">
+            <h3>Time of Day</h3>
+            <button id="dawn">Dawn</button>
+            <button id="day">Day</button>
+            <button id="dusk">Dusk</button>
+        </div>
+
+        <!-- Right Side: Map -->
+        <div class="map">
+            <div id='map' style='width: 100%; height: 100%;'></div>
+        </div>
+
+    </div>
+
+    <script src="../../../backend/services/route_service/route_service.js"></script>
+    <script src="../../../backend/services/error_handling_service/error_handling.js"></script>
+
+</body>
+</html>

@@ -12,12 +12,17 @@ class Hotel:
     @staticmethod
     def json(booking):
         return {
-            "username": booking["username"],
             "email": booking["email"],
             "hotel": booking["hotel"],
-            "city": booking["city"],
-            "checkin": booking["checkin"],
-            "checkout": booking["checkout"]
+            "address": booking["address"],
+            "num_rooms": booking["num_rooms"],
+            "price": booking["price"],
+            "check_in_date": booking["check_in_date"],
+            "check_in_time": booking["check_in_time"],
+            "check_out_date": booking["check_out_date"],
+            "check_out_time": booking["check_out_time"],
+            "date" : booking["date"]
+
         }
     
 @app.route("/")
@@ -25,9 +30,9 @@ def greeting():
     return jsonify({"code": 200, "message": "HEllo."}), 200
     
     
-@app.route("/bookings/<string:userName>")
-def find_bookings_by_username(userName):
-    bookings = mongo.db.Hotel.find({"username": userName})
+@app.route("/bookings/<string:email>")
+def find_bookings_by_username(email):
+    bookings = mongo.db.Hotel.find({"email": email})
     
     if bookings:
         bookings_data = [Hotel.json(booking) for booking in bookings]
@@ -36,17 +41,21 @@ def find_bookings_by_username(userName):
     return jsonify({"code": 404, "message": "Bookings not found."}), 404
 
 
-@app.route("/bookings/", methods=['POST'])
+@app.route("/bookings", methods=['POST'])
 def create_hotel_booking():
     data = request.get_json()
 
     if mongo.db.Hotel.find_one({
-        "username": data["username"],
-        "email": data["email"],
-        "hotel": data["hotel"],
-        "city": data["city"],
-        "checkin": data["checkin"],
-        "checkout": data["checkout"]
+        "email": booking["email"],
+        "hotel": booking["hotel"],
+        "address": booking["address"],
+        "num_rooms": booking["num_rooms"],
+        "price": booking["price"],
+        "check_in_date": booking["check_in_date"],
+        "check_in_time": booking["check_in_time"],
+        "check_out_date": booking["check_out_date"],
+        "check_out_time": booking["check_out_time"],
+        "date" : booking["date"]
     }):
         return jsonify({"code": 400, "data": {"booking": data}, "message": "Booking already exists."}), 400
 
@@ -55,7 +64,8 @@ def create_hotel_booking():
 
     return jsonify({"code": 201, "data": Hotel.json(booking)}), 201
 
-@app.route("/bookings/", methods=['DELETE'])
+
+@app.route("/bookings", methods=['DELETE'])
 def delete_bookings():
     data = request.get_json()
 
@@ -73,6 +83,8 @@ def delete_bookings():
         return jsonify({"deleted_bookings": deleted_bookings_data}), 200
 
     return jsonify({"message": "No matching bookings found."}), 404
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5009, debug=True)

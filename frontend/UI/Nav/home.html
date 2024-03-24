@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Management App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="navbar-container">
+            <a style="text-decoration: none;" href="home.html">
+                <h1>Travel Management App</h1>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#">My Bookings</a></li>
+                <li><a href="#">Route Planner</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="home-container">
+        <h2>Welcome to Your Travel Management App</h2>
+        <div class="options-container">
+            <div class="option-card" onclick="window.location.href='../Flight Search/flight.html';">
+                <h3>Search Flights</h3>
+                <p>Find the best flights for your next trip.</p>
+            </div>
+            <div class="option-card" onclick="window.location.href='../Hotel Search/hotel.html';">
+                <h3>Search Hotels</h3>
+                <p>Discover comfortable places to stay on your journey.</p>
+            </div>
+        </div>
+    </div>
+    <script>
+    sessionStorage.removeItem("hInfo");
+    sessionStorage.removeItem("fInfo");
+    </script>
+</body>
+</html>

@@ -39,33 +39,15 @@ client = connect_to_db()
 db = client["flightsearches"]
 
 
-@app.route("/flights")
+@app.route("/flights", methods=["POST"])
 def search():
     
     data = request.get_json()
+    print(data,flush=True)
 
-    params = {
-    "engine": "google_flights",
-    "departure_id": data["departure_id"],
-    "arrival_id": data["arrival_id"],
-    "outbound_date": data["outbound_date"],
-    "return_date": data["return_date"],
-    "currency": "SGD",
-    "hl": "en",
-    "api_key": "f3f6e4266e8a55e158eccff91716b1033839ff2368200bf47edd94ef78e8484b",
-    "type": 1,
-    "travel_class": data["travel_class"],
-    "adults": data["adults"],
-    "children": data["children"],
-    "max_price": data["max_price"],
-    }
-    if "departure_key" in data:
-        params["departure_key"] = data["departure_key"]
-    
+    coll = db[data["email"]]
 
-    coll = db[data["username"]]
-
-    temp = params
+    temp = data
     temp["output"] = "json"
     temp["source"] = "python"
     result = coll.find_one({"searchParams": temp})
@@ -74,10 +56,10 @@ def search():
         print("hi", flush=True)
         return result["cachedResult"]
 
-    search = GoogleSearch(params)
+    search = GoogleSearch(data)
     results = search.get_dict()
 
-    result = coll.insert_one({"searchParams": params, "cachedResult": results})
+    result = coll.insert_one({"searchParams": data, "cachedResult": results})
     return jsonify(results)
     
     

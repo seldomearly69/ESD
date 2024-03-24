@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose")
+const cors = require('cors');
 const Hotel = require("./models/searchResults");
 const { getJson } = require("serpapi");
 
@@ -24,12 +25,14 @@ const connectDB = async (url) => {
 const app = express();
 
 app.use(express.json())
+app.use(cors())
 
 
 //get api results from google hotel and store in DB
 const fetchHotels = async (req, res) => {
-    console.log(req.body);
+
     const cachedData = await Hotel.findOne({searchParams: {engine: "google_hotels",...req.body}});
+
     if(cachedData){
         console.log("I am a cached data...")
         return res.status(201).json({cachedData})

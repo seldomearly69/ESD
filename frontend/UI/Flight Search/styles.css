@@ -52,7 +52,6 @@ body, html {
 }
 
 .nav-links li a {
-    color: #fff;
     text-decoration: none;
     font-weight: bold;
     transition: color 0.3s;
@@ -85,7 +84,7 @@ label {
     margin-bottom: .5rem;
 }
 
-input[type="text"], input[type="date"], input[type="number"], select {
+input[type="text"], input[type="date"], input[type="number"], select{
     width: 100%;
     padding: 0.5rem;
     border: 1px solid #ccc;
@@ -122,18 +121,22 @@ input[type="text"], input[type="date"], input[type="number"], select {
 }
 
 /* Enhanced Loading Indicator Styles */
-.loading {
+.loading, .error {
     text-align: center;
     padding: 20px;
     margin-top: 20px;
     font-size: 20px;
     color: #ef233c; /* Accent color for visibility */
     font-weight: bold;
+    
+}
+
+.loading{
     animation: pulse 1.5s infinite ease-in-out;
 }
 
 .hidden {
-    display: none; /* Hide elements by default */
+    display: none !important; /* Hide elements by default */
 }
 
 @keyframes pulse {
@@ -145,56 +148,83 @@ input[type="text"], input[type="date"], input[type="number"], select {
     }
 }
 
-/* Refined Results Section Styles */
-.results {
-    margin-top: 30px;
-    padding-top: 20px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
-    align-items: stretch;
-}
+.flight-card {
+    /* margin-top: 20px; */
 
-.result-item {
-    background-color: #ffffff;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
-    margin-bottom: 20px;
-    
-}
-
-.result-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
-}
-
-.result-title {
-    font-size: 18px;
+    padding: 20px;
+    background: #ffffff;
     color: #333;
-    padding: 15px 15px 0 15px;
+
+}
+
+.flight-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.flight-segment{
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e0e0e0;
+}
+.layover-info, .total-cost {
+
+    color: #82c596; /* Softer, more complementary blue */
+    font-style: normal;
+    margin: 10px 0;
+}
+
+.flight-segment:last-child, .total-cost {
+    border-bottom: none;
+}
+
+.flight-airports, .flight-timings, .flight-duration, .flight-cost {
+    color: #616161;
+    display: inline-block;
+    margin-right: 10px;
+    font-weight: normal;
+}
+
+.flight-airports {
+
     font-weight: bold;
+    color: #333; /* A softer gold color for price */
 }
 
-.result-info {
-    font-size: 14px;
-    color: #666;
-    padding: 10px 15px 15px 15px;
+.flight-airports{
+    font-size: 18px;
 }
-
-/* Additional Styling for Visual Appeal */
-.result-item img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover; /* Ensure images cover the area without stretching */
-}
-
-.hotel-price {
+.flight-timings, .flight-duration{
     font-size: 16px;
-    color: #ef233c; /* Accent color for price */
+}
+
+.layover-info {
+    color: #ef233c;
+    font-style: italic;
+}
+
+.total-cost {
+
+    font-size: 20px;
     font-weight: bold;
-    padding: 10px 15px;
+    text-align: right;
+    width: 100%;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .results {
+        box-shadow: none;
+        background: none;
+    }
+
+    .flight-card {
+        margin-top: 15px;
+    }
 }
 
