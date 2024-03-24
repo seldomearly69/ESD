@@ -1,7 +1,8 @@
 console.log(sessionStorage);
-
+let fInfo = null;
+let hInfo = null;
 if (sessionStorage.getItem("hInfo") !== null){
-    const hInfo = JSON.parse(sessionStorage.getItem("hInfo"));
+    hInfo = JSON.parse(sessionStorage.getItem("hInfo"));
     console.log(hInfo);
     document.getElementsByClassName("selection")[0].innerHTML += `<h3>Hotel Details:</h3><br>`;
     document.getElementsByClassName("selection")[0].innerHTML += `
@@ -20,7 +21,7 @@ if (sessionStorage.getItem("hInfo") !== null){
 
 
 if (sessionStorage.getItem("fInfo") !== null){
-    const fInfo = JSON.parse(sessionStorage.getItem("fInfo"));
+    fInfo = JSON.parse(sessionStorage.getItem("fInfo"));
     console.log(fInfo);
     document.getElementsByClassName("selection")[0].innerHTML += `<h3>Flight Details:</h3>`;
     fInfo.forEach((f,index) => {
@@ -36,4 +37,36 @@ if (sessionStorage.getItem("fInfo") !== null){
     });
 }
 
+<<<<<<< Updated upstream
 document.getElementsByClassName("selection")[0].innerHTML+="<div class='total' id='amount'> 750 </div>"
+=======
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementsByClassName('confirm-button')[0].addEventListener('click', function(event) {
+        event.preventDefault();
+
+        let body = {};
+        if (fInfo != null){
+            body.flight = {"departure": fInfo[0].data, "arrival": fInfo[1].data};
+        }
+        if (hInfo != null){
+            body.hotel = {"hotel": hInfo};
+        }
+        fetch('http://127.0.0.1:5008/confirm_booking', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            mode: "no-cors",
+            body: JSON.stringify(body)
+        })
+        .then(response => {
+            
+            console.log(response)
+            return response.json();
+        }).catch(error=>{
+            console.log(error);
+        })
+    
+    });
+});
+>>>>>>> Stashed changes

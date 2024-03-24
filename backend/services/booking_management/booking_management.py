@@ -9,7 +9,7 @@ import time
 import sys
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "http://127.0.0.1:5500"}})
 
 
 @app.route("/search")
@@ -32,7 +32,23 @@ def search():
 @app.route("/payment", methods=["POST"])
 def make_payment():
     data = request.get_json()
+<<<<<<< Updated upstream
     amt = data["amount"]
+=======
+    flight = data.get("flight", None)
+    hotel = data.get("hotel", None)
+    amt = 0
+    if flight:
+        amt += flight["price"]
+    if hotel:
+        amt += hotel["price"]
+
+    # requests.post("", json.dumps({"amount": amt, "currency": "sgd"}))
+    # TO-DO:
+    #     Send amount for payment
+    #     Send flight booking to database
+    #     Send hotel booking to database
+>>>>>>> Stashed changes
 
 
     payment_service_url = "http://payment/create_payment_intent"  # assuming docker compose is run and payment service name is set to payment
@@ -48,6 +64,34 @@ def make_payment():
         return jsonify({"error": "Failed to create payment intent"}), response.status_code
 
     
+
+@app.route("/confirm_booking", methods = ["POST"])
+def confirm_booking():
+    data = request.get_json()
+    if ("flight" in data):
+        fBooking = {"departure": data["flight"][0]}
+
+        if len(data["flight"] == 2):
+            fBooking["arrival"] = data["flight"][1]
+        
+        response = requests.post("http://flights:5000/flight",json.dumps(fBooking))
+        if response.status_code != 201:
+            raise Exception("Something went wrong with flight booking")
+    
+    if ("hotel" in data):
+        hBooking = data["hotel"]
+        response = requests.post("http://hotel_booking:5009/bookings", hBooking)
+        if response.status_code != 201:
+            raise Exception("Something went wrong with hotel booking")
+    
+    
+    return jsonify(
+        {
+            "code": 201,
+            "data": data
+        }
+    ), 201
+
 
 
 #Email part

@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_pymongo import PyMongo
+from flask_cors import CORS
 from bson import ObjectId
 from datetime import datetime
 import json
@@ -8,6 +9,7 @@ app = Flask(__name__)
 
 app.config['MONGO_URI'] = 'mongodb+srv://ryanlee99324:BrImAqgUaXaNuEz6@esdproj.r2bp9gh.mongodb.net/flight'
 mongo = PyMongo(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
     
 def customEncoder(o):
     if isinstance(o, ObjectId):
@@ -79,7 +81,7 @@ def create_record():
     data["_id"] = customEncoder(data["_id"])
     return jsonify(
         {
-            "code": 201, 
+            "code": 201,
             "data": data
         }
     ), 201

@@ -90,7 +90,7 @@ services:
       context: ./backend/services/route_service
       dockerfile: Dockerfile
     ports:
-      - 5005:5005
+      - 5006:5006
 
 #################################
 # error_handling [Microservice]
@@ -101,7 +101,7 @@ services:
       context: ./backend/services/error_handling_service
       dockerfile: Dockerfile
     ports:
-      - 5006:5006
+      - 5012:5012
 
 
 #################################
