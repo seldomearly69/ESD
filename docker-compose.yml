@@ -19,9 +19,9 @@ services:
 #       retries: 5
 #     ports:
 #       - 5433:5432
-# #################################
-# # Saved Routes [Microservice]
-# #################################
+#################################
+# Saved Routes [Microservice]
+#################################
   saved_routes:
     container_name: saved_routes
     build:
@@ -54,62 +54,19 @@ services:
         - mongoURL=mongodb+srv://ryanlee99324:BrImAqgUaXaNuEz6@esdproj.r2bp9gh.mongodb.net/
         - serpapiKey=f3f6e4266e8a55e158eccff91716b1033839ff2368200bf47edd94ef78e8484b
 
-# #################################
-# # HotelDB [Microservice]
-# #################################
-#   hotel:
-#     container_name: Hotel
-#     build: backend/hotel
-#     ports:
-#       - "5004:5004"
-#     depends_on:
-#       - hotel_db
-#     environment:
-#       - FLASK_APP=flight.py
-#       - FLASK_RUN_HOST=0.0.0.0
-#       - FLASK_RUN_PORT=5004
-#       - DATABASE_URI=mysql+mysqlconnector://root:root@mysql-db:3306/hoteldb
-
-#   hotel_db:
-#     image: mysql:latest
-#     container_name: hotel_db
-#     restart: always
-#     environment:
-#       - MYSQL_ROOT_PASSWORD=root
-#       - MYSQL_DATABASE=hoteldb
-#       - MYSQL_USER=root
-#       - MYSQL_PASSWORD=root
-#     volumes:
-#       - hotel-mysql-data:/var/lib/mysql
-
 #################################
 # Flights [Microservice]
 #################################
-  # flights:
-  #   container_name: Flights
-  #   build: backend/flight
-  #   ports:
-  #     - "5005:5005"
-  #   environment:
-  #     - FLASK_APP=flight.py
-  #     - FLASK_RUN_HOST=0.0.0.0
-  #     - FLASK_RUN_PORT=5005
-  #     - DATABASE_URI=mysql+mysqlconnector://root:root@mysql-db:3306/flightdb
-
-# #################################
-# # Flights_db [DB]
-# #################################
-#   flight_db:
-#     image: mysql:latest
-#     container_name: flights_db
-#     restart: always
-#     environment:
-#       - MYSQL_ROOT_PASSWORD=root
-#       - MYSQL_DATABASE=flightdb
-#       - MYSQL_USER=root
-#       - MYSQL_PASSWORD=root
-#     volumes:
-#       - flight-mysql-data:/var/lib/mysql
+  flights:
+    container_name: Flights
+    build: backend/flight
+    ports:
+      - "5005:5005"
+    environment:
+      - FLASK_APP=flight.py
+      - FLASK_RUN_HOST=0.0.0.0
+      - FLASK_RUN_PORT=5005
+      - DATABASE_URI=mysql+mysqlconnector://root:root@mysql-db:3306/flightdb
 
 # #################################
 # # JSTemplate [Microservice]
@@ -170,9 +127,9 @@ services:
       - 5008:5008
     environment:
       PYTHONUNBUFFERED: 1
-# #################################
-# # Hotel Booking [Microservice]
-# #################################
+#################################
+# Hotel Booking [Microservice]
+#################################
   hotel_booking:
     container_name: hotel_booking
     build:
@@ -183,7 +140,7 @@ services:
     environment:
       PYTHONUNBUFFERED: 1
 
-# #################################
+###################################
 # Hotel Management [Microservice]
 #################################
   hotel_management:

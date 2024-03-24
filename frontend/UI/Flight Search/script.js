@@ -40,9 +40,9 @@ async function callFlightSearch(params){
     
     console.log(sessionStorage.getItem("fInfo"));
     if (sessionStorage.getItem("fInfo") !== null){
-      resultsContainer.innerHTML += `<div><h2>Pick Arriving Flight</h2></div>`;
+      resultsContainer.innerHTML += `<div class = "result-header"><h2>Pick Arriving Flight</h2></div>`;
     }else{
-      resultsContainer.innerHTML += `<div><h2>Pick Departing Flight</h2></div>`;
+      resultsContainer.innerHTML += `<div class = "result-header"><h2>Pick Departing Flight</h2></div>`;
     }
     if (data && !("error" in data)) {
         let flights = [];
@@ -135,22 +135,23 @@ $(document).ready(function() {
 function createFlightCard(flight) {
   const flightElement = document.createElement('div');
   flightElement.classList.add('flight-card');
+  let html = `<div class = "flight-wrapper">`;
   flight.flights.forEach((f, i)=>{
     
-    flightElement.innerHTML += `<div class="flight-segment">
+    html += `<div class="flight-segment">
         <span class="flight-airports">${f.departure_airport.id} → ${f.arrival_airport.id}</span>
         <span class="flight-timings">${f.departure_airport.time.slice(-4)} - ${f.arrival_airport.time.slice(-4)}</span>
     </div>`
     if ("layovers"in flight && i<flight.layovers.length){
       console.log(flight.layovers[i].duration);
       let layover = convertTime(flight.layovers[i].duration);
-      flightElement.innerHTML += `<div class="layover-info">Layover: ${layover} at ${flight.layovers[i].id}</div>`;
+      html += `<div class="layover-info">Layover: ${layover} at ${flight.layovers[i].id}</div>`;
     }
-    
   })
-  flightElement.innerHTML += `<span class="flight-duration">${convertTime(flight.total_duration)}</span>`;
-  flightElement.innerHTML += `<div class="total-cost">Total: $${flight.price}</div>`;
+  html += `<span class="flight-duration">${convertTime(flight.total_duration)}</span></div>`;
+  html += `<div class="sub-total">Total: $${flight.price}</div>`;
   
+  flightElement.innerHTML = html;
   // Add event listener to the "Add to Booking Basket" button
   flightElement.addEventListener('click', () => {
     chooseFlight(flight, flightElement.outerHTML);

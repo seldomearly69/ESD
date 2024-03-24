@@ -4,7 +4,7 @@ import requests
 import pika
 import time, sys
 
-
+import json
 import time
 import sys
 
@@ -34,11 +34,13 @@ def make_booking():
     data = request.get_json()
     flight = data.get("flight", None)
     hotel = data.get("hotel", None)
-    amount = 0
+    amt = 0
     if flight:
-        amount += flight["price"]
+        amt += flight["price"]
     if hotel:
-        amount += hotel["price"]
+        amt += hotel["price"]
+
+    requests.post("", json.dumps({"amount": amt, "currency": "sgd"}))
     # TO-DO:
     #     Send amount for payment
     #     Send flight booking to database

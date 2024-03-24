@@ -12,7 +12,7 @@ body, html {
     box-sizing: border-box;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #edf2f7; /* Soft gray background */
-    color: #333;
+    color: #2b2d42;
 }
 
 /* Navbar styles */
@@ -156,6 +156,7 @@ input[type="text"], input[type="date"], input[type="number"], select {
 }
 
 .result-item {
+    border: 1px solid #ccc;
     background-color: #ffffff;
     border-radius: 8px;
     overflow: hidden;
@@ -191,10 +192,24 @@ input[type="text"], input[type="date"], input[type="number"], select {
     object-fit: cover; /* Ensure images cover the area without stretching */
 }
 
-.hotel-price {
-    font-size: 16px;
-    color: #ef233c; /* Accent color for price */
+.sub-total {
+    font-size: 18px;
     font-weight: bold;
-    padding: 10px 15px;
+    color: #4caf50; /* Change to a friendly green for the price, softer than the red */
+    text-align: right;
+    padding: 15px;
+    background-color: #f0f2f5; /* Softer grey background for the price section */
+    border-top: 1px solid #eaeaea; /* Subtle separator */
 }
 
+.hotel-name{
+    padding: 5px;
+}
+
+.hotel-description{
+    padding: 5px 5px 10px 5px;
+}
+
+.hotel-wrapper{
+    height:150px;
+}
