@@ -10,8 +10,6 @@ COPY . /app
 # Install any needed packages specified in requirements.txt
 # Ensure you have Flask, pika, and any other dependencies listed in your requirements.txt file
 RUN pip install --no-cache-dir -r requirements.txt
-
-
 # Define environment variables for email credentials
 # Replace these with your actual email and password or use Docker secrets for production environments
 ENV EMAIL_USER=booking.t4.g6@gmail.com

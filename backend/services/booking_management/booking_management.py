@@ -145,7 +145,7 @@ def check_exchange(channel, exchangename, exchangetype):
         return False
     return True
 
-#Email
+
 connection = create_connection()
 channel = connection.channel()
 #if the exchange is not yet created, exit the program
@@ -153,45 +153,130 @@ if not check_exchange(channel, exchangename, exchangetype):
     print("\nCreate the 'Exchange' before running this microservice. \nExiting the program.")
     sys.exit(0)  # Exit with a success status
     
-@app.route("/create_booking", methods=["POST"])
-def email_confirmation():
+def publish_to_broker(msg):
+    
+    message = ""
+    email = ""
+    if msg["hotel"]:
+        Hbooking = msg["hotel"]
+        message +=  f"Your booking at {Hbooking['hotel']} from {Hbooking['check_in_date']} to {Hbooking['check_out_date']} has been confirmed.\n\n"
+        email += Hbooking["email"]
+    if msg["flight"]:
+        Fbooking =  msg["flight"]
+        message +=  f"Your Flight Booking has been confirmed too!"
+        
+    email_to_send = {
+            "email": email,
+            "subject": "Booking Confirmation",
+            "message": message
+    }
+    print(message)
+    if email and message:
+        channel.basic_publish(exchange=exchangename, routing_key="confirmation.email", 
+        body=str(email_to_send), properties=pika.BasicProperties(delivery_mode = 2))
+            
+    
+    
+    
+
+@app.route("/search")
+def search():
     data = request.get_json()
-    print(data)
-    booking_response = requests.post("http://hotel_booking:5009/bookings/", json = data)
-    print(booking_response)
-    if booking_response.status_code == 201:
-        print("Booking operation was done...")
-        result = booking_response.json()
-        booking = result['data'] 
-        print(booking)
-        print("sending email")
-        if booking['hotel']:
-            # TO-DO--> send the deleted booking as message to amqp broker, broker passes to 
-            # email microservice when it comes online???
-            email_to_send = {
-                "email": booking["email"],
-                "subject": "Booking Confirmation",
-                "message": f"Your booking at {booking['hotel']} in {booking['city']} from {booking['checkin']} to {booking['checkout']} has been confirmed."
-            }
-            channel.basic_publish(exchange=exchangename, routing_key="confirmation.email", 
-            body=str(email_to_send), properties=pika.BasicProperties(delivery_mode = 2))
-            return jsonify({"message": booking})
-    
-        else:
-         # TO-DO--> send the deleted booking as message to amqp broker, broker passes to 
-            # email microservice when it comes online???
-            email_to_send = {
-                "email": booking["email"],
-                "subject": "Booking Confirmation",
-                "message": f"Your flight {booking['flight_no']} from {booking['departure_city']} to {booking['arrival_city']} on {booking['departure']} has been confirmed."
-            }
-            channel.basic_publish(exchange=exchangename, routing_key="confirmation.email", 
-            body=str(email_to_send), properties=pika.BasicProperties(delivery_mode = 2))
-            return jsonify({"message": booking})
+    fresponse = None
+    hresponse = None
+    if "flight" in data:
+        fresponse = requests.get("http://flight_search:5007/flights", json = data["flight"])
+        if (fresponse.status_code == 200):
+            fresponse = fresponse.json()
+
+    if "hotel" in data:
+        hresponse = requests.get("http://hotel_search:5003/hotels", json = data["hotel"])
+        if (hresponse.status_code == 200):
+            hresponse = hresponse.json()
+
+    return jsonify({"flight": fresponse, "hotel": hresponse})
+
+@app.route("/payment", methods=["POST"])
+def make_payment():
+    data = request.get_json()
+    amt = data["amount"]
+
+    # requests.post("", json.dumps({"amount": amt, "currency": "sgd"}))
+    # TO-DO:
+    #     Send amount for payment
+    #     Send flight booking to database
+    #     Send hotel booking to database
+
+
+    payment_service_url = "http://payment/create_payment_intent"  # assuming docker compose is run and payment service name is set to payment
+
+   
+    response = requests.post(payment_service_url, json={"amount": amt})
+
+    if response.status_code == 200:
+       
+        client_secret = response.json().get('clientSecret')
+        return jsonify({"clientSecret": client_secret}), 200
     else:
-        return jsonify({"message": "Booking Failed"})
+        return jsonify({"error": "Failed to create payment intent"}), response.status_code
+
     
+
+# Once payment is made send booking details to hotel_booking / flights service
+@app.route("/confirm_booking", methods = ["POST"])
+def confirm_booking():
     
+    data = request.get_json()
+    data = data["body"]
+    print('CONFIRM BOOKING ENDPOINT WAS CALLED!!!')
+    headers = {'Content-Type': 'application/json'}
+    msg_to_broker = {}
+    if ("flight" in data):
+        fBooking = data["flight"]
+        fBooking["dayTime"] = data["dayTime"]
+        fBooking["email"] = data["email"]
+        response = requests.post("http://host.docker.internal:5005/flight", json.dumps(fBooking), headers = headers)
+        result = response.json()
+        if response.status_code == 201:
+            msg_to_broker["flight"] = result["data"]
+        # Send flight booking confirmation msg to rabbitMq
+        if response.status_code != 201:
+            return jsonify({"message": "Error inserting into flight booking"}), response.status_code
+
+    if ("hotel" in data):
+        hBooking = {}
+        hBooking["hotel"] = data["hotel"]["hotel"]["name"]
+        hBooking["address"] = data["hotel"]["hotel"]["gps_coordinates"]
+        hBooking["check_in_date"] = data["hotel"]["hotel"]["stay"][0]
+        hBooking["check_out_date"] = data["hotel"]["hotel"]["stay"][1]
+        hBooking["num_rooms"] = data["hotel"]["hotel"]['num_rooms']
+        hBooking["price"] = "temp_val"
+        hBooking["date"] = data["dayTime"]
+        hBooking["email"] = data["email"]
+        hBooking["check_in_time"] = "temp_val"
+        hBooking["check_out_time"] = "temp_val"
+        response = requests.post("http://host.docker.internal:5009/bookings", json.dumps(hBooking), headers = headers)
+        result = response.json()
+        hotel_bking= result['data'] 
+        # Send hotel booking confirmation msg to rabbitMq
+        if response.status_code == 201:
+            msg_to_broker["hotel"] = hotel_bking
+        if response.status_code != 201:
+            return jsonify({"message": "Error inserting into hotel booking"}),response.status_code
+    
+    if msg_to_broker:
+        publish_to_broker(msg_to_broker)
+
+    return jsonify(
+        {
+            "code": 201,
+            "data": data
+        }
+    ), 201
+
+
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5008, debug=True)

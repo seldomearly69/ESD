@@ -23,7 +23,6 @@ class Hotel:
             "check_out_date": booking["check_out_date"],
             "check_out_time": booking["check_out_time"],
             "date" : booking["date"]
-
         }
     
 @app.route("/")
@@ -51,9 +50,10 @@ def create_hotel_booking():
         return jsonify({"code": 400, "data": {"booking": data}, "message": "Booking already exists."}), 400
 
     booking_id = mongo.db.Hotel.insert_one(data).inserted_id
-    booking = mongo.db.Hotel.find_one({"_id": str(booking_id)})
-
-    return jsonify({"code": 201, "data": booking}), 201
+    print(booking_id, type(booking_id))
+    booking = mongo.db.Hotel.find_one({'_id':booking_id})
+    print(booking)
+    return jsonify({"code": 201, "data": Hotel.json(booking)}), 201
 
 
 @app.route("/bookings", methods=['DELETE'])
