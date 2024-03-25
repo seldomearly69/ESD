@@ -9,7 +9,7 @@ import time
 import sys
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "http://127.0.0.1:5500"}})
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 
 @app.route("/search")
@@ -30,9 +30,11 @@ def search():
     return jsonify({"flight": fresponse, "hotel": hresponse})
 
 @app.route("/payment", methods=["POST"])
+
 def make_payment():
     data = request.get_json()
-    amt = data["amount"]
+    print(data)
+    amt = int(data["amount"])
 
     # requests.post("", json.dumps({"amount": amt, "currency": "sgd"}))
     # TO-DO:
@@ -41,11 +43,11 @@ def make_payment():
     #     Send hotel booking to database
 
 
-    payment_service_url = "http://payment/create_payment_intent"  # assuming docker compose is run and payment service name is set to payment
+    payment_service_url = "http://host.docker.internal:5020/create_payment_intent"  # assuming docker compose is run and payment service name is set to payment
 
    
-    response = requests.post(payment_service_url, json={"amount": amt})
-
+    response = requests.post(payment_service_url, json.dumps({"amount": amt, "currency": "sgd"}),headers = {'Content-Type': 'application/json'})
+    print(response)
     if response.status_code == 200:
        
         client_secret = response.json().get('clientSecret')

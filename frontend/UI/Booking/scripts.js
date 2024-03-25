@@ -38,40 +38,89 @@ if (sessionStorage.getItem("fInfo") !== null){
 }
 
 
-// document.getElementsByClassName("selection")[0].innerHTML+="<div class='total' id='amount'> 750 </div>"
+document.getElementsByClassName("selection")[0].innerHTML+="<div class='total' id='amount'> 750 </div>"
 
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('payment-form').addEventListener('submit', function(event) {
-        event.preventDefault();
+    var stripe = Stripe('pk_test_51Op0OtL12QL7JE0gJTw6uqWwOwO8Ik9EDEa6S39Ef2znnSslMAz31UAbnPaqKQ0BdMLP3Oxn16QiqmDsc19JMA2A00tRo1uDkN');
+    var elements = stripe.elements();
+    var card = elements.create('card');
+    card.mount('#card-element');
+    
+    var form = document.getElementById('payment-form');
+    var displayError = document.getElementById('card-errors');
 
-        let body = {};
-        if (fInfo != null){
-            body.flight = {"departure": fInfo[0].data, "arrival": fInfo[1].data};
+    card.on('change', function(event) {
+        if (event.error) {
+            displayError.textContent = event.error.message;
+        } else {
+            displayError.textContent = '';
         }
-        if (hInfo != null){
-            body.hotel = {"hotel": hInfo};
-        }
-        body.dayTime = new Date();
-        body.email = sessionStorage.getItem("email");
-        console.log(body);
-        fetch('http://127.0.0.1:5008/confirm_booking', {
+    });
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        // Assuming there's an input with an id of 'amount' to specify the payment amount
+        var totalAmount = document.getElementById('amount').innerText;
+        console.log(totalAmount)
+        var amountInCents = parseInt(totalAmount) * 100;
+        console.log(amountInCents)
+
+        fetch('http://127.0.0.1:5008/payment', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: {'Content-Type': 'application/json'},
             mode: "cors",
-            body: JSON.stringify({body})
+            body: JSON.stringify({amount: amountInCents})
         })
-        .then(response => {
-            
-            if (response.status == 201){
-                return response.json();
-            }
-        }).then(data=>{
-            console.log(data);
-        }).catch(errpr=>{
-            console.log(error);
+        .then(response => response.json())
+        .then(data => {
+            console.log(data)
+            const clientSecret = data.clientSecret;
+
+            stripe.confirmCardPayment(clientSecret, {
+                payment_method: {card: card}
+            })
+            .then(result => {
+                if (result.error) {
+                    console.log(result.error.message);
+                } else {
+                    if (result.paymentIntent.status === 'succeeded') {
+                        console.log('Payment succeeded!');
+
+                        // Prepare booking info
+                        let body = {};
+                        if (fInfo != null) {
+                            body.flight = {"departure": fInfo[0].data, "arrival": fInfo[1].data};
+                        }
+                        if (hInfo != null) {
+                            body.hotel = {"hotel": hInfo};
+                        }
+                        body.dayTime = new Date();
+                        body.email = sessionStorage.getItem("email");
+                        console.log(body)
+                        // Confirm booking
+                        fetch('http://127.0.0.1:5008/confirm_booking', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            mode: "cors",
+                            body: JSON.stringify(body)
+                        })
+                        .then(response => {
+                            if (response.status == 201){
+                                return response.json();
+                            }
+                        })
+                        .then(data => {
+                            console.log(data);
+                            // Handle successful booking here
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        });
+                    }
+                }
+            });
         })
+        .catch(error => console.error(error));
     });
 });
-

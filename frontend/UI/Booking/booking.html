@@ -49,53 +49,6 @@
     </div>
 
     <script src="scripts.js"></script>
-    <!-- <script>
-        // Your Stripe public key
-        var stripe = Stripe('pk_test_51Op0OtL12QL7JE0gJTw6uqWwOwO8Ik9EDEa6S39Ef2znnSslMAz31UAbnPaqKQ0BdMLP3Oxn16QiqmDsc19JMA2A00tRo1uDkN');
-        var elements = stripe.elements();
-        var card = elements.create('card');
-        card.mount('#card-element');
-
-        card.on('change', function(event) {
-            var displayError = document.getElementById('card-errors');
-            if (event.error) {
-                displayError.textContent = event.error.message;
-            } else {
-                displayError.textContent = '';
-            }
-        });
-
-        form.addEventListener('submit', function(event) {
-    event.preventDefault();
-    var totalAmount = document.getElementById('amount');
-    var amountInCents = parseInt(totalAmount) * 100;
-
-    fetch('/payment', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({amount: amountInCents})
-    })
-    .then(function(response) {
-        return response.json();
-    })
-    .then(data => {
-        const clientSecret = data.clientSecret; // Use the client secret from the response
-
-        stripe.confirmCardPayment(clientSecret, {
-            payment_method: {card: card}
-        })
-        .then(function(result) {
-            if (result.error) {
-                console.log(result.error.message);
-            } else {
-                if (result.paymentIntent.status === 'succeeded') {
-                    console.log('Payment succeeded!');
-                    
-                }
-            }
-        });
-    });
-});
-    </script> -->
+ 
 </body>
 </html>
