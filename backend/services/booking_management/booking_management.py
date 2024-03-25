@@ -12,82 +12,76 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 
-@app.route("/search")
-def search():
-    data = request.get_json()
-    fresponse = None
-    hresponse = None
-    if "flight" in data:
-        fresponse = requests.get("http://flight_search:5007/flights", json = data["flight"])
-        if (fresponse.status_code == 200):
-            fresponse = fresponse.json()
+# @app.route("/search")
+# def search():
+#     data = request.get_json()
+#     fresponse = None
+#     hresponse = None
+#     if "flight" in data:
+#         fresponse = requests.get("http://flight_search:5007/flights", json = data["flight"])
+#         if (fresponse.status_code == 200):
+#             fresponse = fresponse.json()
 
-    if "hotel" in data:
-        hresponse = requests.get("http://hotel_search:5003/hotels", json = data["hotel"])
-        if (hresponse.status_code == 200):
-            hresponse = hresponse.json()
+#     if "hotel" in data:
+#         hresponse = requests.get("http://hotel_search:5003/hotels", json = data["hotel"])
+#         if (hresponse.status_code == 200):
+#             hresponse = hresponse.json()
 
-    return jsonify({"flight": fresponse, "hotel": hresponse})
+#     return jsonify({"flight": fresponse, "hotel": hresponse})
 
-@app.route("/payment", methods=["POST"])
+# @app.route("/payment", methods=["POST"])
 
-def make_payment():
-    data = request.get_json()
-    print(data)
-    amt = int(data["amount"])
-
-    # requests.post("", json.dumps({"amount": amt, "currency": "sgd"}))
-    # TO-DO:
-    #     Send amount for payment
-    #     Send flight booking to database
-    #     Send hotel booking to database
+# def make_payment():
+#     data = request.get_json()
+#     print(data)
+#     amt = int(data["amount"])
 
 
-    payment_service_url = "http://host.docker.internal:5020/create_payment_intent"  # assuming docker compose is run and payment service name is set to payment
+#     payment_service_url = "http://host.docker.internal:5020/create_payment_intent"  # assuming docker compose is run and payment service name is set to payment
 
    
-    response = requests.post(payment_service_url, json.dumps({"amount": amt, "currency": "sgd"}),headers = {'Content-Type': 'application/json'})
-    print(response)
-    if response.status_code == 200:
+#     response = requests.post(payment_service_url, json.dumps({"amount": amt, "currency": "sgd"}),headers = {'Content-Type': 'application/json'})
+#     print(response)
+#     if response.status_code == 200:
        
-        client_secret = response.json().get('clientSecret')
-        return jsonify({"clientSecret": client_secret}), 200
-    else:
-        return jsonify({"error": "Failed to create payment intent"}), response.status_code
+#         client_secret = response.json().get('clientSecret')
+#         return jsonify({"clientSecret": client_secret}), 200
+#     else:
+#         return jsonify({"error": "Failed to create payment intent"}), response.status_code
 
     
 
-@app.route("/confirm_booking", methods = ["POST"])
-def confirm_booking():
+# @app.route("/confirm_booking", methods = ["POST"])
+# def confirm_booking():
     
-    data = request.get_json()
-    data = data["body"]
-    headers = {'Content-Type': 'application/json'}
-    if ("flight" in data):
-        fBooking = data["flight"]
-        fBooking["dayTime"] = data["dayTime"]
-        fBooking["email"] = data["email"]
-        response = requests.post("http://host.docker.internal:5005/flight", json.dumps(fBooking), headers = headers)
+#     data = request.get_json()
+#     data = data["body"]
+#     headers = {'Content-Type': 'application/json'}
+#     if ("flight" in data):
+#         fBooking = data["flight"]
+#         fBooking["dayTime"] = data["dayTime"]
+#         fBooking["email"] = data["email"]
+#         response = requests.post("http://host.docker.internal:5005/flight", json.dumps(fBooking), headers = headers)
 
-        if response.status_code != 201:
-            return jsonify({"message": "Error inserting into flight booking"}), response.status_code
+#         if response.status_code != 201:
+#             return jsonify({"message": "Error inserting into flight booking"}), response.status_code
 
-    if ("hotel" in data):
-        hBooking = {}
-        hBooking["hotel"] = data["hotel"]["hotel"]
-        hBooking["dayTime"] = data["dayTime"]
-        hBooking["email"] = data["email"]
+#     if ("hotel" in data):
+#         hBooking = {}
+#         hBooking["hotel"] = data["hotel"]["hotel"]
+#         hBooking["dayTime"] = data["dayTime"]
+#         hBooking["email"] = data["email"]
         
-        response = requests.post("http://host.docker.internal:5009/bookings", json.dumps(hBooking), headers = headers)
-        if response.status_code != 201:
-            return jsonify({"message": "Error inserting into hotel booking"}),response.status_code
+#         response = requests.post("http://host.docker.internal:5009/bookings", json.dumps(hBooking), headers = headers)
+#         if response.status_code != 201:
+#             return jsonify({"message": "Error inserting into hotel booking"}),response.status_code
 
-    return jsonify(
-        {
-            "code": 201,
-            "data": data
-        }
-    ), 201
+#     return jsonify(
+#         {
+#             "code": 201,
+#             "data": data
+#         }
+#     ), 201
 
 
 
@@ -98,6 +92,8 @@ user="username"
 password="password"
 exchangename = "email_exchange" 
 exchangetype = "topic"
+
+headers = {'Content-Type': 'application/json'}
 
 def create_connection(max_retries=12, retry_interval=5):
     print('amqp_connection: Create_connection')
@@ -198,23 +194,15 @@ def search():
 
 @app.route("/payment", methods=["POST"])
 def make_payment():
+
     data = request.get_json()
     amt = data["amount"]
-
-    # requests.post("", json.dumps({"amount": amt, "currency": "sgd"}))
-    # TO-DO:
-    #     Send amount for payment
-    #     Send flight booking to database
-    #     Send hotel booking to database
-
-
-    payment_service_url = "http://payment/create_payment_intent"  # assuming docker compose is run and payment service name is set to payment
-
+    
+    payment_service_url = "http://host.docker.internal:5020/create_payment_intent"  # assuming docker compose is run and payment service name is set to payment
    
-    response = requests.post(payment_service_url, json={"amount": amt})
+    response = requests.post(payment_service_url, json.dumps({"amount": amt}), headers=headers)
 
     if response.status_code == 200:
-       
         client_secret = response.json().get('clientSecret')
         return jsonify({"clientSecret": client_secret}), 200
     else:
@@ -225,13 +213,14 @@ def make_payment():
 # Once payment is made send booking details to hotel_booking / flights service
 @app.route("/confirm_booking", methods = ["POST"])
 def confirm_booking():
-    
+    print(1,flush=True)
     data = request.get_json()
-    data = data["body"]
-    print('CONFIRM BOOKING ENDPOINT WAS CALLED!!!')
-    headers = {'Content-Type': 'application/json'}
+    print(2,flush=True)
+    
     msg_to_broker = {}
+    print(3,flush=True)
     if ("flight" in data):
+        print(1,flush=True)
         fBooking = data["flight"]
         fBooking["dayTime"] = data["dayTime"]
         fBooking["email"] = data["email"]
@@ -244,6 +233,7 @@ def confirm_booking():
             return jsonify({"message": "Error inserting into flight booking"}), response.status_code
 
     if ("hotel" in data):
+        print(4,flush=True)
         hBooking = {}
         hBooking["hotel"] = data["hotel"]["hotel"]["name"]
         hBooking["address"] = data["hotel"]["hotel"]["gps_coordinates"]

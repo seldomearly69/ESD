@@ -1,16 +1,16 @@
-const express = require('express')
+// const express = require('express')
 
-const api = express()
+// const api = express()
 
-const HOST = 'localhost'
-const PORT = 5006
+// const HOST = 'localhost'
+// const PORT = 5006
 
-api.get('/test', (req,res) => {
-    res.send('Success')
-})
+// api.get('/test', (req,res) => {
+//     res.send('Success')
+// })
 
 
-api.listen(PORT, () => console.log(`API running at ${HOST}:${PORT}!`))
+// api.listen(PORT, () => console.log(`API running at ${HOST}:${PORT}!`))
 
 
 

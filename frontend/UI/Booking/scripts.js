@@ -1,9 +1,11 @@
 console.log(sessionStorage);
 let fInfo = null;
 let hInfo = null;
+let total = 0;
 if (sessionStorage.getItem("hInfo") !== null){
     hInfo = JSON.parse(sessionStorage.getItem("hInfo"));
     console.log(hInfo);
+    total += hInfo.rate_per_night.lowest.slice(1) * hInfo.num_rooms;
     document.getElementsByClassName("selection")[0].innerHTML += `<h3>Hotel Details:</h3><br>`;
     document.getElementsByClassName("selection")[0].innerHTML += `
         <div class="hotel-card">
@@ -25,6 +27,7 @@ if (sessionStorage.getItem("fInfo") !== null){
     console.log(fInfo);
     document.getElementsByClassName("selection")[0].innerHTML += `<h3>Flight Details:</h3>`;
     fInfo.forEach((f,index) => {
+        total += f.data.price;
         f.html = f.html.replace("Total:", "");
         let icon = "";
         if (index == 0){
@@ -37,8 +40,11 @@ if (sessionStorage.getItem("fInfo") !== null){
     });
 }
 
-
-document.getElementsByClassName("selection")[0].innerHTML+="<div class='total' id='amount'> 750 </div>"
+document.getElementById("total-price").innerHTML = "$"+total;
+function acknowledgeBooking(){
+    document.getElementById('booking-success').classList.add('hidden');
+    window.location.href ="../Nav/home.html";
+}
 
 document.addEventListener('DOMContentLoaded', function() {
     var stripe = Stripe('pk_test_51Op0OtL12QL7JE0gJTw6uqWwOwO8Ik9EDEa6S39Ef2znnSslMAz31UAbnPaqKQ0BdMLP3Oxn16QiqmDsc19JMA2A00tRo1uDkN');
@@ -47,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
     card.mount('#card-element');
     
     var form = document.getElementById('payment-form');
-    var displayError = document.getElementById('card-errors');
+    var displayError = document.getElementById('payment-errors');
 
     card.on('change', function(event) {
         if (event.error) {
@@ -61,9 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
         event.preventDefault();
         
         // Assuming there's an input with an id of 'amount' to specify the payment amount
-        var totalAmount = document.getElementById('amount').innerText;
-        console.log(totalAmount)
-        var amountInCents = parseInt(totalAmount) * 100;
+        var amountInCents = parseInt(total) * 100;
         console.log(amountInCents)
 
         fetch('http://127.0.0.1:5008/payment', {
@@ -112,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         })
                         .then(data => {
                             console.log(data);
-                            // Handle successful booking here
+                            document.getElementById('booking-success').classList.remove('hidden');
                         })
                         .catch(error => {
                             console.log(error);
