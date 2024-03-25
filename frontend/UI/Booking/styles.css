@@ -186,7 +186,6 @@ a:visited {
 @media (max-width: 768px) {
     .flight-card {
         margin-top: 15px;
-        padding: 15px;
     }
 }
 
