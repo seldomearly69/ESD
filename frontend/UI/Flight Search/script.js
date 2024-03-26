@@ -22,7 +22,7 @@ async function callFlightSearch(params){
   }else if ("return_date" in params && new Date(params.return_date) < new Date(params.outbound_date)){
     resultsContainer.innerHTML = "<div class='error'>To Date cannot be earlier than From Date</div>";
   }else{
-    const response = await fetch('http://localhost:5007/flights', {
+    const response = await fetch('http://localhost:5008/search', {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json'
@@ -47,13 +47,16 @@ async function callFlightSearch(params){
     if (data && !("error" in data)) {
         let flights = [];
         if ("best_flights" in data){
-          flights = data.best_flights;
+          flights = data.best_flights.concat(data.other_flights);
         }else{
           flights = data.other_flights;
         }
         flights.forEach(flight => {
-            const flightElement = createFlightCard(flight);
-            resultsContainer.appendChild(flightElement);
+            if ("price" in flight){
+              const flightElement = createFlightCard(flight);
+              resultsContainer.appendChild(flightElement);
+            }
+            
         });
     } else {
       if (data.error.includes("Google Flights")){
@@ -141,6 +144,7 @@ function createFlightCard(flight) {
     html += `<div class="flight-segment">
         <span class="flight-airports">${f.departure_airport.id} → ${f.arrival_airport.id}</span>
         <span class="flight-timings">${f.departure_airport.time.slice(-4)} - ${f.arrival_airport.time.slice(-4)}</span>
+        <span class="flight-number">Flight No: ${f.flight_number}</span>
     </div>`
     if ("layovers"in flight && i<flight.layovers.length){
       console.log(flight.layovers[i].duration);
@@ -149,7 +153,7 @@ function createFlightCard(flight) {
     }
   })
   html += `<span class="flight-duration">${convertTime(flight.total_duration)}</span></div>`;
-  html += `<div class="sub-total">Total: $${flight.price}</div>`;
+  html += `<div class="sub-total">$${flight.price}</div>`;
   
   flightElement.innerHTML = html;
   // Add event listener to the "Add to Booking Basket" button

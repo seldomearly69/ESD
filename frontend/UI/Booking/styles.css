@@ -338,7 +338,7 @@ button[type="submit"]:hover {
     z-index: 1000; /* Ensure it's above other content */
 }
 
-.success-message {
+#success-message {
     background-color: #ffffff;
     padding: 30px;
     border-radius: 8px;
@@ -348,23 +348,23 @@ button[type="submit"]:hover {
     max-width: 400px;
 }
 
-.success-message i {
+#success-message i {
     color: #4caf50; /* Success green */
     font-size: 48px;
     margin-bottom: 20px;
 }
 
-.success-message h3 {
+#success-message h3 {
     margin-bottom: 15px;
     color: #2b2d42;
 }
 
-.success-message p {
+#success-message p {
     margin-bottom: 20px;
     color: #555;
 }
 
-.success-message button {
+#success-message button {
     background-color: #4caf50;
     color: white;
     border: none;
@@ -373,10 +373,33 @@ button[type="submit"]:hover {
     cursor: pointer;
 }
 
-.success-message button:hover {
+#success-message button:hover {
     background-color: #43a047;
 }
 
 .hidden {
     display: none !important;
 }
+
+.loading-symbol{
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+}
+
+.fa-spinner.fa-spin {
+    font-size: 24px;
+    margin-bottom: 10px;
+    animation: spin 1s infinite linear;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* No changes needed for .hidden class */

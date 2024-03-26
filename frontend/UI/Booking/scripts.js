@@ -56,6 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var displayError = document.getElementById('payment-errors');
 
     card.on('change', function(event) {
+        console.log(event);
         if (event.error) {
             displayError.textContent = event.error.message;
         } else {
@@ -63,68 +64,99 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    form.addEventListener('submit', function(event) {
+    form.addEventListener('submit', async function(event) {
         event.preventDefault();
-        
-        // Assuming there's an input with an id of 'amount' to specify the payment amount
-        var amountInCents = parseInt(total) * 100;
-        console.log(amountInCents)
+        form.querySelector('button[type="submit"]').disabled = true;
 
-        fetch('http://127.0.0.1:5008/payment', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            mode: "cors",
-            body: JSON.stringify({amount: amountInCents})
+    // Use Stripe to create a payment method with the card information
+    let valid = true;
+    await stripe.createPaymentMethod({
+        type: 'card',
+        card: card,
+    }).then(function(result) {
+        if (result.error) {
+            // Inform the user if there was an error creating the payment method
+            displayError.textContent = result.error.message;
+            // Reset the submit button state to allow resubmission
+            console.log("hi");
+            form.querySelector('button[type="submit"]').disabled = false;
+            valid = false;
+        } else {
+            // The card details are valid at this point, and you have a payment method ID
+            displayError.textContent = '';
+
+            // Hide the previous booking confirmation modal if necessary
+        }
+    })
+    console.log("hi");
+        if (!valid){
+            return;
+        }
+
+    document.getElementById('booking-success').classList.remove('hidden');
+    document.getElementById('loading-symbol').classList.remove('hidden');
+    document.getElementById('success-message').classList.add('hidden');
+    // Assuming there's an input with an id of 'amount' to specify the payment amount
+    var amountInCents = parseInt(total) * 100;
+    console.log(amountInCents)
+
+    fetch('http://127.0.0.1:5008/payment', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        mode: "cors",
+        body: JSON.stringify({amount: amountInCents})
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data)
+        const clientSecret = data.clientSecret;
+
+        stripe.confirmCardPayment(clientSecret, {
+            payment_method: {card: card}
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data)
-            const clientSecret = data.clientSecret;
+        .then(result => {
+            if (result.error) {
+                console.log(result.error.message);
+            } else {
+                if (result.paymentIntent.status === 'succeeded') {
+                    console.log('Payment succeeded!');
 
-            stripe.confirmCardPayment(clientSecret, {
-                payment_method: {card: card}
-            })
-            .then(result => {
-                if (result.error) {
-                    console.log(result.error.message);
-                } else {
-                    if (result.paymentIntent.status === 'succeeded') {
-                        console.log('Payment succeeded!');
-
-                        // Prepare booking info
-                        let body = {};
-                        if (fInfo != null) {
-                            body.flight = {"departure": fInfo[0].data, "arrival": fInfo[1].data};
-                        }
-                        if (hInfo != null) {
-                            body.hotel = {"hotel": hInfo};
-                        }
-                        body.dayTime = new Date();
-                        body.email = sessionStorage.getItem("email");
-                        console.log(body)
-                        // Confirm booking
-                        fetch('http://127.0.0.1:5008/confirm_booking', {
-                            method: 'POST',
-                            headers: {'Content-Type': 'application/json'},
-                            mode: "cors",
-                            body: JSON.stringify(body)
-                        })
-                        .then(response => {
-                            if (response.status == 201){
-                                return response.json();
-                            }
-                        })
-                        .then(data => {
-                            console.log(data);
-                            document.getElementById('booking-success').classList.remove('hidden');
-                        })
-                        .catch(error => {
-                            console.log(error);
-                        });
+                    // Prepare booking info
+                    let body = {};
+                    if (fInfo != null) {
+                        body.flight = {"departure": fInfo[0].data, "arrival": fInfo[1].data};
                     }
+                    if (hInfo != null) {
+                        body.hotel = {"hotel": hInfo};
+                    }
+                    body.dayTime = new Date();
+                    body.email = sessionStorage.getItem("email");
+                    console.log(body)
+                    // Confirm booking
+                    fetch('http://127.0.0.1:5008/confirm_booking', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        mode: "cors",
+                        body: JSON.stringify(body)
+                    })
+                    .then(response => {
+                        if (response.status == 201){
+                            return response.json();
+                        }
+                    })
+                    .then(data => {
+                        console.log(data);
+                        document.getElementById('loading-symbol').classList.add('hidden');
+                        document.getElementById('success-message').classList.remove('hidden');
+
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
                 }
-            });
-        })
-        .catch(error => console.error(error));
-    });
+            }
+        });
+    })
+    .catch(error => console.error(error));
+});
 });

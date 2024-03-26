@@ -48,7 +48,13 @@
 
     <!-- Success Message Container (Initially hidden) -->
     <div class="success-message-container hidden" id="booking-success">
-        <div class="success-message">
+
+        <div class="loading-symbol hidden" id="loading-symbol">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Processing your booking...</p>
+        </div>
+
+        <div class="hidden" id = "success-message">
             <i class="fas fa-check-circle"></i>
             <h3>Booking Successful!</h3>
             <p>Your booking has been confirmed. Thank you for choosing us.</p>

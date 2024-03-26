@@ -30,19 +30,19 @@ app.use(cors())
 
 //get api results from google hotel and store in DB
 const fetchHotels = async (req, res) => {
-
-    const cachedData = await Hotel.findOne({searchParams: {engine: "google_hotels",...req.body}});
+    console.log(req.body);
+    const cachedData = await Hotel.findOne({searchParams: req.body});
 
     if(cachedData){
         console.log("I am a cached data...")
-        return res.status(201).json({cachedData})
+        return res.status(200).json({cachedData})
     }else{
-        query_obj = {engine: "google_hotels",...req.body,api_key: process.env.serpapiKey};
+        query_obj = {api_key: process.env.serpapiKey,...req.body};
         try{
             const result = await getJson(query_obj);
             console.log("I am fresh data...")
             const data = await Hotel.create({searchParams: result["search_parameters"], cachedResult: result["properties"]});
-            return res.status(201).json({data})
+            return res.status(200).json({data})
 
         }catch(err) {
             console.log(err)

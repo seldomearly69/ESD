@@ -12,78 +12,6 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 
-# @app.route("/search")
-# def search():
-#     data = request.get_json()
-#     fresponse = None
-#     hresponse = None
-#     if "flight" in data:
-#         fresponse = requests.get("http://flight_search:5007/flights", json = data["flight"])
-#         if (fresponse.status_code == 200):
-#             fresponse = fresponse.json()
-
-#     if "hotel" in data:
-#         hresponse = requests.get("http://hotel_search:5003/hotels", json = data["hotel"])
-#         if (hresponse.status_code == 200):
-#             hresponse = hresponse.json()
-
-#     return jsonify({"flight": fresponse, "hotel": hresponse})
-
-# @app.route("/payment", methods=["POST"])
-
-# def make_payment():
-#     data = request.get_json()
-#     print(data)
-#     amt = int(data["amount"])
-
-
-#     payment_service_url = "http://host.docker.internal:5020/create_payment_intent"  # assuming docker compose is run and payment service name is set to payment
-
-   
-#     response = requests.post(payment_service_url, json.dumps({"amount": amt, "currency": "sgd"}),headers = {'Content-Type': 'application/json'})
-#     print(response)
-#     if response.status_code == 200:
-       
-#         client_secret = response.json().get('clientSecret')
-#         return jsonify({"clientSecret": client_secret}), 200
-#     else:
-#         return jsonify({"error": "Failed to create payment intent"}), response.status_code
-
-    
-
-# @app.route("/confirm_booking", methods = ["POST"])
-# def confirm_booking():
-    
-#     data = request.get_json()
-#     data = data["body"]
-#     headers = {'Content-Type': 'application/json'}
-#     if ("flight" in data):
-#         fBooking = data["flight"]
-#         fBooking["dayTime"] = data["dayTime"]
-#         fBooking["email"] = data["email"]
-#         response = requests.post("http://host.docker.internal:5005/flight", json.dumps(fBooking), headers = headers)
-
-#         if response.status_code != 201:
-#             return jsonify({"message": "Error inserting into flight booking"}), response.status_code
-
-#     if ("hotel" in data):
-#         hBooking = {}
-#         hBooking["hotel"] = data["hotel"]["hotel"]
-#         hBooking["dayTime"] = data["dayTime"]
-#         hBooking["email"] = data["email"]
-        
-#         response = requests.post("http://host.docker.internal:5009/bookings", json.dumps(hBooking), headers = headers)
-#         if response.status_code != 201:
-#             return jsonify({"message": "Error inserting into hotel booking"}),response.status_code
-
-#     return jsonify(
-#         {
-#             "code": 201,
-#             "data": data
-#         }
-#     ), 201
-
-
 
 #Email part
 hostname = "rabbitmq" # default hostname
@@ -153,11 +81,11 @@ def publish_to_broker(msg):
     
     message = ""
     email = ""
-    if msg["hotel"]:
+    if "hotel" in msg:
         Hbooking = msg["hotel"]
         message +=  f"Your booking at {Hbooking['hotel']} from {Hbooking['check_in_date']} to {Hbooking['check_out_date']} has been confirmed.\n\n"
         email += Hbooking["email"]
-    if msg["flight"]:
+    if "flight" in msg:
         Fbooking =  msg["flight"]
         message +=  f"Your Flight Booking has been confirmed too!"
         
@@ -175,22 +103,23 @@ def publish_to_broker(msg):
     
     
 
-@app.route("/search")
+@app.route("/search", methods = ["POST"])
 def search():
     data = request.get_json()
-    fresponse = None
-    hresponse = None
-    if "flight" in data:
-        fresponse = requests.get("http://flight_search:5007/flights", json = data["flight"])
-        if (fresponse.status_code == 200):
-            fresponse = fresponse.json()
-
-    if "hotel" in data:
-        hresponse = requests.get("http://hotel_search:5003/hotels", json = data["hotel"])
-        if (hresponse.status_code == 200):
-            hresponse = hresponse.json()
-
-    return jsonify({"flight": fresponse, "hotel": hresponse})
+    print(data,flush=True)
+    if data["engine"] == "google_flights":
+        print(1,flush=True)
+        url = "http://host.docker.internal:5007/flights"
+    else:
+        url = "http://host.docker.internal:5003/hotels"
+    
+    response = requests.post(url, json = data)
+    print(1,flush=True)
+    if (response.status_code == 200):
+        print(response,flush=True)
+        return jsonify(response.json()), 200
+    else:
+        return jsonify("An error occurred"), response.status_code
 
 @app.route("/payment", methods=["POST"])
 def make_payment():
