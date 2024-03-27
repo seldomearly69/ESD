@@ -65,7 +65,7 @@ def search():
     
 @app.route("/drop")
 def drop_cache():
-    coll = db[request.get_json()["username"]]
+    coll = db[request.get_json()["email"]]
     coll.drop()
     return "success"
 

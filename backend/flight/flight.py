@@ -75,8 +75,6 @@ def create_record():
     r = mongo.db.flight.find_one(data)
     if r:
         return jsonify({"code": 400, "message": "Record already exists. Use PUT method if you are trying to update the record."}), 400
-
-    
     mongo.db.flight.insert_one(data)
     data["_id"] = customEncoder(data["_id"])
     return jsonify(

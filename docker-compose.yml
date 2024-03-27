@@ -185,8 +185,19 @@ services:
       - rabbitmq
     environment:
       PYTHONUNBUFFERED: 1
-        
 
+
+#################################
+# payment service
+#################################
+  payment:
+    build: ./backend/services/payment  # Path to the directory containing your Dockerfile
+    ports:
+      - "5020:5020"  
+    environment:
+      - MONGO_URI=mongodb+srv://ryanlee99324:BrImAqgUaXaNuEz6@esdproj.r2bp9gh.mongodb.net/
+      - STRIPE_API_KEY=sk_test_51Op0OtL12QL7JE0ghziI2xjPzuEigrx7p8PJn7HhSF5dUiBf6gJGoeL4olTe5IKswoesxuuJfLMAKhzx5yNOi7AE00LMZM7S4M    
+      
 
 
 
@@ -264,6 +275,7 @@ services:
 #       - "8446:8446" # Dev Portal. Listens for HTTP traffic, assuming Dev Portal is enabled.
 #       - "8004:8004" # Dev Portal /files traffic over HTTPS, assuming the Dev Portal is enabled.
 #       - "8447:8447" # Dev Portal /files traffic over HTTPS, assuming the Dev Portal is enabled.
+
 
 volumes:
   database-data:

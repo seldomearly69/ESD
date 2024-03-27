@@ -201,6 +201,15 @@ input[type="text"], input[type="date"], input[type="number"], select{
     font-size: 16px;
 }
 
+.flight-number {
+    display: block;
+    color: #2b2d42;
+    margin: 5px 0; 
+    font-size: 14px;
+    font-weight: normal; 
+}
+
+
 .layover-info {
     font-size: 14px;
     color: #82c596; /* Matching the softer green for complementary details */

@@ -1,9 +1,11 @@
 console.log(sessionStorage);
 let fInfo = null;
 let hInfo = null;
+let total = 0;
 if (sessionStorage.getItem("hInfo") !== null){
     hInfo = JSON.parse(sessionStorage.getItem("hInfo"));
     console.log(hInfo);
+    total += hInfo.rate_per_night.lowest.slice(1) * hInfo.num_rooms;
     document.getElementsByClassName("selection")[0].innerHTML += `<h3>Hotel Details:</h3><br>`;
     document.getElementsByClassName("selection")[0].innerHTML += `
         <div class="hotel-card">
@@ -25,6 +27,7 @@ if (sessionStorage.getItem("fInfo") !== null){
     console.log(fInfo);
     document.getElementsByClassName("selection")[0].innerHTML += `<h3>Flight Details:</h3>`;
     fInfo.forEach((f,index) => {
+        total += f.data.price;
         f.html = f.html.replace("Total:", "");
         let icon = "";
         if (index == 0){
@@ -37,36 +40,123 @@ if (sessionStorage.getItem("fInfo") !== null){
     });
 }
 
-
-document.getElementsByClassName("selection")[0].innerHTML+="<div class='total' id='amount'> 750 </div>"
+document.getElementById("total-price").innerHTML = "$"+total;
+function acknowledgeBooking(){
+    document.getElementById('booking-success').classList.add('hidden');
+    window.location.href ="../Nav/home.html";
+}
 
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementsByClassName('confirm-button')[0].addEventListener('click', function(event) {
-        event.preventDefault();
-
-        let body = {};
-        if (fInfo != null){
-            body.flight = {"departure": fInfo[0].data, "arrival": fInfo[1].data};
-        }
-        if (hInfo != null){
-            body.hotel = {"hotel": hInfo};
-        }
-        fetch('http://127.0.0.1:5008/confirm_booking', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            mode: "no-cors",
-            body: JSON.stringify(body)
-        })
-        .then(response => {
-            
-            console.log(response)
-            return response.json();
-        }).catch(error=>{
-            console.log(error);
-        })
+    var stripe = Stripe('pk_test_51Op0OtL12QL7JE0gJTw6uqWwOwO8Ik9EDEa6S39Ef2znnSslMAz31UAbnPaqKQ0BdMLP3Oxn16QiqmDsc19JMA2A00tRo1uDkN');
+    var elements = stripe.elements();
+    var card = elements.create('card');
+    card.mount('#card-element');
     
-    });
-});
+    var form = document.getElementById('payment-form');
+    var displayError = document.getElementById('payment-errors');
 
+    card.on('change', function(event) {
+        console.log(event);
+        if (event.error) {
+            displayError.textContent = event.error.message;
+        } else {
+            displayError.textContent = '';
+        }
+    });
+
+    form.addEventListener('submit', async function(event) {
+        event.preventDefault();
+        form.querySelector('button[type="submit"]').disabled = true;
+
+    // Use Stripe to create a payment method with the card information
+    let valid = true;
+    await stripe.createPaymentMethod({
+        type: 'card',
+        card: card,
+    }).then(function(result) {
+        if (result.error) {
+            // Inform the user if there was an error creating the payment method
+            displayError.textContent = result.error.message;
+            // Reset the submit button state to allow resubmission
+            console.log("hi");
+            form.querySelector('button[type="submit"]').disabled = false;
+            valid = false;
+        } else {
+            // The card details are valid at this point, and you have a payment method ID
+            displayError.textContent = '';
+
+            // Hide the previous booking confirmation modal if necessary
+        }
+    })
+    console.log("hi");
+        if (!valid){
+            return;
+        }
+
+    document.getElementById('booking-success').classList.remove('hidden');
+    document.getElementById('loading-symbol').classList.remove('hidden');
+    document.getElementById('success-message').classList.add('hidden');
+    // Assuming there's an input with an id of 'amount' to specify the payment amount
+    var amountInCents = parseInt(total) * 100;
+    console.log(amountInCents)
+
+    fetch('http://127.0.0.1:5008/payment', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        mode: "cors",
+        body: JSON.stringify({amount: amountInCents})
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data)
+        const clientSecret = data.clientSecret;
+
+        stripe.confirmCardPayment(clientSecret, {
+            payment_method: {card: card}
+        })
+        .then(result => {
+            if (result.error) {
+                console.log(result.error.message);
+            } else {
+                if (result.paymentIntent.status === 'succeeded') {
+                    console.log('Payment succeeded!');
+
+                    // Prepare booking info
+                    let body = {};
+                    if (fInfo != null) {
+                        body.flight = {"departure": fInfo[0].data, "arrival": fInfo[1].data};
+                    }
+                    if (hInfo != null) {
+                        body.hotel = {"hotel": hInfo};
+                    }
+                    body.dayTime = new Date();
+                    body.email = sessionStorage.getItem("email");
+                    console.log(body)
+                    // Confirm booking
+                    fetch('http://127.0.0.1:5008/confirm_booking', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        mode: "cors",
+                        body: JSON.stringify(body)
+                    })
+                    .then(response => {
+                        if (response.status == 201){
+                            return response.json();
+                        }
+                    })
+                    .then(data => {
+                        console.log(data);
+                        document.getElementById('loading-symbol').classList.add('hidden');
+                        document.getElementById('success-message').classList.remove('hidden');
+
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+                }
+            }
+        });
+    })
+    .catch(error => console.error(error));
+});
+});
