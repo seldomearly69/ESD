@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Booking Cancellation</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Cancel Hotel Booking</h2>
+        <form id="cancel-booking-form" class="cancel-form">
+            <div class="form-group">
+                <label for="booking-id">Booking ID:</label>
+                <input type="text" id="booking-id" name="booking-id" placeholder="Enter Booking ID" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" placeholder="Enter Email" required>
+            </div>
+            <button type="submit" class="cancel-button">Cancel Booking</button>
+        </form>
+        <div id="loading-indicator" class="loading hidden">Cancelling...</div>
+        <div id="cancel-results" class="results hidden"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
