@@ -23,6 +23,12 @@ exchangetype = "topic"
 
 headers = {'Content-Type': 'application/json'}
 
+# def addCORSHeaders(response):
+#     response.headers.add('Access-Control-Allow-Origin', '*')  # Allow requests from all origins
+#     response.headers.add('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')  # Allowed HTTP methods
+#     response.headers.add('Access-Control-Allow-Headers', 'Content-Type')  # Allowed request headers
+#     return response
+
 def create_connection(max_retries=12, retry_interval=5):
     print('amqp_connection: Create_connection')
     
@@ -77,14 +83,13 @@ if not check_exchange(channel, exchangename, exchangetype):
     print("\nCreate the 'Exchange' before running this microservice. \nExiting the program.")
     sys.exit(0)  # Exit with a success status
     
-def publish_to_broker(msg):
+def publish_to_broker(msg, email):
     
     message = ""
-    email = ""
+    print(msg,flush=True)
     if "hotel" in msg:
         Hbooking = msg["hotel"]
         message +=  f"Your booking at {Hbooking['hotel']} from {Hbooking['check_in_date']} to {Hbooking['check_out_date']} has been confirmed.\n\n"
-        email += Hbooking["email"]
     if "flight" in msg:
         Fbooking =  msg["flight"]
         message +=  f"Your Flight Booking has been confirmed too!"
@@ -99,20 +104,16 @@ def publish_to_broker(msg):
         channel.basic_publish(exchange=exchangename, routing_key="confirmation.email", 
         body=str(email_to_send), properties=pika.BasicProperties(delivery_mode = 2))
             
-    
-    
-    
-
 @app.route("/search", methods = ["POST"])
 def search():
     data = request.get_json()
     print(data,flush=True)
     if data["engine"] == "google_flights":
         print(1,flush=True)
-        url = "http://host.docker.internal:5007/flights"
+        url = "http://flight_search:5007/flights"
     else:
-        url = "http://host.docker.internal:5003/hotels"
-    
+        url = "http://hotel_search:5003/hotels"
+    print(1,flush=True)
     response = requests.post(url, json = data)
     print(1,flush=True)
     if (response.status_code == 200):
@@ -127,7 +128,7 @@ def make_payment():
     data = request.get_json()
     amt = data["amount"]
     
-    payment_service_url = "http://host.docker.internal:5020/create_payment_intent"  # assuming docker compose is run and payment service name is set to payment
+    payment_service_url = "http://payment:5020/create_payment_intent"  # assuming docker compose is run and payment service name is set to payment
    
     response = requests.post(payment_service_url, json.dumps({"amount": amt}), headers=headers)
 
@@ -153,7 +154,7 @@ def confirm_booking():
         fBooking = data["flight"]
         fBooking["dayTime"] = data["dayTime"]
         fBooking["email"] = data["email"]
-        response = requests.post("http://host.docker.internal:5005/flight", json.dumps(fBooking), headers = headers)
+        response = requests.post("http://flights:5005/flight", json.dumps(fBooking), headers = headers)
         result = response.json()
         if response.status_code == 201:
             msg_to_broker["flight"] = result["data"]
@@ -174,7 +175,7 @@ def confirm_booking():
         hBooking["email"] = data["email"]
         hBooking["check_in_time"] = "temp_val"
         hBooking["check_out_time"] = "temp_val"
-        response = requests.post("http://host.docker.internal:5009/bookings", json.dumps(hBooking), headers = headers)
+        response = requests.post("http://hotel_booking:5009/bookings", json.dumps(hBooking), headers = headers)
         result = response.json()
         hotel_bking= result['data'] 
         # Send hotel booking confirmation msg to rabbitMq
@@ -184,7 +185,7 @@ def confirm_booking():
             return jsonify({"message": "Error inserting into hotel booking"}),response.status_code
     
     if msg_to_broker:
-        publish_to_broker(msg_to_broker)
+        publish_to_broker(msg_to_broker, data["email"])
 
     return jsonify(
         {

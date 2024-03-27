@@ -17,6 +17,7 @@ def customEncoder(o):
     if isinstance(o, datetime):
         return o.isoformat()
     raise TypeError(f'Object of type {o.__class__.__name__} is not JSON serializable')
+
 @app.route("/all_flights")
 def get_all():
     allRecords = mongo.db.flight.find()

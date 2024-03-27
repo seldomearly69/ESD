@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var amountInCents = parseInt(total) * 100;
     console.log(amountInCents)
 
-    fetch('http://127.0.0.1:5008/payment', {
+    fetch('http://localhost:8000/api/v1/payment', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         mode: "cors",
@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     body.email = sessionStorage.getItem("email");
                     console.log(body)
                     // Confirm booking
-                    fetch('http://127.0.0.1:5008/confirm_booking', {
+                    fetch('http://localhost:8000/api/v1/confirm_booking', {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         mode: "cors",

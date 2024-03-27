@@ -22,7 +22,7 @@ async function callFlightSearch(params){
   }else if ("return_date" in params && new Date(params.return_date) < new Date(params.outbound_date)){
     resultsContainer.innerHTML = "<div class='error'>To Date cannot be earlier than From Date</div>";
   }else{
-    const response = await fetch('http://localhost:5008/search', {
+    const response = await fetch('http://localhost:8000/api/v1/search', {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json'

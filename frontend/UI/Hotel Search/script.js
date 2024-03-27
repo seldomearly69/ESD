@@ -53,11 +53,12 @@ document.addEventListener("DOMContentLoaded", function() {
         checkout = document.getElementById("check-out-date").value
         // Call backend to search
         
-        const response = await fetch('http://localhost:5008/search', {
+        const response = await fetch('http://localhost:8000/api/v1/search', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
+            mode: "cors",
             body: JSON.stringify({
                     engine: "google_hotels",
                     q: document.getElementById("query").value,
