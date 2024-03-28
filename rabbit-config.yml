@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rabbitmq-config
+data:
+  rabbitmq_definitions.json: rabbitmq_definitions.json
+  rabbitmq_config: rabbitmq.conf

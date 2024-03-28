@@ -55,18 +55,6 @@ services:
       - DATABASE_URI=mysql+mysqlconnector://root:root@mysql-db:3306/flightdb
     networks:
       - internal_network
-# #################################
-# # JSTemplate [Microservice]
-# #################################
-#   jstemplate:
-#     container_name: JSTemplate
-#     build:
-#       context: ./backend/services/JSTemplate
-#       dockerfile: Dockerfile
-#     ports:
-#       - 5006:5006
-
-#################################
 
 #################################
 # route_service [Microservice]
