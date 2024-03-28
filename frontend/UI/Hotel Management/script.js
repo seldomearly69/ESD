@@ -7,8 +7,15 @@ document.addEventListener("DOMContentLoaded", function() {
         event.preventDefault(); // Prevent the default form submission
         document.getElementById('loading-indicator').classList.remove('hidden');
         
-        const bookingId = document.getElementById("booking-id").value;
-        const email = document.getElementById("email").value;
+        const hotel = document.getElementById("hotel").value;
+        const city = document.getElementById("city").value;
+        const sdate = document.getElementById("sdate").value;
+        const edate = document.getElementById("edate").value;
+
+        console.log(hotel)
+        console.log(city)
+        console.log(sdate)
+        console.log(edate)
         
         // Send cancellation request to backend
         const response = await fetch('http://localhost:5010/delete_bookings', {
@@ -17,8 +24,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                booking_id: bookingId,
-                email: email
+                hotel: hotel,
+                city: city,
+                dates: [sdate,edate]
             })
         });
 
