@@ -3,9 +3,9 @@ kind: Service
 metadata:
   name: rabbitmq
 spec:
+  type: NodePort
   selector:
     app: rabbitmq
-  type: NodePort
   ports:
     - name: rabbitmq-main   
       protocol: TCP
@@ -49,10 +49,264 @@ spec:
               mountPath: /var/lib/rabbitmq
             - name: rabbitmq-config
               mountPath: /etc/rabbitmq
+          resources:
+            limits:
+              cpu: "1"
+              memory: "512Mi"
       volumes:
         - name: rabbitmq-volume
           emptyDir: {}
         - name: rabbitmq-config
           configMap:
             name: rabbitmq-config  
+          
 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hotel-booking-service
+spec:
+  selector:
+    app: hotel-booking   # Match the labels of your deployment pods
+  ports:
+    - protocol: TCP
+      port: 5009         # Port on the service
+      targetPort: 5009   # Port on the pods
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hotel-booking-deployment
+  labels:
+    app: hotel-booking
+spec:
+  replicas: 1  # You can adjust the number of replicas as needed
+  selector:
+    matchLabels:
+      app: hotel-booking
+  template:
+    metadata:
+      labels:
+        app: hotel-booking
+    spec:
+      containers:
+      - name: hotel-booking
+        image: "esd-hotel_booking:latest" 
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5009  # Port that the microservice listens on
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        resources:
+          limits:
+            cpu: "1"
+            memory: "512Mi"
+      
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flights-service
+spec:
+  selector:
+    app: flights
+  ports:
+  - protocol: TCP
+    port: 5000  # Expose on port 80 for HTTP
+    targetPort: 5005
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flights-deployment
+spec:
+  replicas: 1   # Adjust the number of replicas as needed
+  selector:
+    matchLabels:
+      app: flights
+  template:
+    metadata:
+      labels:
+        app: flights
+    spec:
+      containers:
+      - name: flights
+        image: "esd-flights:latest"  
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5005
+        env:
+        - name: FLASK_APP
+          value: "flight.py"
+        - name: FLASK_RUN_HOST
+          value: "0.0.0.0"
+        - name: FLASK_RUN_PORT
+          value: "5005"
+        - name: DATABASE_URI
+          value: "mysql+mysqlconnector://root:root@mysql-db:3306/flightdb"  # Adjust the database URI as needed
+        resources:
+          limits:
+            cpu: "1"
+            memory: "512Mi"
+     
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hotels-search-service
+spec:
+  selector:
+    app: hotel-search
+  ports:
+  - protocol: TCP
+    port: 5003   
+    targetPort: 5003
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hotel-search-deployment
+spec:
+  replicas: 1   # Adjust the number of replicas as needed
+  selector:
+    matchLabels:
+      app: hotel-search
+  template:
+    metadata:
+      labels:
+        app: hotel-search
+    spec:
+      containers:
+      - name: hotel-search
+        image: "esd-hotel_search:latest"  
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5003
+        env:
+        - name: mongoURL
+          value: "mongodb+srv://ryanlee99324:BrImAqgUaXaNuEz6@esdproj.r2bp9gh.mongodb.net/"
+        - name: serpapiKey
+          value: "f3f6e4266e8a55e158eccff91716b1033839ff2368200bf47edd94ef78e8484b"
+        resources:
+          limits:
+            cpu: "1"
+            memory: "512Mi"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flight-search-service
+spec:
+  selector:
+    app: flight-search
+  ports:
+  - protocol: TCP
+    port: 5007  
+    targetPort: 5007
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flight-search-deployment
+spec:
+  replicas: 1   
+  selector:
+    matchLabels:
+      app: flight-search
+  template:
+    metadata:
+      labels:
+        app: flight-search
+    spec:
+      containers:
+      - name: flight-search
+        image: "esd-flight_search:latest"  
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5007
+        resources:
+          limits:
+            cpu: "1"
+            memory: "512Mi"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: email-consumer-service
+spec:
+  selector:
+    app: email-consumer
+  ports:
+  - protocol: TCP
+    port: 5011  
+    targetPort: 5011
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: email-consumer-deployment
+spec:
+  replicas: 1   
+  selector:
+    matchLabels:
+      app: email-consumer
+  template:
+    metadata:
+      labels:
+        app: email-consumer
+    spec:
+      containers:
+      - name: email-consumer
+        image: "esd-email_consumer:latest"  
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5011
+        resources:
+          limits:
+            cpu: "1"
+            memory: "512Mi"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-service
+spec:
+  selector:
+    app: payment
+  ports:
+  - protocol: TCP
+    port: 5020 
+    targetPort: 5020
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-deployment
+spec:
+  replicas: 1   
+  selector:
+    matchLabels:
+      app: payment
+  template:
+    metadata:
+      labels:
+        app: payment
+    spec:
+      containers:
+      - name: payment
+        image: "esd-payment"  
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5020
+        resources:
+          limits:
+            cpu: "1"
+            memory: "512Mi"
