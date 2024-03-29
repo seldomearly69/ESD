@@ -7,16 +7,37 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
+    <nav class="navbar" id="navbar">
+        <div class="navbar-container">
+            <a style = "text-decoration: none;" href="../Nav/home.html">
+                <h1>Travel Management App</h1>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#">MyBookings</a></li>
+                <li><a href="#">Route Planner</a></li>
+            </ul>
+        </div>
+    </nav>
+    
     <div class="container">
         <h2>Cancel Hotel Booking</h2>
         <form id="cancel-booking-form" class="cancel-form">
             <div class="form-group">
-                <label for="booking-id">Booking ID:</label>
-                <input type="text" id="booking-id" name="booking-id" placeholder="Enter Booking ID" required>
+                <label for="booking-id">Hotel:</label>
+                <input type="text" id="hotel" name="hotel" placeholder="Enter Hotel" required>
             </div>
             <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" placeholder="Enter Email" required>
+                <label for="city">City:</label>
+                <input type="text" id="city" name="city" placeholder="Enter City" required>
+            </div>
+            <div class="form-group">
+                <label for="sdate">Start Date:</label>
+                <input type="date" id="sdate" name="sdate" required>
+            </div>
+            <div class="form-group">
+                <label for="edate">End Date:</label>
+                <input type="date" id="edate" name="edate" required>
             </div>
             <button type="submit" class="cancel-button">Cancel Booking</button>
         </form>
