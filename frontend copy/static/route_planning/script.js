@@ -1,11 +1,21 @@
 
-
-
-// Replace 'YOUR_MAPBOX_ACCESS_TOKEN' with your actual Mapbox access token
+var mapStyleSet = false;
+var locations = [];
+var currentMode = 'driving';
 mapboxgl.accessToken = 'pk.eyJ1IjoiY3lydXMtdGFuIiwiYSI6ImNscTBydXh6ZDAxZGsyaXAxMnV3Y2lwbWEifQ.jfAQQFTfeVegGsuoaNh6Ow'; // Your Mapbox access token
 
-function getSavedRoutes(){
-    const response = fetch('http://localhost:5011/routes/get',{
+
+// Initialize the map
+var map = new mapboxgl.Map({
+    container: 'map',
+    center: [-0.1276, 51.5072],
+    zoom: 12,
+});
+
+// Replace 'YOUR_MAPBOX_ACCESS_TOKEN' with your actual Mapbox access token
+
+async function getSavedRoutes(){
+    const response = await fetch('http://localhost:5001/routes/get/abc@gmail.com',{
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -17,9 +27,10 @@ function getSavedRoutes(){
 
     }
     if (response.statusText == "404"){
-        console.log
+        document.getElementsByClassName("saved-routes-container")[0].innerHTML += "<div>You have no saved routes</div>";
     }
 }
+
 
 
 // Add event listener to the location input field
@@ -84,7 +95,7 @@ map.on('mouseenter', 'route', function (e) {
 
 
 
-var currentMode = 'driving';
+
 
 // Event listeners for different mode buttons
 var transportModesDropdown = document.getElementById('transportModes');
@@ -122,7 +133,7 @@ duskButton.addEventListener('click', function () {
     setLightPreset(18); // Set a specific hour for dusk
 });
 
-var locations = [];
+
 
 
 
@@ -242,15 +253,7 @@ function addCurrentLocationMarker() {
 
 
 
-var mapStyleSet = false;
 
-
-// Initialize the map
-var map = new mapboxgl.Map({
-    container: 'map',
-    center: [-0.1276, 51.5072],
-    zoom: 12,
-});
 
 
 // Call the function to add the current location marker
@@ -407,6 +410,7 @@ function addLocationInput() {
     });
 }
 
+getSavedRoutes();
 
 
 
