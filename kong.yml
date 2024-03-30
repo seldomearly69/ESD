@@ -3,12 +3,32 @@ _transform: true
 
 
 services:
-  - name: flight-search-service
-    url: http://localhost:5007/flights
+  - name: search
+    url: http://booking_management:5008/search
     routes:
-      - name: flight-search-route
+      - name: search
         paths:
           - /api/v1/search
+        methods:
+          - POST
+          - OPTIONS
+        
+  - name: create-payment-intent
+    url: http://booking_management:5008/payment
+    routes:
+      - name: create-payment-intent
+        paths:
+          - /api/v1/payment
+        methods:
+          - POST
+          - OPTIONS
+
+  - name: confirm-booking
+    url: http://booking_management:5008/confirm_booking
+    routes:
+      - name: confirm-booking
+        paths:
+          - /api/v1/confirm_booking
 
 consumers:
 - username: my-user

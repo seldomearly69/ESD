@@ -4,8 +4,197 @@
 // Replace 'YOUR_MAPBOX_ACCESS_TOKEN' with your actual Mapbox access token
 mapboxgl.accessToken = 'pk.eyJ1IjoiY3lydXMtdGFuIiwiYSI6ImNscTBydXh6ZDAxZGsyaXAxMnV3Y2lwbWEifQ.jfAQQFTfeVegGsuoaNh6Ow'; // Your Mapbox access token
 
+function getSavedRoutes(){
+    const response = fetch('http://localhost:5011/routes/get',{
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    });
+    if (response.ok){
+        const data = response.json();
+        console.log(data);
+
+    }
+    if (response.statusText == "404"){
+        console.log
+    }
+}
 
 
+// Add event listener to the location input field
+document.querySelector('#locationInputs input[type="search"]').addEventListener('change', async function (e) {
+    e.preventDefault(); // Prevent default form submission behavior
+
+    // Get the entered location value
+    const locationName = e.target.value;
+    // Get the user's country
+    try {
+        const userCountry = await getUserCountry();
+        const response = await fetch('http://localhost:5012/validate-location', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ locationName, userCountry }) // Include userCountry in the request body
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data);
+            if (data.isValid)  {
+                e.target.style.borderColor = 'grey';
+                console.log('Location is valid');
+            } else {
+                // Reset the input field value if location is not valid
+                e.target.value = '';
+                e.target.style.borderColor = 'red';
+                alert('Please enter a location within your country.');
+            }
+        } else {
+            console.error('Server error:', response.statusText);
+            alert('Error occurred while validating location. Please try again later.');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An unexpected error occurred. Please try again later.');
+    }
+});
+
+
+
+
+
+// Initialize event listeners for 'mouseenter' and 'mouseleave' for the route
+map.on('mouseenter', 'route', function (e) {
+    var coordinates = e.features[0].geometry.coordinates;
+    var totalDistance = (distance / 1000).toFixed(2); // Convert meters to kilometers
+    var totalTime = (duration / 60).toFixed(1); // Convert seconds to minutes
+
+    var popup = new mapboxgl.Popup()
+        .setLngLat(coordinates[0]) // Show popup on the first coordinate
+        .setHTML(`<strong>Distance:</strong> ${totalDistance} km<br><strong>Time:</strong> ${totalTime} minutes`)
+        .addTo(map);
+
+    map.on('mouseleave', 'route', function () {
+        popup.remove();
+    });
+});
+
+
+
+
+var currentMode = 'driving';
+
+// Event listeners for different mode buttons
+var transportModesDropdown = document.getElementById('transportModes');
+
+transportModesDropdown.addEventListener('change', function () {
+    var selectedMode = transportModesDropdown.value;
+
+    if (currentMode !== selectedMode) {
+        updateMode(selectedMode);
+    }
+});
+
+
+// Event listener for the "Bring me for a Tour!" button
+var tourButton = document.getElementById('tourButton');
+tourButton.addEventListener('click', function () {
+    initiateTour();
+});
+
+
+
+// Event listeners for different time of day buttons
+var dawnButton = document.getElementById('dawn');
+dawnButton.addEventListener('click', function () {
+    setLightPreset(6); // Set a specific hour for dawn
+});
+
+var dayButton = document.getElementById('day');
+dayButton.addEventListener('click', function () {
+    setLightPreset(12); // Set a specific hour for daytime
+});
+
+var duskButton = document.getElementById('dusk');
+duskButton.addEventListener('click', function () {
+    setLightPreset(18); // Set a specific hour for dusk
+});
+
+var locations = [];
+
+
+
+// Add event listener for automatic addition of waypoints when users input a location
+document.getElementById('locationInputs').addEventListener('change', async function (e) {
+    if (e.target.tagName === 'INPUT' && e.target.name === 'location' && e.target.value.trim() !== '') {
+        // Get the entered location value
+        const locationName = e.target.value;
+        // Get the user's country
+        try {
+            const userCountry = await getUserCountry();
+            const response = await fetch('http://localhost:5012/validate-location', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ locationName, userCountry }) // Include userCountry in the request body
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log("SECOND HERE", data);
+
+                if (data.isValid) {
+                    await geocodeAndAddWaypoint(e.target.value);
+                    setMapBounds(); // Set bounds based on new locations
+                }
+            }
+        } catch (error) {
+            console.error('Error adding waypoint:', error);
+            // Handle errors here
+        }
+    }
+});
+
+
+
+
+
+
+
+document.getElementById('locationForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    
+    // Clear old markers and route before adding new ones
+    removeOldMarkersAndRoute();
+
+    // Always set the mode to "driving"
+    currentMode = "driving";
+
+    var locationInputs = document.querySelectorAll('input[name="location"]');
+
+    try {
+        for (let i = 0; i < locationInputs.length; i++) {
+            if (locationInputs[i].value.trim() !== '') {
+                await geocodeAndAddWaypoint(locationInputs[i].value);
+            }
+        }
+        setMapBounds(); // Set bounds based on new locations
+
+        calculateRoute();
+    } catch (error) {
+        // Handle errors here
+    }
+});
+
+
+var optimizeRouteButton = document.getElementById('optimizeRouteButton');
+
+optimizeRouteButton.addEventListener('click', function () {
+    calculateOptimalRoute();
+});
 
 // Function to update current mode
 function updateMode(newMode) {
