@@ -73,7 +73,7 @@ async function callFlightSearch(params){
   resultsContainer.classList.remove('hidden');
 }
 
-fetch("../resources/airports.txt")
+fetch("./resources/airports.txt")
   .then(response => {
     if (!response.ok) {
       throw new Error('Failed to fetch file');
