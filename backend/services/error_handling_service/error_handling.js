@@ -1,68 +1,63 @@
-// const express = require('express')
-
-// const api = express()
-
-// const HOST = 'localhost'
-// const PORT = 5006
-
-// api.get('/test', (req,res) => {
-//     res.send('Success')
-// })
+const express = require("express");
+const axios = require('axios');
+const cors = require('cors');
 
 
-// api.listen(PORT, () => console.log(`API running at ${HOST}:${PORT}!`))
+const app = express();
+const PORT = process.env.PORT || 5012;
 
-
-
-
-
-// TO DO: ADD LINK TO MAPBOX AND MAPBOX DIRECTIONS HERE
-
-
-// Replace 'YOUR_MAPBOX_ACCESS_TOKEN' with your actual Mapbox access token
-mapboxgl.accessToken = 'pk.eyJ1IjoiY3lydXMtdGFuIiwiYSI6ImNscTBydXh6ZDAxZGsyaXAxMnV3Y2lwbWEifQ.jfAQQFTfeVegGsuoaNh6Ow'; // Your Mapbox access token
-
-
-
+app.use(express.json());
+app.use(cors());
 
 
 // Function to check the validity of the location input
-async function checkLocationValidity(locationName) {
-    const response = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${locationName}.json?access_token=${mapboxgl.accessToken}`);
-    const data = await response.json();
-    if (data.features && data.features.length > 0) {
-        const feature = data.features[0];
-        const country = feature.context.find(context => context.id.startsWith('country'));
-        const userCountry = await getUserCountry(); // Get the user's country
-        if (country && country.text !== userCountry) {
-            // Location is not in the same country
-            return false;
+async function checkLocationValidity(locationName, userCountry) {
+
+    try {
+        const response = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${locationName}.json`, {
+            params: {
+                access_token: 'pk.eyJ1IjoiY3lydXMtdGFuIiwiYSI6ImNscTBydXh6ZDAxZGsyaXAxMnV3Y2lwbWEifQ.jfAQQFTfeVegGsuoaNh6Ow'
+            }
+        });
+        const data = response.data;
+        if (data.features && data.features.length > 0) {
+
+            // Get the country of the location
+            const country = data.features[0].place_name
+            
+            if (country.includes(userCountry)) {
+                // Location is in the same country as the user's country
+                return true;
+            } else {
+                // Location is not in the same country
+                return false;
+            }
         } else {
-            // Location is in the same country
-            return true;
+            // Location not found
+            return false;
         }
-    } else {
-        console.error(`Location '${locationName}' not found.`);
-        return false; // Location not found
+    } catch (error) {
+        // Error occurred during location validation
+        console.error('Error while fetching location data:', error);
+        return false;
     }
 }
 
-
-
-
-// Event listener for input field change
-document.getElementById('locationInputs').addEventListener('change', async function (e) {
-    if (e.target.tagName === 'INPUT' && e.target.name === 'location') {
-        const isValid = await checkLocationValidity(e.target.value);
-        if (!isValid) {
-            // Reset the input field value if location is not valid
-            e.target.value = '';
-            e.target.style.borderColor = 'red';
-            // Display a message to the user indicating the restriction
-            alert('Please enter a location within your country.');
-        }
-        else{
-            e.target.style.borderColor = '';
-        }
+// Route for location validation
+app.post('/validate-location', async (req, res) => {
+    const locationName = req.body.locationName;
+    const userCountry = req.body.userCountry;
+    
+    try {
+        const isValid = await checkLocationValidity(locationName, userCountry);
+        return res.json({ isValid });
+    } catch (error) {
+        console.error('Error during location validation:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
+});
+
+// Start the server
+app.listen(PORT, () => {
+    console.log(`Error handling microservice is listening on port ${PORT}`);
 });
