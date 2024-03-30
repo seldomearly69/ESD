@@ -30,7 +30,3 @@ services:
         paths:
           - /api/v1/confirm_booking
 
-consumers:
-- username: my-user
-  keyauth_credentials:
-  - key: my-key

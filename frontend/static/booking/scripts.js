@@ -43,7 +43,7 @@ if (sessionStorage.getItem("fInfo") !== null){
 document.getElementById("total-price").innerHTML = "$"+total;
 function acknowledgeBooking(){
     document.getElementById('booking-success').classList.add('hidden');
-    window.location.href ="../Nav/home.html";
+    window.location.href ="http://localhost:5050/home";
 }
 
 document.addEventListener('DOMContentLoaded', function() {
