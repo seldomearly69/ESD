@@ -33,6 +33,8 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log(data);
             if (data.data.usertype == "customer"){
                 window.location.href = '../Nav/home.html';
+            }else{
+                window.location.href = '../Hotel Management/hotel.html';
             }
         })
         .catch(error => {

@@ -25,29 +25,27 @@ document.addEventListener("DOMContentLoaded", function() {
             },
             body: JSON.stringify({
                 hotel: hotel,
-                city: city,
                 dates: [sdate,edate]
             })
         });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log(data);
+        
 
         // Display cancellation results
         const resultsContainer = document.getElementById('cancel-results');
         resultsContainer.innerHTML = ''; // Clear previous results
 
-        if (data && data.Cancelled_Bookings) {
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data);
             const cancelledBookings = data.Cancelled_Bookings;
             cancelledBookings.forEach(booking => {
-                resultsContainer.innerHTML += `<p>Booking ID ${booking.booking_id} cancelled successfully.</p>`;
+                resultsContainer.innerHTML += `<p>Booking ID ${booking._id} cancelled successfully.</p>`;
             });
-        } else {
-            resultsContainer.innerHTML = 'No bookings cancelled.';
+        } else if (response.status == 404) {
+            resultsContainer.innerHTML = 'No bookings found.';
+        }else{
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         document.getElementById('loading-indicator').classList.add('hidden');
