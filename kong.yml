@@ -1,0 +1,16 @@
+_format_version: "3.0"
+_transform: true
+
+
+services:
+  - name: flight-search-service
+    url: http://localhost:5007/flights
+    routes:
+      - name: flight-search-route
+        paths:
+          - /api/v1/search
+
+consumers:
+- username: my-user
+  keyauth_credentials:
+  - key: my-key

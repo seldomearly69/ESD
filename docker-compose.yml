@@ -259,7 +259,8 @@ services:
       - kong-net
       - internal_network
     environment:
-      KONG_DATABASE: postgres
+      KONG_DECLARATIVE_CONFIG: "/etc/kong/kong.yml"
+      KONG_DATABASE: "off"
       KONG_PG_HOST: kong-database
       KONG_PG_USER: kong
       KONG_PG_PASSWORD: password
@@ -282,13 +283,15 @@ services:
       - "8446:8446" # Dev Portal. Listens for HTTP traffic, assuming Dev Portal is enabled.
       - "8004:8004" # Dev Portal /files traffic over HTTPS, assuming the Dev Portal is enabled.
       - "8447:8447" # Dev Portal /files traffic over HTTPS, assuming the Dev Portal is enabled.
-
+    volumes:
+      - ./kong.yml:/etc/kong/kong.yml
 volumes:
   database-data:
   hotel-mysql-data:
   flight-mysql-data:
   rabbitmq_data:
   pgdata_esd: 
+  
 
 networks:
   internal_network:
