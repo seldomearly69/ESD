@@ -32,9 +32,9 @@ document.addEventListener('DOMContentLoaded', function() {
             sessionStorage.setItem('email', email);
             console.log(data);
             if (data.data.usertype == "customer"){
-                window.location.href = '../Nav/home.html';
+                window.location.href = 'http://localhost:5050/home';
             }else{
-                window.location.href = '../Hotel Management/hotel.html';
+                window.location.href = 'http://localhost:5050/hotel_management';
             }
         })
         .catch(error => {
