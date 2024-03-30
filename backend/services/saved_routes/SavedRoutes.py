@@ -1,11 +1,13 @@
 from flask import Flask, request, jsonify
 from flask_pymongo import PyMongo
 from bson import ObjectId
+from flask_cors import CORS
 
 app = Flask(__name__)
 
 app.config['MONGO_URI'] = 'mongodb+srv://ryanlee99324:BrImAqgUaXaNuEz6@esdproj.r2bp9gh.mongodb.net/'
 mongo = PyMongo(app)
+CORS(app)
 
 
 #Find Bookings by email
@@ -30,7 +32,7 @@ def find_booking(email):
 
 #Save Routes
 @app.route("/routes/save/<string:email>", methods=['PUT'])
-def update_record(email):
+def save_routes(email):
 
     data = request.get_json()
     result = mongo.db.routes.update_one({"email": email}, {"$set": {"routes": data}}, upsert = True)

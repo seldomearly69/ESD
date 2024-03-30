@@ -31,7 +31,7 @@ async function getSavedRoutes(){
     }
 }
 
-
+getSavedRoutes();
 
 // Add event listener to the location input field
 document.querySelector('#locationInputs input[type="search"]').addEventListener('change', async function (e) {
@@ -410,7 +410,6 @@ function addLocationInput() {
     });
 }
 
-getSavedRoutes();
 
 
 
