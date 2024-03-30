@@ -148,11 +148,13 @@ services:
     ports:
       - 5010:5010
     depends_on:
-      rabbitmq:
-        restart: true
-        condition: service_started
+      - rabbitmq
+      # rabbitmq:
+      #   restart: true
+      #   condition: service_started
     environment:
       PYTHONUNBUFFERED: 1
+    restart: always
     networks:
       - internal_network
       
