@@ -1,0 +1,405 @@
+/* Resetting default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Global styles */
+body, html {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #edf2f7; /* Soft gray background */
+    color: #2b2d42;
+}
+
+/* Navbar styles */
+.navbar {
+    background-color: #2b2d42; /* Darker shade for contrast */
+    color: white;
+    padding: 1rem 2rem;
+}
+
+.navbar h1 {
+    margin: 0;
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 8vh;
+    padding: 0 20px;
+}
+
+.navbar-brand {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.5rem;
+}
+
+.nav-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links li {
+    display: inline;
+    margin-right: 20px;
+}
+
+.nav-links li a {
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+    color: #8d99ae;
+}
+
+.nav-links li a:hover, .nav-links li a:focus {
+    color: #ef233c; /* Bright accent color for interactivity */
+}
+
+a:visited {
+    color: inherit; /* Use the same color as the default text color */
+}
+
+.container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Soft shadow for depth */
+    border-radius: 8px; /* Rounded corners for a modern look */
+}
+
+.booking-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+
+.selection {
+    background-color: #edf2f7;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.selection h3 {
+    color: #2b2d42;
+    margin-top: 0;
+}
+
+.flight-selection, .hotel-selection {
+    background-color: #ffffff;
+    padding: 10px;
+    border-radius: 4px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+    margin: 10px 0 20px;
+    color: #333;
+}
+
+.confirm-button {
+    background-color: #4caf50; /* Green color for confirmation */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+.confirm-button:hover {
+    background-color: #43a047; /* Darker green on hover */
+}
+
+
+.segment-header{
+    font-size: medium;
+    font-weight: 600;
+}
+
+.flight-card {
+    background: #ffffff;
+    color: #333;
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease-in-out;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.flight-wrapper{
+    padding: 15px;
+}
+
+.flight-segment {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eaeaea; /* Lighter border for a softer look */
+}
+
+.flight-segment:last-child {
+    border-bottom: none;
+}
+
+.flight-airports, .flight-timings, .flight-duration, .flight-cost {
+    display: block; /* Change to block for better readability */
+    margin: 5px 0;
+    color: #616161;
+}
+
+.flight-airports {
+    font-size: 18px;
+    color: #333;
+    font-weight: bold;
+}
+
+.flight-timings, .flight-duration {
+    font-size: 16px;
+}
+
+.layover-info {
+    font-size: 14px;
+    color: #82c596; /* Matching the softer green for complementary details */
+    font-style: italic;
+    margin: 10px 0;
+}
+
+/* Ensuring consistency in padding and spacing */
+.flight-card > span{
+    padding: 10px 0;
+}
+
+/* Responsive Adjustments for better mobile viewing */
+@media (max-width: 768px) {
+    .flight-card {
+        margin-top: 15px;
+    }
+}
+
+.hotel-card {
+    width: 300px;
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease-in-out;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.hotel-info {
+    padding: 20px;
+    background-color: #ffffff; /* Light background for the info section */
+}
+
+.hotel-name {
+    font-size: 20px;
+    font-weight: 600; /* Slightly bolder for better readability */
+    color: #333; /* Darker text for contrast */
+    margin-bottom: 12px; /* Slightly more spacing */
+}
+
+.check-in-out {
+    font-size: 14px; /* Adjust size for clarity */
+    color: #555; /* Softer color for less emphasis */
+    margin-bottom: 12px; /* Uniform spacing */
+}
+
+.number-of-rooms {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 15px; /* Added some space before the price section */
+}
+
+.sub-total {
+    font-size: 18px;
+    font-weight: bold;
+    color: #4caf50; /* Change to a friendly green for the price, softer than the red */
+    text-align: right;
+    padding: 15px;
+    background-color: #f0f2f5; /* Softer grey background for the price section */
+    border-top: 1px solid #eaeaea; /* Subtle separator */
+}
+
+
+.fa-solid{
+    padding: 20px 20px 10px 20px;
+    font-size: 40px;
+    color: #2b2d42;
+}
+
+
+
+/* Total Price Display */
+.total-price-display {
+    background-color: #ffffff;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    text-align: center;
+    border: 1px solid #ccc;
+}
+
+.total-price-display h3 {
+    margin-bottom: 10px;
+    color: #2b2d42;
+}
+
+.total-price-display p {
+    font-size: 24px;
+    font-weight: bold;
+    color: #4caf50;
+}
+
+/* Payment Form Container */
+.payment-form-container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-top: 20px;
+    border: 1px solid #ccc;
+}
+
+.payment-form-container h3 {
+    color: #2b2d42;
+    margin-bottom: 20px;
+}
+
+#payment-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-row {
+    margin-bottom: 20px;
+}
+
+.form-row label {
+    display: block;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+#card-element{
+    padding: 10px 15px;
+    background-color: #edf2f7;
+    border: none;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+button[type="submit"] {
+    background-color: #4caf50; /* Green color for submit button */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    text-align: center;
+    width: 100%;
+}
+
+button[type="submit"]:hover {
+    background-color: #43a047; /* Darker green on hover */
+}
+
+#payment-errors {
+    color: #e53935; /* Red color for payment errors */
+    margin-top: 10px;
+}
+
+
+.success-message-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    z-index: 1000; /* Ensure it's above other content */
+}
+
+#success-message {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+}
+
+#success-message i {
+    color: #4caf50; /* Success green */
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+#success-message h3 {
+    margin-bottom: 15px;
+    color: #2b2d42;
+}
+
+#success-message p {
+    margin-bottom: 20px;
+    color: #555;
+}
+
+#success-message button {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#success-message button:hover {
+    background-color: #43a047;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.loading-symbol{
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+}
+
+.fa-spinner.fa-spin {
+    font-size: 24px;
+    margin-bottom: 10px;
+    animation: spin 1s infinite linear;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* No changes needed for .hidden class */

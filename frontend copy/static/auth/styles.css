@@ -1,0 +1,135 @@
+/* Global Styles Enhancements */
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #6E8EFB, #A777E3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #2b2d42;
+}
+/* Auth Pages Styling */
+.auth-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+}
+
+.auth-card {
+    overflow: hidden;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    width: 100%;
+    max-width: 400px;
+    margin: 20px;
+    position: relative;
+    z-index: 1;
+    
+}
+
+/* Form Group Enhancements */
+.form-group input {
+    background-color: rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease-in-out;
+    width: 90%;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.form-group input:focus {
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(110, 142, 251, 0.7);
+}
+
+.form-group {
+    display:block;
+    position:relative;
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: .5rem;
+}
+
+.auth-button {
+    display:block;
+    position:relative;
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    background-image: linear-gradient(135deg, #4D77FF 0%, #2A2FEA 100%);
+    color: #ffffff;
+    letter-spacing: 1px;
+    font-weight: bold;
+    border: none;
+    outline: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.auth-button:hover, .auth-button:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(42, 47, 234, 0.5);
+}
+
+.auth-switch {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.auth-switch a {
+    color: #fff;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.auth-switch a:hover {
+    text-decoration: underline;
+    color: #E0E0E0;
+}
+
+/* Error Message Styles */
+.auth-error {
+    background-color: #ffdddd;
+    color: #D8000C;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border-left: 3px solid #D8000C;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.5s ease-out;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+
+.auth-error::before {
+    content: "\26A0"; /* Unicode for warning sign */
+    display: block;
+    margin-right: 10px;
+    font-size: 24px;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Show the error message with animation */
+.auth-error.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
