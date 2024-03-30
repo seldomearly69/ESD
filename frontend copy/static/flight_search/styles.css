@@ -1,0 +1,243 @@
+/* Resetting default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Global styles */
+body, html {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #edf2f7; /* Soft gray background */
+    color: #2b2d42;
+}
+
+/* Navbar styles */
+.navbar {
+    background-color: #2b2d42; /* Darker shade for contrast */
+    color: white;
+    padding: 1rem 2rem;
+}
+
+.navbar h1 {
+    margin: 0;
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 8vh;
+    padding: 0 20px;
+}
+
+.navbar-brand {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.5rem;
+}
+
+.nav-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links li {
+    display: inline;
+    margin-right: 20px;
+}
+
+.nav-links li a {
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+    color: #8d99ae;
+}
+
+.nav-links li a:hover, .nav-links li a:focus {
+    color: #ef233c; /* Bright accent color for interactivity */
+}
+
+a:visited {
+    color: inherit; /* Use the same color as the default text color */
+}
+
+.container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Soft shadow for depth */
+    border-radius: 8px; /* Rounded corners for a modern look */
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+label {
+    display: block;
+    margin-bottom: .5rem;
+}
+
+input[type="text"], input[type="date"], input[type="number"], select{
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px; /* Matching rounded corners */
+    box-sizing: border-box;
+}
+
+.search-button {
+    background-color: #ef233c; /* Bright accent color */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px; /* Consistent rounded corners */
+    cursor: pointer;
+    width: 100%;
+    font-size: 1rem;
+}
+
+.search-button:hover {
+    background-color: #d90429; /* Slightly darker on hover */
+}
+
+/* Adjustments for responsiveness and visual appeal */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+/* Enhanced Loading Indicator Styles */
+.loading, .error {
+    text-align: center;
+    padding: 20px;
+    margin-top: 20px;
+    font-size: 20px;
+    color: #ef233c; /* Accent color for visibility */
+    font-weight: bold;
+    
+}
+
+.loading{
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+.hidden {
+    display: none !important; /* Hide elements by default */
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.result-header{
+ margin-top: 20px;   
+}
+
+.flight-card {
+    margin-top: 20px;
+    cursor: pointer;
+    background: #ffffff;
+    color: #333;
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease-in-out;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.flight-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.flight-wrapper{
+    padding: 15px;
+}
+
+.flight-segment {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eaeaea; /* Lighter border for a softer look */
+}
+
+.flight-segment:last-child {
+    border-bottom: none;
+}
+
+.flight-airports, .flight-timings, .flight-duration, .flight-cost {
+    display: block; /* Change to block for better readability */
+    margin: 5px 0;
+    color: #616161;
+}
+
+.flight-airports {
+    font-size: 18px;
+    color: #333;
+    font-weight: bold;
+}
+
+.flight-timings, .flight-duration {
+    font-size: 16px;
+}
+
+.flight-number {
+    display: block;
+    color: #2b2d42;
+    margin: 5px 0; 
+    font-size: 14px;
+    font-weight: normal; 
+}
+
+
+.layover-info {
+    font-size: 14px;
+    color: #82c596; /* Matching the softer green for complementary details */
+    font-style: italic;
+    margin: 10px 0;
+}
+
+.sub-total {
+    font-size: 18px;
+    font-weight: bold;
+    color: #4caf50; /* Change to a friendly green for the price, softer than the red */
+    text-align: right;
+    padding: 15px;
+    background-color: #f0f2f5; /* Softer grey background for the price section */
+    border-top: 1px solid #eaeaea; /* Subtle separator */
+}
+
+/* Ensuring consistency in padding and spacing */
+.flight-card > span{
+    padding: 10px 0;
+}
+
+/* Responsive Adjustments for better mobile viewing */
+@media (max-width: 768px) {
+    .flight-card {
+        margin-top: 15px;
+        padding: 15px;
+    }
+}
+
+

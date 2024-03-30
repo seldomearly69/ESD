@@ -1,0 +1,206 @@
+
+/* Styles for Hotel Info Page */
+
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+    color: #2b2d42;
+}
+
+.container {
+    max-width: 900px;
+    margin: 50px auto;
+}
+
+.hotel-info {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.header {
+    text-align: center;
+}
+.header, .details, .ratings, .nearby-places, .rooms-booking {
+    margin-bottom: 20px;
+}
+
+.hotel-name {
+    font-size: 36px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.description {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.details {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.info-section {
+    flex: 0 0 48%;
+}
+
+.hotel-class,
+.lowest-rate,
+.check-in-out {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+.amenities,
+.rating-value,
+.reviews {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+.amenities-list {
+    list-style: none;
+    padding: 0;
+}
+
+.amenities-list li {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 5px;
+}
+.rooms-booking {
+    margin-bottom: 20px;
+}
+
+.rooms-booking label {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.rooms-booking input {
+    width: 98%;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.ratings {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.rating-value {
+    font-size: 36px;
+    color: #28a745;
+    margin-bottom: 5px;
+}
+
+.stars {
+    color: #ffc107;
+    font-size: 24px;
+}
+
+.star {
+    margin-right: 2px;
+}
+
+.nearby-places {
+    margin-bottom: 20px;
+}
+
+.nearby-places h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.nearby-places ul {
+    list-style: none;
+    padding: 0;
+}
+
+.nearby-places li {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.book-now {
+    display: block;
+    width: 100%;
+    padding: 15px 0;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.book-now:hover {
+    background-color: #0056b3;
+}
+
+/* Navbar Styles (unchanged) */
+/* Navbar styles */
+.navbar {
+    background-color: #2b2d42; /* Darker shade for contrast */
+    color: white;
+    padding: 1rem 2rem;
+}
+
+.navbar h1 {
+    margin: 0;
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 8vh;
+    padding: 0 20px;
+}
+
+.navbar-brand {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.5rem;
+}
+
+.nav-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links li {
+    display: inline;
+    margin-right: 20px;
+}
+
+.nav-links li a {
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+    color: #8d99ae;
+}
+
+.nav-links li a:hover, .nav-links li a:focus {
+    color: #ef233c; /* Bright accent color for interactivity */
+}
+
+a:visited {
+    color: inherit; /* Use the same color as the default text color */
+}
