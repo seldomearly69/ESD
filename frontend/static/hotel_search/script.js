@@ -39,7 +39,7 @@ function seeHotelDetails(hotel) {
     hotel.stay = [checkin,checkout];
     sessionStorage.setItem("hInfo",JSON.stringify(hotel));
     console.log(hotel);
-    window.location.href = "../Hotel Info/info.html";
+    window.location.href = "http://localhost:5050/hotel_info";
 
 }
 

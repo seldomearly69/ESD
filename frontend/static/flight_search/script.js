@@ -73,7 +73,7 @@ async function callFlightSearch(params){
   resultsContainer.classList.remove('hidden');
 }
 
-fetch("./resources/airports.txt")
+fetch("/static/flight_search/airports.txt")
   .then(response => {
     if (!response.ok) {
       throw new Error('Failed to fetch file');
@@ -173,9 +173,9 @@ function chooseFlight(flight, flightElement) {
     const fInfo = JSON.parse(sessionStorage.getItem("fInfo"));
     sessionStorage.setItem("fInfo",JSON.stringify(fInfo.concat([{data: flight, html:flightElement}])));
     if (sessionStorage.getItem("hInfo")!=null){
-      window.location.href = "../Booking/booking.html";
+      window.location.href = "http://localhost:5050/booking";
     }else{
-      window.location.href = "../Nav/hotel.html";
+      window.location.href = "http://localhost:5050/hotel";
     }
     
   }

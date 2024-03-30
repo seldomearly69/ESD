@@ -15,110 +15,6 @@
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.js"></script>
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.css" type="text/css">
     <link rel="stylesheet" href="../../static/route_planning/styles.css">
-    <style>
-        /* Global styles */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
-        }
-
-        /* Container styles */
-        .container {
-            display: flex;
-            justify-content: space-between;
-            margin: 20px;
-        }
-
-        /* Form styles */
-        .form {
-            flex: 1;
-            background-color: #fff;
-            border-radius: 5px;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .form h1 {
-            margin-top: 0;
-        }
-
-        .form input[type="search"] {
-            width: calc(100% - 20px);
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-
-        .form select {
-            width: 100%;
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            background-color: #fff;
-            appearance: none;
-        }
-
-        .form button {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            background-color: #007bff;
-            color: #fff;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .form button:hover {
-            background-color: #0056b3;
-        }
-
-        /* Time of Day styles */
-        .time-of-day {
-            background-color: #fff;
-            border-radius: 5px;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .time-of-day h3 {
-            margin-top: 0;
-        }
-
-        .time-of-day button {
-            margin-bottom: 10px;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            background-color: #007bff;
-            color: #fff;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .time-of-day button:hover {
-            background-color: #0056b3;
-        }
-
-        /* Map styles */
-        .map {
-            flex: 2;
-            height: 600px;
-            background-color: #fff;
-            border-radius: 5px;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Location input styles */
-        .location-input {
-            margin-bottom: 10px;
-        }
-    </style>
 
 </head>
 
@@ -152,17 +48,23 @@
             </form>
         </div>
 
-        <!-- Middle: Time of Day -->
-        <div class="time-of-day">
-            <h3>Time of Day</h3>
-            <button id="dawn">Dawn</button>
-            <button id="day">Day</button>
-            <button id="dusk">Dusk</button>
-        </div>
+        <!-- Right Side: Map and Saved Routes-->
+        <div class="right-side" >
+            <div class="map">
+                <div class="map-overlay">
+                    <button id="dawn">Dawn</button>
+                    <button id="day">Day</button>
+                    <button id="dusk">Dusk</button>
+                </div>
+                <div id='map' style='width: 100%; height: 100%;'></div>
+                <div id='map' style='width: 100%; height: 100%;'></div>
+            </div>
+            <div class = "saved-routes-container">
+                <h1>My Routes</h1>
 
-        <!-- Right Side: Map -->
-        <div class="map">
-            <div id='map' style='width: 100%; height: 100%;'></div>
+            </div>
+            </div>
+
         </div>
 
     </div>
@@ -336,7 +238,6 @@
                 calculateRoute();
             } catch (error) {
                 // Handle errors here
-                console.error('Error:', error);
             }
         });
 

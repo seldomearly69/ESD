@@ -51,9 +51,9 @@ document.addEventListener("DOMContentLoaded", function() {
         temp.num_rooms = document.getElementById("num-rooms").value;
         sessionStorage.setItem("hInfo", JSON.stringify(temp));
         if (sessionStorage.getItem('fInfo') === null){
-            window.location.href = '../Nav/flight.html';
+            window.location.href = 'http://localhost:5050/flight';
         }else{
-            window.location.href = '../Booking/booking.html';
+            window.location.href = 'http://localhost:5050/booking';
         }
     });
     
