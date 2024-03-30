@@ -96,6 +96,19 @@ services:
       - internal_network
 
 #################################
+# Plan Route [Complex Microservice]
+#################################
+  plan_route:
+    container_name: plan_route
+    build:
+      context: ./backend/services/plan_route
+      dockerfile: Dockerfile
+    ports:
+      - 5013:5013
+    networks:
+      - internal_network
+
+#################################
 # flight_search [Microservice]
 #################################
   flight_search:
