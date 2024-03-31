@@ -58,7 +58,7 @@ services:
 #################################
   flights:
     container_name: Flights
-    build: backend/flight
+    build: ./backend/services/flight
     ports:
       - "5005:5005"
     environment:
@@ -122,12 +122,12 @@ services:
       - internal_network
 
 #################################
-# booking_management [Microservice]
+# Manage booking [Complex Microservice]
 #################################
-  booking_management:
-    container_name: booking_management
+  manage_booking:
+    container_name: manage_booking
     build:
-      context: ./backend/services/booking_management
+      context: ./backend/services/manage_booking
       dockerfile: Dockerfile
     ports:
       - 5008:5008
