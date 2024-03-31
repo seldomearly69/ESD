@@ -40,6 +40,7 @@ def create_payment_intent():
 @app.route('/refund', methods=['POST'])
 def refund_payment():
     data = request.json
+    print(data)
     payment_intent_id = data.get('payment_intent_id')
     amount = data.get('amount') 
 
