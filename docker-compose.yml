@@ -58,7 +58,7 @@ services:
 #################################
   flights:
     container_name: Flights
-    build: backend/flight
+    build: ./backend/services/light
     ports:
       - "5005:5005"
     environment:
