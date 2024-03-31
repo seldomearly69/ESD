@@ -42,7 +42,7 @@ document.querySelector('#locationInputs input[type="search"]').addEventListener(
     // Get the user's country
     try {
         const userCountry = await getUserCountry();
-        const response = await fetch('http://localhost:5012/validate-location', {
+        const response = await fetch('http://localhost:5013/validate-location', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -145,7 +145,7 @@ document.getElementById('locationInputs').addEventListener('change', async funct
         // Get the user's country
         try {
             const userCountry = await getUserCountry();
-            const response = await fetch('http://localhost:5012/validate-location', {
+            const response = await fetch('http://localhost:5013/validate-location', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -379,7 +379,7 @@ function addLocationInput() {
         // Get the user's country
         try {
             const userCountry = await getUserCountry();
-            const response = await fetch('http://localhost:5012/validate-location', {
+            const response = await fetch('http://localhost:5013/validate-location', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
