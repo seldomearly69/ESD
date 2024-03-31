@@ -14,29 +14,29 @@ var map = new mapboxgl.Map({
     zoom: 12,
 });
 
-// Replace 'YOUR_MAPBOX_ACCESS_TOKEN' with your actual Mapbox access token
 
-async function getSavedRoutes(){
-    const url = "http://localhost:5001/routes/get/" + sessionStorage.getItem("email");
-    const response = await fetch(url ,{
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-    })
-    try{
-        if (response.ok){
+async function getSavedRoutes() {
+    const email = sessionStorage.getItem("email");
+    const url = `http://localhost:5013/find-booking/${email}`;
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+        if (response.ok) {
             const data = await response.json();
             console.log(data);
             console.log(savedRoutes);
             savedRoutes = data.data.routes;
             console.log(savedRoutes);
-        }else if (response.status === 404){
+        } else if (response.status === 404) {
             throw new Error("No saved routes");
-        }else{
+        } else {
             throw new Error(response.status);
         }
-    }catch(error){
+    } catch (error) {
         console.log('Error:', error.message);
     }
     console.log(savedRoutes);
@@ -141,6 +141,7 @@ document.getElementsByClassName('save-all-btn')[0].addEventListener("click", fun
         body: JSON.stringify(savedRoutes)
     }).then(response=>{
         if (response.ok){
+            alert("Routes saved successfully!");
             return response.json();
         }else{
             throw new Error(response.status);

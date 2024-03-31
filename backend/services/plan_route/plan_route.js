@@ -69,6 +69,22 @@ app.post('/geocode', async (req, res) => {
 
 
 
+// Endpoint to find booking by email
+app.get('/find-booking/:email', async (req, res) => {
+    const { email } = req.params;
+
+    try {
+        // Call the backend simple microservice to find bookings by email
+        const response = await axios.get(`http://host.docker.internal:5001/routes/get/${email}`);
+
+        res.json(response.data);
+    } catch (error) {
+        console.error('Error finding booking by email:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
 // Start the server
 app.listen(PORT, () => {
     console.log(`Plan Route microservice is listening on port ${PORT}`);
