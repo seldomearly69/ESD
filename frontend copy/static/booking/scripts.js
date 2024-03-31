@@ -43,7 +43,7 @@ if (sessionStorage.getItem("fInfo") !== null){
 document.getElementById("total-price").innerHTML = "$"+total;
 function acknowledgeBooking(){
     document.getElementById('booking-success').classList.add('hidden');
-    window.location.href ="../Nav/home.html";
+    window.location.href ="../../templates/Nav/home.html";
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -124,7 +124,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Prepare booking info
                     let body = {};
                     if (fInfo != null) {
-                        body.flight = {"departure": fInfo[0].data, "arrival": fInfo[1].data};
+                        body.flight = {"departure": fInfo[0].data};
+                        if (fInfo.length==2){
+                            body.flight.arrival = fInfo[1].data;
+                        }
                     }
                     if (hInfo != null) {
                         body.hotel = {"hotel": hInfo};

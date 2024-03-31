@@ -124,8 +124,8 @@ services:
 #################################
 # booking_management [Microservice]
 #################################
-  booking_management:
-    container_name: booking_management
+  manage_booking:
+    container_name: manage_booking
     build:
       context: ./backend/services/manage_booking
       dockerfile: Dockerfile

@@ -1,7 +1,7 @@
 var hotel = JSON.parse(sessionStorage.getItem("hInfo"));
 
 if (hotel === null){
-    window.location.href = "../Nav/home.html";
+    window.location.href = "../../templates/Nav/home.html";
 }
 console.log(hotel);
 document.getElementsByClassName("hotel-name")[0].innerHTML = hotel.name;
@@ -51,9 +51,9 @@ document.addEventListener("DOMContentLoaded", function() {
         temp.num_rooms = document.getElementById("num-rooms").value;
         sessionStorage.setItem("hInfo", JSON.stringify(temp));
         if (sessionStorage.getItem('fInfo') === null){
-            window.location.href = '../Nav/flight.html';
+            window.location.href = '../../templates/Nav/flight.html';
         }else{
-            window.location.href = '../Booking/booking.html';
+            window.location.href = '../../templates/Booking/booking.html';
         }
     });
     
