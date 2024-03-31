@@ -127,7 +127,7 @@ services:
   booking_management:
     container_name: booking_management
     build:
-      context: ./backend/services/booking_management
+      context: ./backend/services/manage_booking
       dockerfile: Dockerfile
     ports:
       - 5008:5008
