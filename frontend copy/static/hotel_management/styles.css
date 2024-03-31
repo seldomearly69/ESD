@@ -56,7 +56,7 @@ body, html {
     color: #ef233c; /* Bright accent color for interactivity */
 }
 
-a:visited {
+a, a:visited {
     color: inherit; /* Use the same color as the default text color */
 }
 

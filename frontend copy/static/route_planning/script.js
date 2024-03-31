@@ -1,7 +1,9 @@
-
+// for testing
+sessionStorage.setItem("email", "abc@gmail.com");
 var mapStyleSet = false;
 var locations = [];
 var currentMode = 'driving';
+var savedRoutes = {};
 mapboxgl.accessToken = 'pk.eyJ1IjoiY3lydXMtdGFuIiwiYSI6ImNscTBydXh6ZDAxZGsyaXAxMnV3Y2lwbWEifQ.jfAQQFTfeVegGsuoaNh6Ow'; // Your Mapbox access token
 
 
@@ -15,23 +17,140 @@ var map = new mapboxgl.Map({
 // Replace 'YOUR_MAPBOX_ACCESS_TOKEN' with your actual Mapbox access token
 
 async function getSavedRoutes(){
-    const response = await fetch('http://localhost:5001/routes/get/abc@gmail.com',{
+    const url = "http://localhost:5001/routes/get/" + sessionStorage.getItem("email");
+    const response = await fetch(url ,{
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
         },
-    });
-    if (response.ok){
-        const data = response.json();
-        console.log(data);
-
+    })
+    try{
+        if (response.ok){
+            const data = await response.json();
+            console.log(data);
+            console.log(savedRoutes);
+            savedRoutes = data.data.routes;
+            console.log(savedRoutes);
+        }else if (response.status === 404){
+            throw new Error("No saved routes");
+        }else{
+            throw new Error(response.status);
+        }
+    }catch(error){
+        console.log('Error:', error.message);
     }
-    if (response.statusText == "404"){
-        document.getElementsByClassName("saved-routes-container")[0].innerHTML += "<div>You have no saved routes</div>";
-    }
+    console.log(savedRoutes);
+    return;
 }
 
-getSavedRoutes();
+
+
+// Add event listener to save route button
+document.getElementsByClassName('add-route-btn')[0].addEventListener('click', function (e) {
+
+    // Get the modal
+    var modal = document.getElementById("routeNamingModal");
+    var span = document.getElementsByClassName("close-btn")[0];
+
+    // When the user clicks the button, open the modal 
+    modal.classList.remove("hidden");
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.classList.add("hidden");
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.classList.add("hidden");
+        }
+    }
+    
+})
+function reloadSavedRoutes(){
+    console.log(savedRoutes);
+    const container = document.getElementsByClassName("saved-routes-content")[0];
+    container.innerHTML = '';
+    if (Object.keys(savedRoutes).length == 0){
+        container.innerHTML = "<div>You have no saved routes</div>"
+    }
+    for (sr of Object.keys(savedRoutes)){
+        const child = createSavedRouteElement(sr, savedRoutes[sr]);
+        container.appendChild(child);
+    }
+    
+}
+
+function createSavedRouteElement(name, locs){
+    const srElement = document.createElement('div');
+    srElement.classList.add('saved-route-item');
+    console.log(name);
+    srElement.innerHTML = 
+    `<span class="route-name">${name}</span>`;
+
+    const btn = document.createElement('button');
+    btn.classList.add('delete-route-btn');
+    btn.innerHTML = `<i class="fa-solid fa-trash-can"></i>`;
+    btn.addEventListener('click', function (e) {
+        delete savedRoutes[name];
+        reloadSavedRoutes();
+    })
+    srElement.appendChild(btn);
+    // Add event listener to the "Add to Booking Basket" button
+    srElement.addEventListener('click', () => {
+        chooseRoute(locs);
+    });
+
+
+    return srElement;
+}
+
+function chooseRoute(locs){
+    console.log(locs);
+    const parent = document.getElementById('locationInputs');
+    console.log(parent);
+    parent.innerHTML = '';
+    for (l of locs){
+        console.log(l);
+        addLocationInput(l);
+    }
+}
+document.getElementById('route-naming-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    // Form is valid, you can proceed with your form submission actions here
+    const routeName = document.getElementById('routeNameInput').value;
+    console.log('Saving route with name:', routeName);
+    document.getElementById('routeNamingModal').classList.add('hidden');
+    const inputs = document.getElementsByName('location');
+    var locs = [];
+    for (i of inputs){
+        locs.push(i.value);
+    }
+    savedRoutes[routeName] = locs;
+    reloadSavedRoutes();
+});
+
+document.getElementsByClassName('save-all-btn')[0].addEventListener("click", function(event){
+    const url = "http://localhost:5001/routes/save/" + sessionStorage.getItem("email");
+    fetch(url ,{
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(savedRoutes)
+    }).then(response=>{
+        if (response.ok){
+            return response.json();
+        }else{
+            throw new Error(response.status);
+        }
+    }).then(data=>{
+        console.log(data);
+    }).catch(error=>{
+        console.log('Error:', error.message);
+    })
+})
 
 // Add event listener to the location input field
 document.querySelector('#locationInputs input[type="search"]').addEventListener('change', async function (e) {
@@ -71,6 +190,7 @@ document.querySelector('#locationInputs input[type="search"]').addEventListener(
         alert('An unexpected error occurred. Please try again later.');
     }
 });
+
 
 
 
@@ -254,12 +374,6 @@ function addCurrentLocationMarker() {
 
 
 
-
-
-// Call the function to add the current location marker
-addCurrentLocationMarker();
-
-
 // Function to set the light preset based on time of day
 function setLightPreset(userLocalTime) {
     var lightPreset = 'day'; // Default preset
@@ -347,13 +461,8 @@ function getUserCountry() {
 }
 
 
-
-
-
-
-
 // Function to add a new location input
-function addLocationInput() {
+function addLocationInput(value = null) {
     // Counter for location inputs
     let locationCount = document.querySelectorAll('input[name="location"]').length + 1;
 
@@ -365,7 +474,9 @@ function addLocationInput() {
         <input type="search" name="location" onchange="checkLocationValidity(this)">
         <div class="location-images"></div>
     `;
-
+    if (value != null){
+        newLocationInput.children[1].value = value;
+    }
     // Append the new location input
     document.getElementById('locationInputs').appendChild(newLocationInput);
 
@@ -835,4 +946,12 @@ var customMarker = map.loadImage(
         map.addImage('custom-marker', image);
     }
 );
+
+async function init(){
+    await getSavedRoutes();
+    reloadSavedRoutes();
+    addCurrentLocationMarker();
+}
+
+init();
 

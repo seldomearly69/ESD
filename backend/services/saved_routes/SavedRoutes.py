@@ -5,16 +5,19 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 
-app.config['MONGO_URI'] = 'mongodb+srv://ryanlee99324:BrImAqgUaXaNuEz6@esdproj.r2bp9gh.mongodb.net/'
+app.config['MONGO_URI'] = 'mongodb+srv://ryanlee99324:BrImAqgUaXaNuEz6@esdproj.r2bp9gh.mongodb.net/routes'
 mongo = PyMongo(app)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 
 #Find Bookings by email
 @app.route("/routes/get/<string:email>")
 def find_booking(email):
+    print(mongo, flush=True)
     r = mongo.db.routes.find_one({"email": email})
+    
     if r:
+        del r["_id"]
         return jsonify(
             {
                 "code": 200, 
@@ -39,7 +42,7 @@ def save_routes(email):
     if result.modified_count > 0:
         return jsonify(data), 200
     else:
-        return jsonify("No records updated"),500
+        return jsonify("No records updated"),200
 
 
 
