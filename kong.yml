@@ -34,7 +34,7 @@ services:
           - OPTIONS
   
   - name: hotel-management
-    url: http://manage_hotel:5010/delete_booking
+    url: http://manage_hotel:5010/delete_bookings
     routes:
       - name: hotel-management
         paths:
