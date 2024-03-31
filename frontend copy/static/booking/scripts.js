@@ -5,7 +5,11 @@ let total = 0;
 if (sessionStorage.getItem("hInfo") !== null){
     hInfo = JSON.parse(sessionStorage.getItem("hInfo"));
     console.log(hInfo);
-    total += hInfo.rate_per_night.lowest.slice(1) * hInfo.num_rooms;
+   
+    let d1 = new Date(hInfo.stay[0]);
+    let d2 = new Date(hInfo.stay[1]);
+    let daydiff = (d2.getTime() - d1.getTime())/1000/3600/24;
+    total += hInfo.rate_per_night.lowest.slice(1) * hInfo.num_rooms * daydiff;
     document.getElementsByClassName("selection")[0].innerHTML += `<h3>Hotel Details:</h3><br>`;
     document.getElementsByClassName("selection")[0].innerHTML += `
         <div class="hotel-card">
@@ -17,7 +21,7 @@ if (sessionStorage.getItem("hInfo") !== null){
             </div>
             <div class="number-of-rooms">No. of rooms: ` + hInfo.num_rooms + `</div>
         </div>
-        <div class="sub-total">$` + hInfo.rate_per_night.lowest.slice(1) * hInfo.num_rooms + `</div>
+        <div class="sub-total">$` + hInfo.rate_per_night.lowest.slice(1) * hInfo.num_rooms * daydiff + `</div>
     </div>`;
 }
 
@@ -43,7 +47,7 @@ if (sessionStorage.getItem("fInfo") !== null){
 document.getElementById("total-price").innerHTML = "$"+total;
 function acknowledgeBooking(){
     document.getElementById('booking-success').classList.add('hidden');
-    window.location.href ="../Nav/home.html";
+    window.location.href ="../../templates/Nav/home.html";
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -124,7 +128,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Prepare booking info
                     let body = {};
                     if (fInfo != null) {
-                        body.flight = {"departure": fInfo[0].data, "arrival": fInfo[1].data};
+                        body.flight = {"departure": fInfo[0].data};
+                        if (fInfo.length==2){
+                            body.flight.arrival = fInfo[1].data;
+                        }
                     }
                     if (hInfo != null) {
                         body.hotel = {"hotel": hInfo};

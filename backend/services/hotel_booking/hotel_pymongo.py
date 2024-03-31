@@ -70,7 +70,7 @@ def delete_bookings():
     print(1,flush=True)
     data = request.get_json()
     print(2,flush=True)
-    
+    print(data)
     hotel_name = data["hotel"]
     dates = data["dates"]
     criteria = [{"check_in_date": {"$in": dates}},{"check_out_date": {"$in": dates}},{"check_in_date": {"$nin": dates},"check_out_date": {"$nin": dates}}]
