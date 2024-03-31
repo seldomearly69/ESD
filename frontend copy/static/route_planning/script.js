@@ -14,29 +14,29 @@ var map = new mapboxgl.Map({
     zoom: 12,
 });
 
-// Replace 'YOUR_MAPBOX_ACCESS_TOKEN' with your actual Mapbox access token
 
-async function getSavedRoutes(){
-    const url = "http://localhost:5001/routes/get/" + sessionStorage.getItem("email");
-    const response = await fetch(url ,{
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-    })
-    try{
-        if (response.ok){
+async function getSavedRoutes() {
+    const email = sessionStorage.getItem("email");
+    const url = `http://localhost:5013/find-booking/${email}`;
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+        if (response.ok) {
             const data = await response.json();
             console.log(data);
             console.log(savedRoutes);
             savedRoutes = data.data.routes;
             console.log(savedRoutes);
-        }else if (response.status === 404){
+        } else if (response.status === 404) {
             throw new Error("No saved routes");
-        }else{
+        } else {
             throw new Error(response.status);
         }
-    }catch(error){
+    } catch (error) {
         console.log('Error:', error.message);
     }
     console.log(savedRoutes);
@@ -131,26 +131,44 @@ document.getElementById('route-naming-form').addEventListener('submit', function
     reloadSavedRoutes();
 });
 
-document.getElementsByClassName('save-all-btn')[0].addEventListener("click", function(event){
-    const url = "http://localhost:5001/routes/save/" + sessionStorage.getItem("email");
-    fetch(url ,{
+
+
+document.getElementsByClassName('save-all-btn')[0].addEventListener("click", function(event) {
+    const email = sessionStorage.getItem("email");
+    if (!email) {
+        console.error("Email not found in session storage");
+        return;
+    }
+    
+    const url = "http://localhost:5013/routes/save/" + email;
+    const options = {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(savedRoutes)
-    }).then(response=>{
-        if (response.ok){
-            return response.json();
-        }else{
-            throw new Error(response.status);
-        }
-    }).then(data=>{
-        console.log(data);
-    }).catch(error=>{
-        console.log('Error:', error.message);
-    })
-})
+    };
+
+    fetch(url, options)
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error(response.status);
+            }
+        })
+        .then(data => {
+            console.log(data);
+            alert("Routes saved successfully!");
+        })
+        .catch(error => {
+            console.error('Error:', error.message);
+            alert("Error saving routes. Please try again later.");
+        });
+});
+
+
+
 
 // Add event listener to the location input field
 document.querySelector('#locationInputs input[type="search"]').addEventListener('change', async function (e) {

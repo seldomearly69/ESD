@@ -3,9 +3,19 @@ from flask_cors import CORS
 import requests
 import pika
 import time, sys
+from flasgger import Swagger
 
 app = Flask(__name__)
 CORS(app)
+# Initialize flasgger 
+app.config['SWAGGER'] = {
+    'title': 'manage_hotel microservice',
+    'version': 1.0,
+    "openapi": "3.0.2",
+    'description': 'Allows hotel admin to delete bookings made on certain check in dates'
+}
+
+swagger = Swagger(app)
 
 hostname = "rabbitmq" # default hostname
 port = 5672            # default port
@@ -69,6 +79,56 @@ if not check_exchange(channel, exchangename, exchangetype):
     
 @app.route("/delete_bookings", methods=["DELETE"])
 def delete_booking():
+    """
+    Delete bookings from the hotel_booking microservice.
+    ---
+    parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            hotel:
+              type: string
+              description: Name of the hotel for the booking.
+            dates:
+              type: array
+              items:
+                type: string
+                format: date
+                description: A list of check-in dates for the booking in YYYY-MM-DD format.
+              description: The check-in dates for the booking in YYYY-MM-DD format.
+    responses:
+      200:
+        description: A JSON object containing information about the deleted bookings.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Cancelled_Bookings:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                        description: Email of the user whose booking was cancelled.
+                      hotel:
+                        type: string
+                        description: Name of the hotel for the cancelled booking.
+                      check_in_date:
+                        type: string
+                        format: date
+                        description: The check-in date for the cancelled booking in YYYY-MM-DD format.
+                      check_out_date:
+                        type: string
+                        format: date
+                        description: The check-out date for the cancelled booking in YYYY-MM-DD format.
+      400:
+        description: An error occurred while deleting the bookings.
+    """
     print(1,flush=True)
     data = request.get_json()
     print(data,flush=True)
