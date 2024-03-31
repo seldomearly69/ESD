@@ -126,6 +126,7 @@ def search():
 def make_payment():
 
     data = request.get_json()
+    print(data)
     amt = data["amount"]
     
     payment_service_url = "http://payment:5020/create_payment_intent"  # assuming docker compose is run and payment service name is set to payment
@@ -134,7 +135,9 @@ def make_payment():
 
     if response.status_code == 200:
         client_secret = response.json().get('clientSecret')
-        return jsonify({"clientSecret": client_secret}), 200
+        paymentIntent_id = response.json().get('paymentIntent_id')
+
+        return jsonify({"clientSecret": client_secret, "paymentIntent_id": paymentIntent_id}), 200
     else:
         return jsonify({"error": "Failed to create payment intent"}), response.status_code
 
@@ -145,6 +148,7 @@ def make_payment():
 def confirm_booking():
     print(1,flush=True)
     data = request.get_json()
+    print(data)
     print(2,flush=True)
     
     msg_to_broker = {}
@@ -170,11 +174,11 @@ def confirm_booking():
         hBooking["check_in_date"] = data["hotel"]["hotel"]["stay"][0]
         hBooking["check_out_date"] = data["hotel"]["hotel"]["stay"][1]
         hBooking["num_rooms"] = data["hotel"]["hotel"]['num_rooms']
-        hBooking["price"] = "temp_val"
+        hBooking["price"] = {"payment_id": data["paymentIntent_id"], "amount": data["hotel"]["amount"]}
         hBooking["date"] = data["dayTime"]
         hBooking["email"] = data["email"]
-        hBooking["check_in_time"] = "temp_val"
-        hBooking["check_out_time"] = "temp_val"
+        hBooking["check_in_time"] = data["hotel"]["hotel"]["check_in_time"]
+        hBooking["check_out_time"] = data["hotel"]["hotel"]["check_out_time"]
         response = requests.post("http://hotel_booking:5009/bookings", json.dumps(hBooking), headers = headers)
         result = response.json()
         hotel_bking= result['data'] 
