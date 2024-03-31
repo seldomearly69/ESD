@@ -151,12 +151,12 @@ services:
       - internal_network
 
 ###################################
-# Hotel Management [Microservice]
+# Manage Hotel [Microservice]
 #################################
-  hotel_management:
-    container_name: hotel_management
+  manage_hotel:
+    container_name: manage_hotel
     build:
-      context: ./backend/services/hotel_management
+      context: ./backend/services/manage_hotel
       dockerfile: Dockerfile
     ports:
       - 5010:5010
