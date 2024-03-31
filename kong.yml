@@ -29,4 +29,17 @@ services:
       - name: confirm-booking
         paths:
           - /api/v1/confirm_booking
+        methods:
+          - POST
+          - OPTIONS
+  
+  - name: hotel-management
+    url: http://hotel_management:5010/delete_booking
+    routes:
+      - name: hotel-management
+        paths:
+          - /api/v1/delete_booking
+        methods:
+          - POST
+          - OPTIONS
 
