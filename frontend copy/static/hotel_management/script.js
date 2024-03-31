@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function() {
         console.log(edate)
         
         // Send cancellation request to backend
-        const response = await fetch('http://localhost:5010/delete_bookings', {
+        const response = await fetch('http://localhost:8000/api/v1/delete_booking', {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
