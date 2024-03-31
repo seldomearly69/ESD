@@ -57,7 +57,7 @@ services:
 # Flights [Microservice]
 #################################
   flights:
-    container_name: Flights
+    container_name: flights
     build: ./backend/services/flight
     ports:
       - "5005:5005"
