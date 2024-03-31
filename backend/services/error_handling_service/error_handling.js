@@ -47,6 +47,7 @@ async function checkLocationValidity(locationName, userCountry) {
 app.post('/validate-location', async (req, res) => {
     const locationName = req.body.locationName;
     const userCountry = req.body.userCountry;
+    console.log(locationName, userCountry)
     
     try {
         const isValid = await checkLocationValidity(locationName, userCountry);

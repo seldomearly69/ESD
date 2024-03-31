@@ -11,7 +11,7 @@ app.use(cors());
 
 
 
-// Helper function to calculate distance between two points
+// Helper function to calculate distance between two points, helper function for optimized route
 function calculateDistance(coord1, coord2) {
     const [x1, y1] = coord1;
     const [x2, y2] = coord2;
