@@ -1,0 +1,46 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "Hotel Finder API"
+  description: "API to find hotels"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    name: "API Support"
+    email: "support@example.com"
+  license:
+    name: "MIT"
+    url: "http://opensource.org/licenses/MIT"
+
+host: "localhost:5000"
+basePath: "/api/v1"
+schemes:
+  - "http"
+  - "https"
+paths:
+  /hotels:
+    get:
+      summary: "Retrieve a list of hotels"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "A list of hotels"
+definitions:
+  hotel:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      address:
+        type: "string"
+      rating:
+        type: "number"
+      url:
+        type: "string"
+securityDefinitions:
+  api_key:
+    type: "apiKey"
+    name: "api_key"
+    in: "header"
+hotelFinder:
+  - url: "http://localhost:5003"
