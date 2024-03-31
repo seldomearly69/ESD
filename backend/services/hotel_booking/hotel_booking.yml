@@ -1,0 +1,134 @@
+openapi: "3.0.2"
+info:
+  title: "hotel_booking service API"
+  version: "1.0"
+  description: "Allows create, retrieve, and delete of hotels"
+
+paths:
+  /bookings/{email}:
+    get:
+      summary: "Find bookings by email"
+      parameters:
+        - in: path
+          name: email
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Booking'
+        '404':
+          description: "Bookings not found."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+
+  /bookings:
+    post:
+      summary: "Create hotel booking"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Booking'
+      responses:
+        '201':
+          description: "Booking created successfully"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingResponse'
+        '400':
+          description: "Booking already exists."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    type: object
+                    properties:
+                      booking:
+                        $ref: '#/components/schemas/Booking'
+
+    delete:
+      summary: "Delete bookings"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                hotel:
+                  type: string
+                dates:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: "Bookings deleted successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  deleted_bookings:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Booking'
+
+components:
+  schemas:
+    Booking:
+      type: object
+      properties:
+        email:
+          type: string
+        hotel:
+          type: string
+        address:
+          type: string
+        num_rooms:
+          type: integer
+        price:
+          type: number
+        check_in_date:
+          type: string
+        check_in_time:
+          type: string
+        check_out_date:
+          type: string
+        check_out_time:
+          type: string
+        date:
+          type: string
+
+    BookingResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+        data:
+          $ref: '#/components/schemas/Booking'

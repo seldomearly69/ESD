@@ -2,11 +2,24 @@ from flask import Flask, request, jsonify
 from flask_pymongo import PyMongo
 from flask_cors import CORS
 from bson import ObjectId
+from flasgger import Swagger
+import os
 
 app = Flask(__name__)
 
 app.config['MONGO_URI'] = 'mongodb+srv://ryanlee99324:BrImAqgUaXaNuEz6@esdproj.r2bp9gh.mongodb.net/Hotel'
+# Initialize flasgger 
+app.config['SWAGGER'] = {
+    'title': 'hotel_booking service API',
+    'version': 1.0,
+    "openapi": "3.0.2",
+    'description': 'Allows create, retrieve, and delete of hotels'
+}
+
 mongo = PyMongo(app)
+swagger_template_path = os.path.join(os.getcwd(), 'hotel_booking.yml')
+swagger = Swagger(app, template_file=swagger_template_path)
+
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 class Hotel:
@@ -25,11 +38,7 @@ class Hotel:
             "date" : booking["date"]
         }
     
-@app.route("/")
-def greeting():
-    return jsonify({"code": 200, "message": "HEllo."}), 200
-    
-    
+
 @app.route("/bookings/<string:email>")
 def find_bookings_by_username(email):
     bookings = mongo.db.Hotel.find({"email": email})
