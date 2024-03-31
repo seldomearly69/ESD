@@ -1,0 +1,15 @@
+{
+    "main": "plan_route.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node plan_route.js"
+    },
+    "dependencies": {
+        "express": "^4.18.3",
+        "axios": "^1.6.8",
+        "cors": "2.8.5"
+    }
+}
+    
+    
+    

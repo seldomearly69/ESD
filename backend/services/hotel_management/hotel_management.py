@@ -69,13 +69,15 @@ if not check_exchange(channel, exchangename, exchangetype):
     
 @app.route("/delete_bookings", methods=["DELETE"])
 def delete_booking():
+    print(1,flush=True)
     data = request.get_json()
-    print(data)
-    delete_response = requests.delete("http://hotel_booking:5009/bookings/", json = data)
-    print(delete_response)
+    print(data,flush=True)
+    delete_response = requests.delete("http://hotel_booking:5009/bookings", json = data)
+    print(delete_response,flush=True)
     if delete_response.status_code == 200:
         print("delete operation was done...")
         result = delete_response.json()
+        # return jsonify(result),200
         deleted_bookings = result["deleted_bookings"]
         print("sending email to inform user that their booking has been deleted...")
         for booking in deleted_bookings:
@@ -85,13 +87,13 @@ def delete_booking():
             email_to_send = {
                 "email": booking["email"],
                 "subject": "Booking Cancellation",
-                "message": f"Your booking at {booking['hotel']} in {booking['city']} from {booking['checkin']} to {booking['checkout']} has been cancelled by the hotel admin."
+                "message": f"Your booking at {booking['hotel']} from {booking['check_in_date']} to {booking['check_out_date']} has been cancelled due to overbooking. We apologise for any inconvenience caused."
             }
             channel.basic_publish(exchange=exchangename, routing_key="cancellation.email", 
             body=str(email_to_send), properties=pika.BasicProperties(delivery_mode = 2))
         return jsonify({"Cancelled_Bookings": deleted_bookings})
     else:
-        return jsonify({"message": delete_response["message"]})
+        return jsonify("An error occurred deleting the bookings"),delete_response.status_code
     
 
 if __name__ == '__main__':

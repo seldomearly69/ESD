@@ -25,7 +25,7 @@ def register_user():
                 "message": "Email already has an existing account"
             }
         ), 400
-    encoded_password = data["password"].encode('utf-8')
+    encoded_password = data["password"].encode('utf-8') 
     data["password"] = bcrypt.hashpw(encoded_password, bcrypt.gensalt())
     data["usertype"] = "customer"
     mongo.insert_one(data)

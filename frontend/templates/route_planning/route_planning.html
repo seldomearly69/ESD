@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Route Optimizer</title>
+
+
+    <!-- TO DO: TRANSFER MAPBOX AND MAPBOX DIRECTIONS INTO .JS FILES-->
+
+    <!-- Mapbox -->
+    <script src='https://api.mapbox.com/mapbox-gl-js/v3.0.0-beta.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v3.0.0-beta.1/mapbox-gl.css' rel='stylesheet' />
+
+    <!-- Mapbox Directions -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.css" type="text/css">
+    <link rel="stylesheet" href="/static/route_planning/styles.css">
+
+</head>
+
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="navbar-container">
+            <a style = "text-decoration: none;" href="../Nav/home.html">
+                <h1>Travel Management App</h1>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#">MyBookings</a></li>
+                <li><a href="#">Route Planner</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+
+        <!-- Left Side: Form -->
+        <div class="form">
+            <form id="locationForm">
+                <h1>Route Optimizer</h1>
+                
+                <div id="locationInputs">
+                    <!-- The first location input field -->
+                    <div class="location-input">
+                        <label for="location1">Location 1:</label>
+                        <input type="search" name="location" required>
+                        <div id="imageGallery"></div>
+                    </div>
+                </div>
+                <label for="transportModes">Mode of transport:</label>
+                <select id="transportModes">
+                    <option value="driving-traffic">Car-Live</option>
+                    <option value="driving" selected>Car</option>
+                    <option value="cycling">Cycle</option>
+                    <option value="walking">Walk</option>
+                </select>
+
+                <button type="button" onclick="addLocationInput()">Add Location</button>
+                <button type="submit">Calculate Distance</button>
+                <button type="button" id="optimizeRouteButton">Optimize Route!</button>
+                <button id="tourButton">Bring me for a Tour!</button>
+            </form>
+        </div>
+
+        <!-- Middle: Time of Day -->
+
+        <!-- Right Side: Map and Saved Routes-->
+        <div class="right-side" >
+        <div class="map">
+            <div class="map-overlay">
+                <button id="dawn">Dawn</button>
+                <button id="day">Day</button>
+                <button id="dusk">Dusk</button>
+            </div>
+            <div id='map' style='width: 100%; height: 100%;'></div>
+            <div id='map' style='width: 100%; height: 100%;'></div>
+        </div>
+        <div class = "saved-routes-container">
+            <h1>My Routes</h1>
+
+        </div>
+        </div>
+
+    </div>
+
+    <script src="/static/route_planning/script.js"></script>
+</body>
+</html>

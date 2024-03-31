@@ -1,0 +1,45 @@
+_format_version: "3.0"
+_transform: true
+
+
+services:
+  - name: search
+    url: http://booking_management:5008/search
+    routes:
+      - name: search
+        paths:
+          - /api/v1/search
+        methods:
+          - POST
+          - OPTIONS
+        
+  - name: create-payment-intent
+    url: http://booking_management:5008/payment
+    routes:
+      - name: create-payment-intent
+        paths:
+          - /api/v1/payment
+        methods:
+          - POST
+          - OPTIONS
+
+  - name: confirm-booking
+    url: http://booking_management:5008/confirm_booking
+    routes:
+      - name: confirm-booking
+        paths:
+          - /api/v1/confirm_booking
+        methods:
+          - POST
+          - OPTIONS
+  
+  - name: hotel-management
+    url: http://hotel_management:5010/delete_booking
+    routes:
+      - name: hotel-management
+        paths:
+          - /api/v1/delete_booking
+        methods:
+          - POST
+          - OPTIONS
+

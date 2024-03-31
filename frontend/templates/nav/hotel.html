@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Management App</title>
+    <link rel="stylesheet" href="/static/nav/styles.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="navbar-container">
+            <a style="text-decoration: none;" href="http://localhost:5050/home">
+                <h1>Travel Management App</h1>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#">My Bookings</a></li>
+                <li><a href="#">Route Planner</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="home-container">
+        <h2>Welcome to Your Travel Management App</h2>
+        <div class="options-container">
+            <div class="option-card" onclick="window.location.href='http://localhost:5050/hotel_search';">
+                <h3>Search Hotels</h3>
+                <p>Discover comfortable places to stay on your journey.</p>
+            </div>
+            <div class="option-card" onclick="window.location.href='http://localhost:5050/booking';">
+                <h3>Skip</h3>
+                <p>I wish to be homeless on vacation</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

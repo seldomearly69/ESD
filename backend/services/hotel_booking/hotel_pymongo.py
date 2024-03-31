@@ -58,22 +58,23 @@ def create_hotel_booking():
 
 @app.route("/bookings", methods=['DELETE'])
 def delete_bookings():
+    print(1,flush=True)
     data = request.get_json()
-
-    city_name = data["city"]
+    print(2,flush=True)
+    
     hotel_name = data["hotel"]
     dates = data["dates"]
-        
-    deleted_bookings_cursor = mongo.db.Hotel.find({"city": city_name, "hotel": hotel_name, "checkin": {"$in": dates}})
-    deleted_bookings_data = [Hotel.json(booking) for booking in deleted_bookings_cursor]
-    
-    
-    result = mongo.db.Hotel.delete_many({"city": city_name, "hotel": hotel_name, "checkin": {"$in": dates}})
+    criteria = [{"check_in_date": {"$in": dates}},{"check_out_date": {"$in": dates}},{"check_in_date": {"$nin": dates},"check_out_date": {"$nin": dates}}]
+    to_delete = []
+    to_delete += [booking for booking in mongo.db.Hotel.find({"hotel": hotel_name, "$or": criteria})]
+    if len(to_delete)== 0:
+        return jsonify({"message": "No matching bookings found."}), 404
 
-    if result.deleted_count > 0:
-        return jsonify({"deleted_bookings": deleted_bookings_data}), 200
+    for b in to_delete:
+        b["_id"] = str(b["_id"])
 
-    return jsonify({"message": "No matching bookings found."}), 404
+    result = mongo.db.Hotel.delete_many({"hotel": hotel_name, "$or": criteria})
+    return jsonify({"deleted_bookings": to_delete}), 200
 
 
 

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Info</title>
+    <link rel="stylesheet" href="../../static/hotel_info/styles.css">
+
+
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="http://localhost:6000/home" class="navbar-brand">Travel Management App</a>
+            <ul class="nav-links">
+                <li><a href="#">My Bookings</a></li>
+                <li><a href="#">Route Planner</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="hotel-info">
+            <div class="header">
+                <h1 class="hotel-name"></h1>
+                <p class="description"></p>
+            </div>
+            <div class="details">
+                <div class="info-section">
+                    <p class="hotel-class"></p>
+                    <p class="lowest-rate"></p>
+                    <p class="check-in-out"></p>
+                </div>
+                <div class="info-section">
+                    <p class="amenities">Amenities:</p>
+                    <ul class="amenities-list">
+                    </ul>
+                </div>
+            </div>
+            <div class="rooms-booking">
+                <label for="num-rooms">No. of Rooms:</label>
+                <input type="number" id="num-rooms" name="num-rooms" min="1" max="5" value="1">
+                <div>(2 pax per room)</div>
+            </div>
+            <div class="ratings">
+                <div class="rating">
+                    <p class="rating-value"></p>
+                    <div class="stars">
+
+                    </div>
+                    <p class="reviews"></p>
+                </div>
+            </div>
+            <div class="nearby-places">
+                <h2>Nearby Places:</h2>
+                <ul>
+                </ul>
+            </div>
+            <button class="book-now">Book Now</button>
+        </div>
+    </div>
+
+    <script type="module" src="../../static/hotel_info/scripts.js"></script>
+</body>
+</html>
