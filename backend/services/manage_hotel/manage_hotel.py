@@ -142,13 +142,26 @@ def delete_booking():
         print("sending email to inform user that their booking has been deleted...")
         for booking in deleted_bookings:
             print(booking)
-            # TO-DO--> send the deleted booking as message to amqp broker, broker passes to 
-            # email microservice when it comes online???
-            email_to_send = {
-                "email": booking["email"],
-                "subject": "Booking Cancellation",
-                "message": f"Your booking at {booking['hotel']} from {booking['check_in_date']} to {booking['check_out_date']} has been cancelled due to overbooking. We apologise for any inconvenience caused."
-            }
+            # send refund to users
+            refund_data = {"payment_intent_id": booking["price"]["payment_id"], "amount": booking["price"]["amount"]};
+            print(refund_data)
+            refund_response = requests.post("http://payment:5020/refund", json = refund_data);
+            print(refund_response)
+            if delete_response.status_code == 200:
+              print("refund success!!")
+              email_to_send = {
+                  "email": booking["email"],
+                  "subject": "Booking Cancellation",
+                  "message": f"Your booking at {booking['hotel']} from {booking['check_in_date']} to {booking['check_out_date']} has been cancelled due to overbooking. We apologise for any inconvenience caused.We have refunded your payment of amount {refund_data["amount"]}."
+              }
+            else:
+               print("refund failed!")
+               email_to_send = {
+                  "email": booking["email"],
+                  "subject": "Booking Cancellation",
+                  "message": f"Your booking at {booking['hotel']} from {booking['check_in_date']} to {booking['check_out_date']} has been cancelled due to overbooking. We apologise for any inconvenience caused."
+                }
+              
             channel.basic_publish(exchange=exchangename, routing_key="cancellation.email", 
             body=str(email_to_send), properties=pika.BasicProperties(delivery_mode = 2))
         return jsonify({"Cancelled_Bookings": deleted_bookings})

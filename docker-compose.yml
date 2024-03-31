@@ -137,6 +137,7 @@ services:
       - internal_network
 ################################
 # Hotel Booking [Microservice]
+
 ################################
   hotel_booking:
     container_name: hotel_booking
