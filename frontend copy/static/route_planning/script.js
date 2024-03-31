@@ -131,27 +131,44 @@ document.getElementById('route-naming-form').addEventListener('submit', function
     reloadSavedRoutes();
 });
 
-document.getElementsByClassName('save-all-btn')[0].addEventListener("click", function(event){
-    const url = "http://localhost:5001/routes/save/" + sessionStorage.getItem("email");
-    fetch(url ,{
+
+
+document.getElementsByClassName('save-all-btn')[0].addEventListener("click", function(event) {
+    const email = sessionStorage.getItem("email");
+    if (!email) {
+        console.error("Email not found in session storage");
+        return;
+    }
+    
+    const url = "http://localhost:5013/routes/save/" + email;
+    const options = {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(savedRoutes)
-    }).then(response=>{
-        if (response.ok){
+    };
+
+    fetch(url, options)
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error(response.status);
+            }
+        })
+        .then(data => {
+            console.log(data);
             alert("Routes saved successfully!");
-            return response.json();
-        }else{
-            throw new Error(response.status);
-        }
-    }).then(data=>{
-        console.log(data);
-    }).catch(error=>{
-        console.log('Error:', error.message);
-    })
-})
+        })
+        .catch(error => {
+            console.error('Error:', error.message);
+            alert("Error saving routes. Please try again later.");
+        });
+});
+
+
+
 
 // Add event listener to the location input field
 document.querySelector('#locationInputs input[type="search"]').addEventListener('change', async function (e) {
