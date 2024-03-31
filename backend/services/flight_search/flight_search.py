@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-
+from flasgger import Swagger
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
 from bson import ObjectId
@@ -14,6 +14,12 @@ app = Flask(__name__)
 CORS(app)
 
 
+app.config['SWAGGER'] = {
+    'title': 'Flight Search API',
+    'uiversion': 3,
+    'description':"Allows post request for flight search"
+}
+swagger = Swagger(app)
 
 def connect_to_db():
     max_retries = 30
@@ -41,7 +47,94 @@ db = client["flightsearches"]
 
 @app.route("/flights", methods=["POST"])
 def search():
-    
+    """
+    Search for flights based on given parameters
+    ---
+    tags:
+      - Flights
+    description: Search for flights using various search parameters.
+    consumes:
+      - application/json
+    produces:
+      - application/json
+    parameters:
+      - in: header
+        name: SERPAPI-KEY
+        type: string
+        required: true
+        description: API key required to authorize the request
+      - in: body
+        name: body
+        description: Flight search parameters including the user's email
+        required: true
+        schema:
+          type: object
+          required:
+            - email
+          properties:
+            email:
+              type: string
+              description: Email address of the user performing the search
+            departure_airport:
+              type: string
+              description: IATA code of the departure airport
+            arrival_airport:
+              type: string
+              description: IATA code of the arrival airport
+            departure_date:
+              type: string
+              format: date
+              description: Departure date in YYYY-MM-DD format
+            return_date:
+              type: string
+              format: date
+              description: Return date in YYYY-MM-DD format
+            adults:
+              type: integer
+              description: Number of adults
+            children:
+              type: integer
+              description: Number of children
+            infants:
+              type: integer
+              description: Number of infants
+            travel_class:
+              type: string
+              description: Travel class (e.g., economy, business)
+    responses:
+      200:
+        description: An array of search results matching the criteria
+      400:
+        description: Invalid input parameters
+    definitions:
+      FlightResult:
+        type: object
+        properties:
+          airline:
+            type: string
+            description: Name of the airline
+          flight_number:
+            type: string
+            description: Flight number
+          departure_airport:
+            type: string
+            description: Departure airport IATA code
+          arrival_airport:
+            type: string
+            description: Arrival airport IATA code
+          departure_time:
+            type: string
+            format: datetime
+            description: Departure time
+          arrival_time:
+            type: string
+            format: datetime
+            description: Arrival time
+          price:
+            type: number
+            format: float
+            description: Price of the flight
+    """
     data = request.get_json()
     print(data,flush=True)
 
