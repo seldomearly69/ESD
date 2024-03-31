@@ -471,7 +471,7 @@ function addLocationInput(value = null) {
     newLocationInput.classList.add('location-input');
     newLocationInput.innerHTML = `
         <label for="location${locationCount}">Location ${locationCount}:</label>
-        <input type="search" name="location" onchange="checkLocationValidity(this)">
+        <input type="search" name="location">
         <div class="location-images"></div>
     `;
     if (value != null){
