@@ -54,8 +54,8 @@ body, html {
     color: #ef233c; /* Bright accent color for interactivity */
 }
 
-a:visited {
-    color: inherit; /* Use the same color as the default text color */
+a, a:visited {
+    color: inherit;
 }
 
 /* Container styles */
@@ -65,8 +65,11 @@ a:visited {
     margin: 40px;
 }
 
+
+
 /* Form styles */
 .form {
+    position: relative;
     flex: 1;
     background-color: #fff;
     border-radius: 5px;
@@ -111,6 +114,25 @@ input[type="search"], select, button {
     color: #fff;
     cursor: pointer;
     transition: background-color 0.3s ease;
+}
+
+/* Add route button */
+.add-route-btn, .save-all-btn{
+    position: absolute;
+    top: 20px; /* Adjust as needed */
+    right: 20px; /* Adjust as needed */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #00b330 !important;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    z-index: 1;
+}
+
+.add-route-btn:hover, .save-all-btn:hover {
+    background-color: #00701e !important;
 }
 
 /* Time of Day styles */
@@ -201,3 +223,147 @@ input[type="search"], select, button {
     flex-direction: column;
     flex:2;
 }
+
+.saved-route-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #f8f9fa; /* Light background for each item */
+    border-radius: 8px;
+    margin-bottom: 10px; /* Space between items */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: background-color 0.2s ease, box-shadow 0.3s ease;
+    cursor: pointer; /* Indicate that the item is clickable */
+}
+
+.saved-route-item:hover {
+    background-color: #e9ecef; /* Slightly darker background on hover */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* More pronounced shadow for depth effect */
+}
+
+.route-name {
+    font-weight: bold;
+    color: #2b2d42; /* Matching the theme color */
+}
+
+.delete-route-btn {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #dc3545; /* Bootstrap danger color for delete action */
+    color: white;
+    cursor: pointer; /* Indicate that the button is clickable */
+    transition: opacity 0.2s ease, background-color 0.2s ease;
+    z-index: 1;
+    transition: transform 0.3s ease-in-out;
+}
+
+.delete-route-btn:hover {
+    opacity: 0.8; /* Slight feedback on hover */
+    background-color: #c82333; /* Slightly darker background on hover for the button */
+    transform: scale(1.1);
+}
+
+/* Further refinement for responsive design */
+@media (max-width: 768px) {
+    .saved-route-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .delete-route-btn {
+        margin-top: 5px; /* Space between route name and delete button on smaller screens */
+    }
+}
+
+/* The Modal (background) */
+.modal{
+    position: fixed; /* Stay in place */
+    z-index: 2; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    justify-content: center;
+    align-items: center;
+    display: flex; /* Use flexbox */
+    justify-content: center; /* Horizontally center the modal */
+    align-items: center; /* Vertically center the modal */
+}
+
+.hidden{
+    display: none;
+}
+
+/* Modal Content */
+.modal-content, .modal-content .form {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    animation: modalFadeIn 0.4s;
+}
+
+@keyframes modalFadeIn {
+    from {transform: translateY(-50px); opacity: 0;}
+    to {transform: translateY(0); opacity: 1;}
+}
+
+/* The Close Button */
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal h2 {
+    margin-top: 0;
+    color: #333;
+}
+
+.modal p {
+    margin: 20px 0;
+}
+
+/* Input field */
+#routeNameInput {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+/* Save Button */
+#addRouteBtn {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50; /* Green */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#addRouteBtn:hover {
+    background-color: #45a049;
+}
+
+
