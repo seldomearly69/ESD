@@ -70,7 +70,7 @@ app.post('/geocode', async (req, res) => {
 
 
 // Endpoint to find booking by email
-app.get('/find-booking/:email', async (req, res) => {
+app.get('/routes/get/:email', async (req, res) => {
     const { email } = req.params;
 
     try {

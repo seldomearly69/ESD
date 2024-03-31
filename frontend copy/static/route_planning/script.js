@@ -1,3 +1,4 @@
+sessionStorage.setItem("email","abc@gmail.com");
 var mapStyleSet = false;
 var locations = [];
 var currentMode = 'driving';
@@ -15,7 +16,7 @@ var map = new mapboxgl.Map({
 
 async function getSavedRoutes() {
     const email = sessionStorage.getItem("email");
-    const url = `http://localhost:8000/api/v1/find_booking/${email}`;
+    const url = `http://localhost:8000/api/v1/routes/get/${email}`;
     try {
         const response = await fetch(url, {
             method: 'GET',

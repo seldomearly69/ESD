@@ -43,27 +43,27 @@ services:
           - DELETE
           - OPTIONS
 
-- name: find-booking
-    url: http://plan_route:5013/find-booking
+  - name: get-routes
+    url: http://plan_route:5013/routes/get
     routes:
-      - name: find-booking
+      - name: get-routes
         paths:
-          - /api/v1/find_booking
+          - /api/v1/routes/get
         methods:
           - GET
           - OPTIONS
 
-- name: save-booking
+  - name: save-routes
     url: http://plan_route:5013/routes/save
     routes:
-      - name: save-booking
+      - name: save-routes
         paths:
           - /api/v1/routes/save
         methods:
           - PUT
           - OPTIONS
 
-- name: validate-location
+  - name: validate-location
     url: http://plan_route:5013/validate-location
     routes:
       - name: validate-location
@@ -73,7 +73,7 @@ services:
           - POST
           - OPTIONS
 
-- name: calculate-distance
+  - name: calculate-distance
     url: http://plan_route:5013/calculate-distance
     routes:
       - name: calculate-distance
@@ -83,7 +83,7 @@ services:
           - POST
           - OPTIONS
 
-- name: geocode
+  - name: geocode
     url: http://plan_route:5013/geocode
     routes:
       - name: geocode
