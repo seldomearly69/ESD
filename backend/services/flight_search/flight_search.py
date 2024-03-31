@@ -46,7 +46,7 @@ def search():
     print(data,flush=True)
 
     coll = db[data["email"]]
-
+    
     temp = data
     temp["output"] = "json"
     temp["source"] = "python"
