@@ -1,7 +1,3 @@
-// session info for testing
-
-sessionStorage.setItem("email","abc@gmail.com");
-
 var airports = [];
 let params = {};
 let today = new Date();
