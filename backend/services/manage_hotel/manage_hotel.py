@@ -3,9 +3,16 @@ from flask_cors import CORS
 import requests
 import pika
 import time, sys
+from flasgger import Swagger
 
 app = Flask(__name__)
 CORS(app)
+app.config['SWAGGER'] = {
+    'title': 'Manage hotel API',
+    'uiversion': 3,
+    'description':"Allows post request for managing hotel"
+}
+swagger = Swagger(app)
 
 hostname = "rabbitmq" # default hostname
 port = 5672            # default port
@@ -69,6 +76,7 @@ if not check_exchange(channel, exchangename, exchangetype):
     
 @app.route("/delete_bookings", methods=["DELETE"])
 def delete_booking():
+    
     print(1,flush=True)
     data = request.get_json()
     print(data,flush=True)
