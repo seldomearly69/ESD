@@ -40,6 +40,6 @@ services:
         paths:
           - /api/v1/delete_booking
         methods:
-          - POST
+          - DELETE
           - OPTIONS
 
