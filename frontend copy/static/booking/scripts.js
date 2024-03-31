@@ -2,6 +2,8 @@ console.log(sessionStorage);
 let fInfo = null;
 let hInfo = null;
 let total = 0;
+let hotel_amt = 0;
+let flight_amt = 0;
 if (sessionStorage.getItem("hInfo") !== null){
     hInfo = JSON.parse(sessionStorage.getItem("hInfo"));
     console.log(hInfo);
@@ -10,6 +12,8 @@ if (sessionStorage.getItem("hInfo") !== null){
     let d2 = new Date(hInfo.stay[1]);
     let daydiff = (d2.getTime() - d1.getTime())/1000/3600/24;
     total += hInfo.rate_per_night.lowest.slice(1) * hInfo.num_rooms * daydiff;
+    //store the amount user pays for hotel
+    hotel_amt = hInfo.rate_per_night.lowest.slice(1) * hInfo.num_rooms * daydiff;
     document.getElementsByClassName("selection")[0].innerHTML += `<h3>Hotel Details:</h3><br>`;
     document.getElementsByClassName("selection")[0].innerHTML += `
         <div class="hotel-card">
@@ -32,6 +36,8 @@ if (sessionStorage.getItem("fInfo") !== null){
     document.getElementsByClassName("selection")[0].innerHTML += `<h3>Flight Details:</h3>`;
     fInfo.forEach((f,index) => {
         total += f.data.price;
+        //store the amount user pays for flight
+        flight_amt += f.data.price
         f.html = f.html.replace("Total:", "");
         let icon = "";
         if (index == 0){
@@ -102,7 +108,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('success-message').classList.add('hidden');
     // Assuming there's an input with an id of 'amount' to specify the payment amount
     var amountInCents = parseInt(total) * 100;
-    console.log(amountInCents)
+    var amountInCentsHotel = parseInt(hotel_amt);
+    var amountInCentsFlight = parseInt(flight_amt);
+    console.log(amountInCents, amountInCentsFlight, amountInCentsHotel)
 
     fetch('http://localhost:8000/api/v1/payment', {
         method: 'POST',
@@ -114,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(data => {
         console.log(data)
         const clientSecret = data.clientSecret;
-
+        const paymentIntent_id = data.paymentIntent_id
         stripe.confirmCardPayment(clientSecret, {
             payment_method: {card: card}
         })
@@ -126,15 +134,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.log('Payment succeeded!');
 
                     // Prepare booking info
-                    let body = {};
+                    let body = {paymentIntent_id: paymentIntent_id};
                     if (fInfo != null) {
-                        body.flight = {"departure": fInfo[0].data};
+                        body.flight = {"departure": fInfo[0].data, "amount": amountInCentsFlight};
                         if (fInfo.length==2){
                             body.flight.arrival = fInfo[1].data;
                         }
                     }
                     if (hInfo != null) {
-                        body.hotel = {"hotel": hInfo};
+                        body.hotel = {"hotel": hInfo, "amount": amountInCentsHotel};
                     }
                     body.dayTime = new Date();
                     body.email = sessionStorage.getItem("email");

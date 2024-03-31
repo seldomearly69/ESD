@@ -32,7 +32,7 @@ def create_payment_intent():
             'status': 'created'
         })
         print(intent)
-        return jsonify({'clientSecret': intent.client_secret}), 200
+        return jsonify({'clientSecret': intent.client_secret, 'paymentIntent_id': intent.id}), 200
     except stripe.error.StripeError as e:
         print(e)
         return jsonify(error=str(e)), 400
