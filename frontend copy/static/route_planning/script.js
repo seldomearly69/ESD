@@ -597,7 +597,7 @@ async function calculateOptimalRoute() {
             }
 
 
-            
+
             if (map.getLayer('optimizedRoute')) {
                 map.removeLayer('optimizedRoute');
             }

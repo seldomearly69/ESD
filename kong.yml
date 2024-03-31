@@ -4,7 +4,7 @@ _transform: true
 
 services:
   - name: search
-    url: http://booking_management:5008/search
+    url: http://manage_booking:5008/search
     routes:
       - name: search
         paths:
@@ -14,7 +14,7 @@ services:
           - OPTIONS
         
   - name: create-payment-intent
-    url: http://booking_management:5008/payment
+    url: http://manage_booking:5008/payment
     routes:
       - name: create-payment-intent
         paths:
@@ -24,7 +24,7 @@ services:
           - OPTIONS
 
   - name: confirm-booking
-    url: http://booking_management:5008/confirm_booking
+    url: http://manage_booking:5008/confirm_booking
     routes:
       - name: confirm-booking
         paths:
@@ -34,7 +34,7 @@ services:
           - OPTIONS
   
   - name: hotel-management
-    url: http://hotel_management:5010/delete_booking
+    url: http://manage_hotel:5010/delete_booking
     routes:
       - name: hotel-management
         paths:

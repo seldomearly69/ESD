@@ -3,4 +3,4 @@ WORKDIR /usr/src/app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
-CMD ["python", "hotel_management.py"]
+CMD ["python", "manage_hotel.py"]
