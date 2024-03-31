@@ -3,6 +3,8 @@ const mongoose = require("mongoose")
 const cors = require('cors');
 const Hotel = require("./models/searchResults");
 const { getJson } = require("serpapi");
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.yaml');
 
 //function to connect to DB 
 const connectDB = async (url) => {
@@ -27,6 +29,7 @@ const app = express();
 app.use(express.json())
 app.use(cors())
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 //get api results from google hotel and store in DB
 const fetchHotels = async (req, res) => {
