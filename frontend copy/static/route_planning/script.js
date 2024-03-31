@@ -429,7 +429,7 @@ async function calculateOptimalRoute() {
             if (!sequence.includes(i)) {
                 try {
                     // Fetch the distance from the backend route
-                    const response = await fetch('http://localhost:5006/calculate-distance', {
+                    const response = await fetch('http://localhost:5013/calculate-distance', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -553,7 +553,7 @@ async function calculateOptimalRoute() {
 function geocodeAndAddWaypoint(locationName) {
     return new Promise((resolve, reject) => {
         // Make a request to the backend route for geocoding
-        fetch(`http://localhost:5006/geocode`, {
+        fetch(`http://localhost:5013/geocode`, {
         method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
