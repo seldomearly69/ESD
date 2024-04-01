@@ -1,4 +1,3 @@
-sessionStorage.setItem("email","abc@gmail.com");
 var mapStyleSet = false;
 var locations = [];
 var currentMode = 'driving';
