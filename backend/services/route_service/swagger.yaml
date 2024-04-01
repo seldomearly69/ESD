@@ -1,0 +1,93 @@
+openapi: 3.0.0
+info:
+  title: Route Service API
+  version: 1.0.0
+  description: API endpoints for route service
+servers:
+  - url: http://localhost:5006
+paths:
+  /calculate-distance:
+    post:
+      summary: Calculate distance between two points
+      description: Calculate the Euclidean distance between two points.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                coord1:
+                  type: object
+                  properties:
+                    latitude:
+                      type: number
+                      format: double
+                      example: 2.8284271247461903
+                coord2:
+                  type: object
+                  properties:
+                    longitude:
+                      type: number
+                      format: double
+                      example: -8.8284271247461903
+      responses:
+        '200':
+          description: Successful calculation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  distance:
+                    type: number
+                    format: double
+                    example: 2.8284271247461903
+        '400':
+          description: Invalid coordinates
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid coordinates
+  /geocode:
+    post:
+      summary: Geocode a location
+      description: Retrieve the geographical coordinates of a location.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                locationName:
+                  type: string
+                  example: "Singapore National Muesuem"
+      responses:
+        '200':
+          description: Successful geocoding
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  coordinates:
+                    type: array
+                    items:
+                      type: number
+                    minItems: 2
+                    maxItems: 2
+                    example: [103.8198, 1.3521]
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string

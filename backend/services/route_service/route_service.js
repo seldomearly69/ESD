@@ -1,13 +1,17 @@
 const express = require("express");
 const axios = require('axios');
 const cors = require('cors');
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
 
+const swaggerDocument = YAML.load('./swagger.yaml');
 
 const app = express();
 const PORT = process.env.PORT || 5006;
 
 app.use(express.json());
 app.use(cors());
+app.use('/apidocs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 
 
@@ -25,6 +29,7 @@ app.post('/calculate-distance', (req, res) => {
         return res.status(400).json({ error: 'Invalid coordinates' });
     }
     const distance = calculateDistance(coord1, coord2);
+    console.log(distance)
     res.json({ distance });
 });
 

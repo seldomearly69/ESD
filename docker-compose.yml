@@ -80,6 +80,8 @@ services:
       - 5006:5006
     networks:
       - internal_network
+    environment:
+      NODE_ENV: development
 
 #################################
 # error_handling [Microservice]

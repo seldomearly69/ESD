@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 5013;
 
 app.use(express.json());
 app.use(cors());
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/apidocs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // Endpoint for location validation
 app.post('/validate-location', async (req, res) => {
     const { locationName, userCountry } = req.body;
