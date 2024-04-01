@@ -22,7 +22,7 @@ app.post('/validate-location', async (req, res) => {
             locationName,
             userCountry
         });
-
+        console.log(response.data)
         res.json(response.data);
     } catch (error) {
         console.error('Error validating location:', error);
@@ -42,7 +42,7 @@ app.post('/calculate-distance', async (req, res) => {
             coord1,
             coord2
         });
-
+        console.log(response.data)
         res.json(response.data);
     } catch (error) {
         console.error('Error calculating distance:', error);
@@ -61,7 +61,7 @@ app.post('/geocode', async (req, res) => {
         const response = await axios.post('http://host.docker.internal:5006/geocode', {
             locationName
         });
-
+        console.log(response.data)
         res.json(response.data);
     } catch (error) {
         console.error('Error geocoding location:', error);
@@ -78,7 +78,7 @@ app.get('/routes/get/:email', async (req, res) => {
     try {
         // Call the backend simple microservice to find bookings by email
         const response = await axios.get(`http://host.docker.internal:5001/routes/get/${email}`);
-
+        console.log(response.data)
         res.json(response.data);
     } catch (error) {
         console.error('Error finding booking by email:', error);
@@ -100,7 +100,7 @@ app.put("/routes/save/:email", async (req, res) => {
                 "Content-Type": "application/json",
             },
         });
-
+        console.log(response.data)
         res.json(response.data);
     } catch (error) {
         console.error("Error saving routes:", error);
