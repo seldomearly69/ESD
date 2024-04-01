@@ -147,7 +147,7 @@ def delete_booking():
             print(refund_data)
             refund_response = requests.post("http://payment:5020/refund", json = refund_data);
             print(refund_response)
-            if delete_response.status_code == 200:
+            if refund_response.status_code == 200:
               print("refund success!!")
               email_to_send = {
                   "email": booking["email"],
