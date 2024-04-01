@@ -1,7 +1,7 @@
 var hotel = JSON.parse(sessionStorage.getItem("hInfo"));
 
 if (hotel === null){
-    window.location.href = "../Nav/home.html";
+    window.location.href = "/home";
 }
 console.log(hotel);
 document.getElementsByClassName("hotel-name")[0].innerHTML = hotel.name;
@@ -22,7 +22,7 @@ for (let a of hotel.amenities){
     amenityElement.innerHTML = a
     amenities.appendChild(amenityElement)
 }
-const rating = hotel.overall_rating.toFixed(2);
+const rating = hotel.overall_rating ? hotel.overall_rating.toFixed(2): "No rating available";
 document.getElementsByClassName("rating-value")[0].innerHTML = rating;
 for (let i = 0; i < Math.floor(rating); i++){
     document.getElementsByClassName("stars")[0].innerHTML += "<span class='star'>&#9733;</span>";
@@ -51,9 +51,9 @@ document.addEventListener("DOMContentLoaded", function() {
         temp.num_rooms = document.getElementById("num-rooms").value;
         sessionStorage.setItem("hInfo", JSON.stringify(temp));
         if (sessionStorage.getItem('fInfo') === null){
-            window.location.href = 'http://localhost:5050/flight';
+            window.location.href = '/flight';
         }else{
-            window.location.href = 'http://localhost:5050/booking';
+            window.location.href = '/booking';
         }
     });
     

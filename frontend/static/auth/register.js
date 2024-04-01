@@ -17,7 +17,7 @@ document.getElementById("register-form").addEventListener("submit", function(eve
         .then(response => {
             if (response.status == 201){
                 alert("Registration Successful!");
-                window.location.href = 'http://localhost:5050/login';
+                window.location.href = 'login.html';
             }
             if (response.status == 400){
                 throw new Error('Account already exists!');

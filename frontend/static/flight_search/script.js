@@ -73,10 +73,11 @@ async function callFlightSearch(params){
   resultsContainer.classList.remove('hidden');
 }
 
-fetch("/static/flight_search/airports.txt")
+fetch("../../static/flight_search/resources/airports.txt")
   .then(response => {
     if (!response.ok) {
-      throw new Error('Failed to fetch file');
+      console.log(1);
+      // throw new Error('Failed to fetch file');
     }
     return response.text();
   })
@@ -167,15 +168,25 @@ function createFlightCard(flight) {
 function chooseFlight(flight, flightElement) {
   if (sessionStorage.getItem("fInfo") == null){
     sessionStorage.setItem("fInfo",JSON.stringify([{data: flight, html:flightElement}]));
-    params.departure_token = flight.departure_token;
-    callFlightSearch(params);
+    if (params.type == 1){
+      params.departure_token = flight.departure_token;
+      callFlightSearch(params);
+    }else{
+      if (sessionStorage.getItem("hInfo")!=null){
+        window.location.href = "/booking";
+      }else{
+        window.location.href = "/hotel";
+      }
+    }
+    
   }else{
+    
     const fInfo = JSON.parse(sessionStorage.getItem("fInfo"));
     sessionStorage.setItem("fInfo",JSON.stringify(fInfo.concat([{data: flight, html:flightElement}])));
     if (sessionStorage.getItem("hInfo")!=null){
-      window.location.href = "http://localhost:5050/booking";
+      window.location.href = "/booking";
     }else{
-      window.location.href = "http://localhost:5050/hotel";
+      window.location.href = "/hotel";
     }
     
   }

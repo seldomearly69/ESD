@@ -1,4 +1,3 @@
-
 var mapStyleSet = false;
 var locations = [];
 var currentMode = 'driving';
