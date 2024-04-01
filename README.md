@@ -56,4 +56,5 @@ Password: admin
 ## Help
 
 1. If it does not run as intended, try removing all images before running docker compose build again.
+2. There are multiple services that depend on rabbitmq connection, so please retry docker compose up if the service run out of retries.
 
