@@ -8,12 +8,10 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById('loading-indicator').classList.remove('hidden');
         
         const hotel = document.getElementById("hotel").value;
-        const city = document.getElementById("city").value;
         const sdate = document.getElementById("sdate").value;
         const edate = document.getElementById("edate").value;
 
         console.log(hotel)
-        console.log(city)
         console.log(sdate)
         console.log(edate)
         
