@@ -106,6 +106,9 @@ services:
       - 5013:5013
     networks:
       - internal_network
+    environment:
+      NODE_ENV: development
+    
 
 #################################
 # flight_search [Microservice]
