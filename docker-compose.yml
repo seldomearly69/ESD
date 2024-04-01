@@ -130,6 +130,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - 5008:5008
+    depends_on:
+      - rabbitmq
     environment:
       PYTHONUNBUFFERED: 1
     networks:
