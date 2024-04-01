@@ -1,5 +1,3 @@
-// for testing
-sessionStorage.setItem("email", "abc@gmail.com");
 var mapStyleSet = false;
 var locations = [];
 var currentMode = 'driving';
@@ -17,7 +15,7 @@ var map = new mapboxgl.Map({
 
 async function getSavedRoutes() {
     const email = sessionStorage.getItem("email");
-    const url = `http://localhost:5013/find-booking/${email}`;
+    const url = `http://localhost:8000/api/v1/routes/get/${email}`;
     try {
         const response = await fetch(url, {
             method: 'GET',
@@ -140,7 +138,7 @@ document.getElementsByClassName('save-all-btn')[0].addEventListener("click", fun
         return;
     }
     
-    const url = "http://localhost:5013/routes/save/" + email;
+    const url = `http://localhost:8000/api/v1/routes/save` + email;
     const options = {
         method: 'PUT',
         headers: {
@@ -179,7 +177,7 @@ document.querySelector('#locationInputs input[type="search"]').addEventListener(
     // Get the user's country
     try {
         const userCountry = await getUserCountry();
-        const response = await fetch('http://localhost:5013/validate-location', {
+        const response = await fetch(`http://localhost:8000/api/v1/validate_location`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -283,7 +281,7 @@ document.getElementById('locationInputs').addEventListener('change', async funct
         // Get the user's country
         try {
             const userCountry = await getUserCountry();
-            const response = await fetch('http://localhost:5013/validate-location', {
+            const response = await fetch(`http://localhost:8000/api/v1/validate_location`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -508,7 +506,7 @@ function addLocationInput(value = null) {
         // Get the user's country
         try {
             const userCountry = await getUserCountry();
-            const response = await fetch('http://localhost:5013/validate-location', {
+            const response = await fetch(`http://localhost:8000/api/v1/validate_location`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -558,7 +556,7 @@ async function calculateOptimalRoute() {
             if (!sequence.includes(i)) {
                 try {
                     // Fetch the distance from the backend route
-                    const response = await fetch('http://localhost:5013/calculate-distance', {
+                    const response = await fetch(`http://localhost:8000/api/v1/calculate_distance`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -682,7 +680,7 @@ async function calculateOptimalRoute() {
 function geocodeAndAddWaypoint(locationName) {
     return new Promise((resolve, reject) => {
         // Make a request to the backend route for geocoding
-        fetch(`http://localhost:5013/geocode`, {
+        fetch(`http://localhost:8000/api/v1/geocode`, {
         method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

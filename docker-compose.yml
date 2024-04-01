@@ -24,8 +24,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - 5001:5001
-    environment:
-      DATABASE_URI: 'postgresql://is213:8CRjw8442oS@localhost:5433/is213'
+
     networks:
       - internal_network
 #################################
@@ -50,7 +49,7 @@ services:
         - 5003:5003
       environment:
         - mongoURL=mongodb+srv://ryanlee99324:BrImAqgUaXaNuEz6@esdproj.r2bp9gh.mongodb.net/
-        - serpapiKey=f3f6e4266e8a55e158eccff91716b1033839ff2368200bf47edd94ef78e8484b
+        - serpapiKey=5603380f38ff110c2d0ba86a1700706621799506e25936fb5069f0ca17d040bf
       networks:
         - internal_network
 #################################
@@ -65,7 +64,7 @@ services:
       - FLASK_APP=flight.py
       - FLASK_RUN_HOST=0.0.0.0
       - FLASK_RUN_PORT=5005
-      - DATABASE_URI=mysql+mysqlconnector://root:root@mysql-db:3306/flightdb
+
     networks:
       - internal_network
 
@@ -219,6 +218,8 @@ services:
       
     networks:
       - internal_network
+
+
 
 
 #######################################

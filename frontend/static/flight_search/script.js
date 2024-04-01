@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function() {
         engine:"google_flights",
         currency: "SGD",
         hl: "en",
-        api_key: "f3f6e4266e8a55e158eccff91716b1033839ff2368200bf47edd94ef78e8484b",
+        api_key: "5603380f38ff110c2d0ba86a1700706621799506e25936fb5069f0ca17d040bf",
       }
 
       console.log(document.getElementById("departure-airport"));

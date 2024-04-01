@@ -1,11 +1,348 @@
 
-
-
-// Replace 'YOUR_MAPBOX_ACCESS_TOKEN' with your actual Mapbox access token
+var mapStyleSet = false;
+var locations = [];
+var currentMode = 'driving';
+var savedRoutes = {};
 mapboxgl.accessToken = 'pk.eyJ1IjoiY3lydXMtdGFuIiwiYSI6ImNscTBydXh6ZDAxZGsyaXAxMnV3Y2lwbWEifQ.jfAQQFTfeVegGsuoaNh6Ow'; // Your Mapbox access token
 
 
+// Initialize the map
+var map = new mapboxgl.Map({
+    container: 'map',
+    center: [-0.1276, 51.5072],
+    zoom: 12,
+});
 
+
+async function getSavedRoutes() {
+    const email = sessionStorage.getItem("email");
+    const url = `http://localhost:8000/api/v1/routes/get/${email}`;
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data);
+            console.log(savedRoutes);
+            savedRoutes = data.data.routes;
+            console.log(savedRoutes);
+        } else if (response.status === 404) {
+            throw new Error("No saved routes");
+        } else {
+            throw new Error(response.status);
+        }
+    } catch (error) {
+        console.log('Error:', error.message);
+    }
+    console.log(savedRoutes);
+    return;
+}
+
+
+
+// Add event listener to save route button
+document.getElementsByClassName('add-route-btn')[0].addEventListener('click', function (e) {
+
+    // Get the modal
+    var modal = document.getElementById("routeNamingModal");
+    var span = document.getElementsByClassName("close-btn")[0];
+
+    // When the user clicks the button, open the modal 
+    modal.classList.remove("hidden");
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.classList.add("hidden");
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.classList.add("hidden");
+        }
+    }
+    
+})
+function reloadSavedRoutes(){
+    console.log(savedRoutes);
+    const container = document.getElementsByClassName("saved-routes-content")[0];
+    container.innerHTML = '';
+    if (Object.keys(savedRoutes).length == 0){
+        container.innerHTML = "<div>You have no saved routes</div>"
+    }
+    for (sr of Object.keys(savedRoutes)){
+        const child = createSavedRouteElement(sr, savedRoutes[sr]);
+        container.appendChild(child);
+    }
+    
+}
+
+function createSavedRouteElement(name, locs){
+    const srElement = document.createElement('div');
+    srElement.classList.add('saved-route-item');
+    console.log(name);
+    srElement.innerHTML = 
+    `<span class="route-name">${name}</span>`;
+
+    const btn = document.createElement('button');
+    btn.classList.add('delete-route-btn');
+    btn.innerHTML = `<i class="fa-solid fa-trash-can"></i>`;
+    btn.addEventListener('click', function (e) {
+        delete savedRoutes[name];
+        reloadSavedRoutes();
+    })
+    srElement.appendChild(btn);
+    // Add event listener to the "Add to Booking Basket" button
+    srElement.addEventListener('click', () => {
+        chooseRoute(locs);
+    });
+
+
+    return srElement;
+}
+
+function chooseRoute(locs){
+    console.log(locs);
+    const parent = document.getElementById('locationInputs');
+    console.log(parent);
+    parent.innerHTML = '';
+    for (l of locs){
+        console.log(l);
+        addLocationInput(l);
+    }
+}
+document.getElementById('route-naming-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    // Form is valid, you can proceed with your form submission actions here
+    const routeName = document.getElementById('routeNameInput').value;
+    console.log('Saving route with name:', routeName);
+    document.getElementById('routeNamingModal').classList.add('hidden');
+    const inputs = document.getElementsByName('location');
+    var locs = [];
+    for (i of inputs){
+        locs.push(i.value);
+    }
+    savedRoutes[routeName] = locs;
+    reloadSavedRoutes();
+});
+
+
+
+document.getElementsByClassName('save-all-btn')[0].addEventListener("click", function(event) {
+    const email = sessionStorage.getItem("email");
+    if (!email) {
+        console.error("Email not found in session storage");
+        return;
+    }
+    
+    const url = `http://localhost:8000/api/v1/routes/save` + email;
+    const options = {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(savedRoutes)
+    };
+
+    fetch(url, options)
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error(response.status);
+            }
+        })
+        .then(data => {
+            console.log(data);
+            alert("Routes saved successfully!");
+        })
+        .catch(error => {
+            console.error('Error:', error.message);
+            alert("Error saving routes. Please try again later.");
+        });
+});
+
+
+
+
+// Add event listener to the location input field
+document.querySelector('#locationInputs input[type="search"]').addEventListener('change', async function (e) {
+    e.preventDefault(); // Prevent default form submission behavior
+
+    // Get the entered location value
+    const locationName = e.target.value;
+    // Get the user's country
+    try {
+        const userCountry = await getUserCountry();
+        const response = await fetch(`http://localhost:8000/api/v1/validate_location`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ locationName, userCountry }) // Include userCountry in the request body
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data);
+            if (data.isValid)  {
+                e.target.style.borderColor = 'grey';
+                console.log('Location is valid');
+            } else {
+                // Reset the input field value if location is not valid
+                e.target.value = '';
+                e.target.style.borderColor = 'red';
+                alert('Please enter a location within your country.');
+            }
+        } else {
+            console.error('Server error:', response.statusText);
+            alert('Error occurred while validating location. Please try again later.');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An unexpected error occurred. Please try again later.');
+    }
+});
+
+
+
+
+
+
+// Initialize event listeners for 'mouseenter' and 'mouseleave' for the route
+map.on('mouseenter', 'route', function (e) {
+    var coordinates = e.features[0].geometry.coordinates;
+    var totalDistance = (distance / 1000).toFixed(2); // Convert meters to kilometers
+    var totalTime = (duration / 60).toFixed(1); // Convert seconds to minutes
+
+    var popup = new mapboxgl.Popup()
+        .setLngLat(coordinates[0]) // Show popup on the first coordinate
+        .setHTML(`<strong>Distance:</strong> ${totalDistance} km<br><strong>Time:</strong> ${totalTime} minutes`)
+        .addTo(map);
+
+    map.on('mouseleave', 'route', function () {
+        popup.remove();
+    });
+});
+
+
+
+
+
+
+// Event listeners for different mode buttons
+var transportModesDropdown = document.getElementById('transportModes');
+
+transportModesDropdown.addEventListener('change', function () {
+    var selectedMode = transportModesDropdown.value;
+
+    if (currentMode !== selectedMode) {
+        updateMode(selectedMode);
+    }
+});
+
+
+// Event listener for the "Bring me for a Tour!" button
+var tourButton = document.getElementById('tourButton');
+tourButton.addEventListener('click', function () {
+    initiateTour();
+});
+
+
+
+// Event listeners for different time of day buttons
+var dawnButton = document.getElementById('dawn');
+dawnButton.addEventListener('click', function () {
+    setLightPreset(6); // Set a specific hour for dawn
+});
+
+var dayButton = document.getElementById('day');
+dayButton.addEventListener('click', function () {
+    setLightPreset(12); // Set a specific hour for daytime
+});
+
+var duskButton = document.getElementById('dusk');
+duskButton.addEventListener('click', function () {
+    setLightPreset(18); // Set a specific hour for dusk
+});
+
+
+
+
+
+// Add event listener for automatic addition of waypoints when users input a location
+document.getElementById('locationInputs').addEventListener('change', async function (e) {
+    if (e.target.tagName === 'INPUT' && e.target.name === 'location' && e.target.value.trim() !== '') {
+        // Get the entered location value
+        const locationName = e.target.value;
+        // Get the user's country
+        try {
+            const userCountry = await getUserCountry();
+            const response = await fetch(`http://localhost:8000/api/v1/validate_location`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ locationName, userCountry }) // Include userCountry in the request body
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log("SECOND HERE", data);
+
+                if (data.isValid) {
+                    await geocodeAndAddWaypoint(e.target.value);
+                    setMapBounds(); // Set bounds based on new locations
+                }
+            }
+        } catch (error) {
+            console.error('Error adding waypoint:', error);
+            // Handle errors here
+        }
+    }
+});
+
+
+
+
+
+
+
+document.getElementById('locationForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    
+    // Clear old markers and route before adding new ones
+    removeOldMarkersAndRoute();
+
+    // Always set the mode to "driving"
+    currentMode = "driving";
+
+    var locationInputs = document.querySelectorAll('input[name="location"]');
+
+    try {
+        for (let i = 0; i < locationInputs.length; i++) {
+            if (locationInputs[i].value.trim() !== '') {
+                await geocodeAndAddWaypoint(locationInputs[i].value);
+            }
+        }
+        setMapBounds(); // Set bounds based on new locations
+
+        calculateRoute();
+    } catch (error) {
+        // Handle errors here
+    }
+});
+
+
+var optimizeRouteButton = document.getElementById('optimizeRouteButton');
+
+optimizeRouteButton.addEventListener('click', function () {
+    calculateOptimalRoute();
+});
 
 // Function to update current mode
 function updateMode(newMode) {
@@ -52,20 +389,6 @@ function addCurrentLocationMarker() {
 }
 
 
-
-var mapStyleSet = false;
-
-
-// Initialize the map
-var map = new mapboxgl.Map({
-    container: 'map',
-    center: [-0.1276, 51.5072],
-    zoom: 12,
-});
-
-
-// Call the function to add the current location marker
-addCurrentLocationMarker();
 
 
 // Function to set the light preset based on time of day
@@ -155,13 +478,8 @@ function getUserCountry() {
 }
 
 
-
-
-
-
-
 // Function to add a new location input
-function addLocationInput() {
+function addLocationInput(value = null) {
     // Counter for location inputs
     let locationCount = document.querySelectorAll('input[name="location"]').length + 1;
 
@@ -170,10 +488,12 @@ function addLocationInput() {
     newLocationInput.classList.add('location-input');
     newLocationInput.innerHTML = `
         <label for="location${locationCount}">Location ${locationCount}:</label>
-        <input type="search" name="location" onchange="checkLocationValidity(this)">
+        <input type="search" name="location">
         <div class="location-images"></div>
     `;
-
+    if (value != null){
+        newLocationInput.children[1].value = value;
+    }
     // Append the new location input
     document.getElementById('locationInputs').appendChild(newLocationInput);
 
@@ -187,7 +507,7 @@ function addLocationInput() {
         // Get the user's country
         try {
             const userCountry = await getUserCountry();
-            const response = await fetch('http://localhost:5012/validate-location', {
+            const response = await fetch(`http://localhost:8000/api/v1/validate_location`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -237,7 +557,7 @@ async function calculateOptimalRoute() {
             if (!sequence.includes(i)) {
                 try {
                     // Fetch the distance from the backend route
-                    const response = await fetch('http://localhost:5006/calculate-distance', {
+                    const response = await fetch(`http://localhost:8000/api/v1/calculate_distance`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -294,7 +614,7 @@ async function calculateOptimalRoute() {
             }
 
 
-            
+
             if (map.getLayer('optimizedRoute')) {
                 map.removeLayer('optimizedRoute');
             }
@@ -361,7 +681,7 @@ async function calculateOptimalRoute() {
 function geocodeAndAddWaypoint(locationName) {
     return new Promise((resolve, reject) => {
         // Make a request to the backend route for geocoding
-        fetch(`http://localhost:5006/geocode`, {
+        fetch(`http://localhost:8000/api/v1/geocode`, {
         method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -422,109 +742,7 @@ function geocodeAndAddWaypoint(locationName) {
 }
 
 
-
-
-// function calculateRoute() {
-//     var coordinates = locations.map(location => location.coordinates);
-//     var formattedCoordinates = coordinates.map(coords => coords.join(','));
-
-//     fetch('http://localhost:5006/calculate-route', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify({
-//             locations: coordinates, // Pass coordinates instead of formattedCoordinates
-//             currentMode: currentMode
-//         })
-//     })
-//     .then(response => response.json())
-//     .then(data => {
-//         // Handle the response from the backend
-//         // The data returned should contain routeCoordinates, distance, and duration
     
-//         var routeCoordinates = data.routeCoordinates;
-//         var distance = data.distance;
-//         var duration = data.duration;
-    
-
-//         map.addLayer({
-//             id: 'route',
-//             type: 'line',
-//             source: {
-//                 type: 'geojson',
-//                     data: {
-//                         type: 'Feature',
-//                             properties: {},
-//                             geometry: {
-//                                 type: 'LineString',
-//                                     coordinates: routeCoordinates,
-//                                 },
-//                     },
-//             },
-//             layout: {
-//                 'line-join': 'round',
-//                 'line-cap': 'round',
-//             },
-//             paint: {
-//                 'line-color': 'red',
-//                 'line-width': 5,
-//             },
-//         });
-
-
-//         // Event listener for showing route information on hover
-//                             map.on('mouseenter', 'route', function (e) {
-//                                 var coordinates = e.features[0].geometry.coordinates;
-//                                 var totalDistance = (distance / 1000).toFixed(2); // Convert meters to kilometers
-//                                 var totalTime = (duration / 60).toFixed(1); // Convert seconds to minutes
-
-//                                 var popup = new mapboxgl.Popup({
-//                                     closeButton: false,
-//                                 })
-//                                     .setLngLat(coordinates[0]) // Show popup on the first coordinate
-//                                     .setHTML(`<strong>Distance:</strong> ${totalDistance} km<br><strong>Time:</strong> ${totalTime} minutes`)
-//                                     .addTo(map);
-
-//                                 map.on('mouseleave', 'route', function () {
-//                                     popup.remove();
-//                                 });
-//                             });
-
-
-//                         } else {
-//                             // Handle the case where no route is found
-//                             showErrorPopup('No route found for the selected mode.');
-//                             currentMode = 'driving'; // Set mode to 'driving' on error
-//                             calculateRoute();
-//                             setMapBounds();
-//                         }
-//                     })
-//                     .catch(error => {
-//                         console.error('Error calculating route:', error);
-//                         showErrorPopup('An error occurred while calculating the route.');
-//                         currentMode = 'driving'; // Set mode to 'driving' on error
-//                         calculateRoute();
-//                         setMapBounds();
-//                     });
-//             } else {
-//                 console.error('Error calculating optimal waypoints order:', data.message);
-//                 showErrorPopup('An error occurred while calculating waypoints order.');
-//                 currentMode = 'driving'; // Set mode to 'driving' on error
-//                 calculateRoute();
-//                 setMapBounds();
-//             }
-//         })
-//         .catch(error => {
-//             console.error('Error calculating waypoints order:', error);
-//             showErrorPopup('An error occurred while calculating waypoints order.');
-//             currentMode = 'driving'; // Set mode to 'driving' on error
-//             calculateRoute();
-//             setMapBounds();
-//         });
-// }
-
-
 
 function calculateRoute() {
     var coordinates = locations.map(location => location.coordinates);
@@ -745,4 +963,12 @@ var customMarker = map.loadImage(
         map.addImage('custom-marker', image);
     }
 );
+
+async function init(){
+    await getSavedRoutes();
+    reloadSavedRoutes();
+    addCurrentLocationMarker();
+}
+
+init();
 

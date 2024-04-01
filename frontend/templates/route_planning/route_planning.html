@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Route Optimizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../static/route_planning/styles.css">
 
-
-    <!-- TO DO: TRANSFER MAPBOX AND MAPBOX DIRECTIONS INTO .JS FILES-->
 
     <!-- Mapbox -->
     <script src='https://api.mapbox.com/mapbox-gl-js/v3.0.0-beta.1/mapbox-gl.js'></script>
@@ -15,26 +15,42 @@
     <!-- Mapbox Directions -->
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.js"></script>
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.css" type="text/css">
-    <link rel="stylesheet" href="/static/route_planning/styles.css">
+    
 
 </head>
 
 <body>
-    <nav class="navbar" id="navbar">
+
+    <!-- <nav class="navbar" id="navbar">
         <div class="navbar-container">
-            <a style = "text-decoration: none;" href="../Nav/home.html">
+            <a style="text-decoration: none;" href="http://localhost:5050/home">
                 <h1>Travel Management App</h1>
             </a>
             <ul class="nav-links">
-               
+            
                 <li><a href="#">Route Planner</a></li>
             </ul>
         </div>
+    </nav> -->
+
+    <nav class="navbar" id="navbar">
+        <div class="navbar-container">
+            <ul class="nav-links">
+                <li><a href="http://localhost:5050/home">Jet, Set, Go!</a></li>
+            </ul>
+
+            <a style="text-decoration: none;" href="http://localhost:5050/route_planning">
+                <h1>Route Planner</h1>
+            </a>
+            
+        </div>
     </nav>
+    
     <div class="container">
 
         <!-- Left Side: Form -->
         <div class="form">
+            <button class="add-route-btn">Add route</button>
             <form id="locationForm">
                 <h1>Route Optimizer</h1>
                 
@@ -46,7 +62,6 @@
                         <div id="imageGallery"></div>
                     </div>
                 </div>
-                <label for="transportModes">Mode of transport:</label>
                 <select id="transportModes">
                     <option value="driving-traffic">Car-Live</option>
                     <option value="driving" selected>Car</option>
@@ -61,27 +76,44 @@
             </form>
         </div>
 
-        <!-- Middle: Time of Day -->
-
         <!-- Right Side: Map and Saved Routes-->
         <div class="right-side" >
-        <div class="map">
-            <div class="map-overlay">
-                <button id="dawn">Dawn</button>
-                <button id="day">Day</button>
-                <button id="dusk">Dusk</button>
+            <div class="map">
+                <div class="map-overlay">
+                    <button id="dawn">Dawn</button>
+                    <button id="day">Day</button>
+                    <button id="dusk">Dusk</button>
+                </div>
+                <div id='map' style='width: 100%; height: 100%;'></div>
+                <div id='map' style='width: 100%; height: 100%;'></div>
             </div>
-            <div id='map' style='width: 100%; height: 100%;'></div>
-            <div id='map' style='width: 100%; height: 100%;'></div>
-        </div>
-        <div class = "saved-routes-container">
-            <h1>My Routes</h1>
+            <div class = "saved-routes-container">
+                <h1 style = "margin-bottom: 10px;">My Routes</h1>
+                <button class = "save-all-btn">Save all</button>
+                <div class="saved-routes-content"></div>
+                
+
+            </div>
+            </div>
 
         </div>
-        </div>
+        
 
     </div>
+        <!-- Route Naming Modal (Initially Hidden) -->
+    <div id="routeNamingModal" class="modal hidden">
+        <form class="modal-content" id = "route-naming-form">
+            <div class = "form-group">
+            <span class="close-btn">&times;</span>
+            <h2>Save Your Route</h2>
+            <p>Please enter a name for your route:</p>
+            <input type="text" id="routeNameInput" placeholder="Route Name" required>
+            </div>
+            <button type = "submit" id="addRouteBtn">Add Route</button>
+        </form>
+        </div>
+    </div>
 
-    <script src="/static/route_planning/script.js"></script>
+    <script src="../../static/route_planning/script.js"></script>
 </body>
 </html>
