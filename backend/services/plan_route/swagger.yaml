@@ -1,0 +1,169 @@
+openapi: 3.0.1
+info:
+  title: Plan Route API
+  version: 1.0.0
+  description: API for Plan Route Microservice
+
+servers:
+  - url: http://localhost:5013
+
+paths:
+  /validate-location:
+    post:
+      summary: Validate location
+      description: Validate a location based on the location name and user country.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                locationName:
+                  type: string
+                userCountry:
+                  type: string
+      responses:
+        '200':
+          description: Successful validation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isValid:
+                    type: boolean
+                  coordinates:
+                    type: object
+                    properties:
+                      latitude:
+                        type: number
+                      longitude:
+                        type: number
+        '500':
+          description: Internal Server Error
+
+  /calculate-distance:
+    post:
+      summary: Calculate distance
+      description: Calculate the distance between two sets of coordinates.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                coord1:
+                  type: object
+                  properties:
+                    latitude:
+                      type: number
+                    longitude:
+                      type: number
+                coord2:
+                  type: object
+                  properties:
+                    latitude:
+                      type: number
+                    longitude:
+                      type: number
+      responses:
+        '200':
+          description: Successful calculation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  distance:
+                    type: number
+        '500':
+          description: Internal Server Error
+
+  /geocode:
+    post:
+      summary: Geocode a location
+      description: Get the coordinates of a location based on the location name.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                locationName:
+                  type: string
+      responses:
+        '200':
+          description: Successful geocoding
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  coordinates:
+                    type: object
+                    properties:
+                      latitude:
+                        type: number
+                      longitude:
+                        type: number
+        '500':
+          description: Internal Server Error
+
+  /routes/get/{email}:
+    get:
+      summary: Get routes by email
+      description: Retrieve routes associated with a specific email.
+      parameters:
+        - name: email
+          in: path
+          required: true
+          description: Email address to retrieve routes for.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful retrieval
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '500':
+          description: Internal Server Error
+
+  /routes/save/{email}:
+    put:
+      summary: Save routes
+      description: Save routes associated with a specific email.
+      parameters:
+        - name: email
+          in: path
+          required: true
+          description: Email address to save routes for.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+      responses:
+        '200':
+          description: Successful save
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Internal Server Error
+
