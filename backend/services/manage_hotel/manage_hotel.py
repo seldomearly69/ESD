@@ -152,7 +152,7 @@ def delete_booking():
               email_to_send = {
                   "email": booking["email"],
                   "subject": "Booking Cancellation",
-                  "message": f"Your booking at {booking['hotel']} from {booking['check_in_date']} to {booking['check_out_date']} has been cancelled due to overbooking. We apologise for any inconvenience caused.\n\n We have refunded your payment of amount {refund_data['amount']}."
+                  "message": f"Your booking at {booking['hotel']} from {booking['check_in_date']} to {booking['check_out_date']} has been cancelled due to overbooking. We apologise for any inconvenience caused.\n\n We have refunded your payment of amount SGD$ {refund_data['amount']}."
               }
             else:
                print("refund failed!")
