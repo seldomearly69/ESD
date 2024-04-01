@@ -13,6 +13,7 @@ body, html {
     color: #2b2d42;
 }
 
+/* Navbar styles */
 .navbar {
     background-color: #2b2d42; /* Darker shade for contrast */
     color: white;
@@ -31,6 +32,12 @@ body, html {
     padding: 0 20px;
 }
 
+.navbar-brand {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.5rem;
+}
+
 .nav-links {
     list-style: none;
     margin: 0;
@@ -43,7 +50,6 @@ body, html {
 }
 
 .nav-links li a {
-    color: #fff;
     text-decoration: none;
     font-weight: bold;
     transition: color 0.3s;
@@ -55,7 +61,7 @@ body, html {
 }
 
 a, a:visited {
-    color: inherit;
+    color: inherit; /* Use the same color as the default text color */
 }
 
 /* Container styles */
