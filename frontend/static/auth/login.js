@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.data.usertype == "customer"){
                 window.location.href = '/home';
             }else{
-                window.location.href = '/hotel Management/';
+                window.location.href = '/hotel_management';
             }
         })
         .catch(error => {
