@@ -48,7 +48,7 @@ services:
       ports:
         - 5003:5003
       environment:
-        - mongoURL=mongodb+srv://ryanlee99324:BrImAqgUaXaNuEz6@esdproj.r2bp9gh.mongodb.net/
+        - mongoURL=mongodb+srv://ryanlee99324:BrImAqgUaXaNuEz6@esdproj.r2bp9gh.mongodb.net/hotel_search?retryWrites=true&w=majority
         - serpapiKey=5603380f38ff110c2d0ba86a1700706621799506e25936fb5069f0ca17d040bf
       networks:
         - internal_network
