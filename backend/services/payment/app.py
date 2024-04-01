@@ -146,6 +146,12 @@ def refund_payment():
                 payment_intent=payment_intent_id,
                 amount=amount,
             )
+            payments_collection.insert_one({
+            'payment_intent_id': payment_intent_id,
+            'amount': data['amount'],
+            'currency': data.get('currency', 'sgd'),
+            'status': 'refunded'
+        })
         else:
             refund = stripe.Refund.create(
                 payment_intent=payment_intent_id,
