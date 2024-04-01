@@ -22,7 +22,7 @@ for (let a of hotel.amenities){
     amenityElement.innerHTML = a
     amenities.appendChild(amenityElement)
 }
-const rating = hotel.overall_rating.toFixed(2);
+const rating = hotel.overall_rating ? hotel.overall_rating.toFixed(2): "No rating available";
 document.getElementsByClassName("rating-value")[0].innerHTML = rating;
 for (let i = 0; i < Math.floor(rating); i++){
     document.getElementsByClassName("stars")[0].innerHTML += "<span class='star'>&#9733;</span>";

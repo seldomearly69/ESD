@@ -13,6 +13,7 @@ function createHotelCard(hotel) {
             desc += "in the middle of nowhere"
         }
     }
+    console.log(hotel)
     hotelElement.innerHTML = `
         
         <div class="result-item">
@@ -86,8 +87,10 @@ document.addEventListener("DOMContentLoaded", function() {
             const cachedResult = data.cachedData;
             const hotels = cachedResult.cachedResult;
             hotels.forEach(hotel => {
-                const hotelElement = createHotelCard(hotel);
-                resultsContainer.appendChild(hotelElement);
+                const hotelElement = hotel.rate_per_night ? createHotelCard(hotel): null;
+                if(hotelElement){
+                    resultsContainer.appendChild(hotelElement);
+                }
             });
         } else if (data && data.data) {
             // Display fresh results
