@@ -7,10 +7,11 @@ import time, sys
 import json
 import time
 import sys
+from flasgger import Swagger
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
-
+Swagger(app)
 
 
 #Email part
@@ -23,11 +24,6 @@ exchangetype = "topic"
 
 headers = {'Content-Type': 'application/json'}
 
-# def addCORSHeaders(response):
-#     response.headers.add('Access-Control-Allow-Origin', '*')  # Allow requests from all origins
-#     response.headers.add('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')  # Allowed HTTP methods
-#     response.headers.add('Access-Control-Allow-Headers', 'Content-Type')  # Allowed request headers
-#     return response
 
 def create_connection(max_retries=12, retry_interval=5):
     print('amqp_connection: Create_connection')
@@ -106,6 +102,29 @@ def publish_to_broker(msg, email):
             
 @app.route("/search", methods = ["POST"])
 def search():
+    """
+    This endpoint searches for hotels or flights based on the specified criteria.
+    ---
+    tags:
+      - Search
+    parameters:
+      - name: engine
+        in: body
+        type: string
+        required: true
+        enum: [google_flights, hotels]
+        description: The search engine to use.
+      - name: query
+        in: body
+        type: object
+        required: true
+        description: The search query parameters.
+    responses:
+      200:
+        description: A list of search results.
+      400:
+        description: Error in search parameters.
+    """
     data = request.get_json()
     print(data,flush=True)
     if data["engine"] == "google_flights":
@@ -124,7 +143,23 @@ def search():
 
 @app.route("/payment", methods=["POST"])
 def make_payment():
-
+    """
+    This endpoint creates a payment intent for a booking.
+    ---
+    tags:
+      - Payment
+    parameters:
+      - name: amount
+        in: body
+        type: number
+        required: true
+        description: The payment amount.
+    responses:
+      200:
+        description: Payment intent created successfully.
+      400:
+        description: Error creating payment intent.
+    """
     data = request.get_json()
     print(data)
     amt = data["amount"]
@@ -146,6 +181,23 @@ def make_payment():
 # Once payment is made send booking details to hotel_booking / flights service
 @app.route("/confirm_booking", methods = ["POST"])
 def confirm_booking():
+    """
+    This endpoint confirms a booking and sends a confirmation email.
+    ---
+    tags:
+      - Booking
+    parameters:
+      - name: bookingDetails
+        in: body
+        type: object
+        required: true
+        description: The booking details.
+    responses:
+      201:
+        description: Booking confirmed and email sent.
+      400:
+        description: Error confirming booking.
+    """
     print(1,flush=True)
     data = request.get_json()
     print(data)
