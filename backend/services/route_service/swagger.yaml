@@ -18,31 +18,31 @@ paths:
               type: object
               properties:
                 coord1:
-                  type: object
-                  properties:
-                    latitude:
-                      type: number
-                      format: double
-                      example: 2.8284271247461903
+                  type: array
+                  items:
+                    type: number
+                    format: double
+                  minItems: 2
+                  maxItems: 2
+                  description: Coordinates of the first location [longitude, latitude]
                 coord2:
-                  type: object
-                  properties:
-                    longitude:
-                      type: number
-                      format: double
-                      example: -8.8284271247461903
+                  type: array
+                  items:
+                    type: number
+                    format: double
+                  minItems: 2
+                  maxItems: 2
+                  description: Coordinates of the second location [longitude, latitude]
       responses:
         '200':
           description: Successful calculation
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  distance:
-                    type: number
-                    format: double
-                    example: 2.8284271247461903
+                type: number
+                format: double
+                example: 2.8284271247461903
+
         '400':
           description: Invalid coordinates
           content:

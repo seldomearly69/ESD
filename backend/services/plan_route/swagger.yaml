@@ -49,19 +49,22 @@ paths:
               type: object
               properties:
                 coord1:
-                  type: object
-                  properties:
-                    latitude:
-                      type: number
-                    longitude:
-                      type: number
+                  type: array
+                  items:
+                    type: number
+                    format: double
+                  minItems: 2
+                  maxItems: 2
+                  description: Coordinates of the first location [longitude, latitude]
                 coord2:
-                  type: object
-                  properties:
-                    latitude:
-                      type: number
-                    longitude:
-                      type: number
+                  type: array
+                  items:
+                    type: number
+                    format: double
+                  minItems: 2
+                  maxItems: 2
+                  description: Coordinates of the second location [longitude, latitude]
+                    
       responses:
         '200':
           description: Successful calculation
@@ -72,6 +75,7 @@ paths:
                 properties:
                   distance:
                     type: number
+                    format: double
         '400':
           description: Invalid coordinates
 
@@ -157,13 +161,17 @@ paths:
           application/json:
             schema:
               type: object
-              properties:
-                routes:
-                  type: object
-                  additionalProperties:
-                    type: array
-                    items:
-                      type: string
+              additionalProperties:
+                  type: array
+                  items:
+                    type: string
+              example:
+                MyTrip:
+                  - singapore zoo
+                  - Singapore Bird Park
+                  - singapore zoo
+                  - Jurong East
+              
         responses:
         '200':
           description: Successful save

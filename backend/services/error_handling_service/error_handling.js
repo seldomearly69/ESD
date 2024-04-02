@@ -1,14 +1,17 @@
 const express = require("express");
 const axios = require('axios');
 const cors = require('cors');
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
 
+const swaggerDocument = YAML.load('./swagger.yaml');
 
 const app = express();
 const PORT = process.env.PORT || 5012;
 
 app.use(express.json());
 app.use(cors());
-
+app.use('/apidocs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Function to check the validity of the location input
 async function checkLocationValidity(locationName, userCountry) {

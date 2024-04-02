@@ -1,0 +1,46 @@
+openapi: 3.0.0
+info:
+  title: Error Handling Microservice API
+  version: 1.0.0
+  description: API for validating whether the location input is valid
+servers:
+  - url: http://localhost:5012
+paths:
+  /validate-location:
+    post:
+      summary: Validate location
+      description: Validate if a location is in the same country as the user's country
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                locationName:
+                  type: string
+                  description: Name of the location to validate
+                userCountry:
+                  type: string
+                  description: Country of the user
+      responses:
+        '200':
+          description: Successful validation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isValid:
+                    type: boolean
+                    description: Indicates if the location is valid for the user's country
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Description of the error

@@ -14,7 +14,7 @@ app.use('/apidocs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // Endpoint for location validation
 app.post('/validate-location', async (req, res) => {
     const { locationName, userCountry } = req.body;
-    // console.log('Validating location:', locationName, userCountry);
+    console.log('Validating location:', locationName, userCountry);
 
     try {
         // Call the error_handling microservice to validate location
@@ -34,6 +34,7 @@ app.post('/validate-location', async (req, res) => {
 
 // Endpoint for calculating distance between two points
 app.post('/calculate-distance', async (req, res) => {
+    console.log(req.body)
     const { coord1, coord2 } = req.body;
 
     try {
@@ -54,6 +55,7 @@ app.post('/calculate-distance', async (req, res) => {
 
 // Endpoint for geocoding a location
 app.post('/geocode', async (req, res) => {
+    console.log(req.body)
     const { locationName } = req.body;
 
     try {
@@ -61,7 +63,7 @@ app.post('/geocode', async (req, res) => {
         const response = await axios.post('http://host.docker.internal:5006/geocode', {
             locationName
         });
-        console.log(response.data)
+        console.log(response.data, "hi")
         res.json(response.data);
     } catch (error) {
         console.error('Error geocoding location:', error);

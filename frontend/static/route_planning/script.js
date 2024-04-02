@@ -12,7 +12,10 @@ var map = new mapboxgl.Map({
     zoom: 12,
 });
 
-
+/**
+ * Gets saved Routes of users
+ * @returns 
+ */
 async function getSavedRoutes() {
     const email = sessionStorage.getItem("email");
     const url = `http://localhost:8000/api/v1/routes/get/${email}`;
@@ -477,7 +480,7 @@ function getUserCountry() {
 }
 
 
-// Function to add a new location input
+// Function to add a new location input and validate whether the location is in the user
 function addLocationInput(value = null) {
     // Counter for location inputs
     let locationCount = document.querySelectorAll('input[name="location"]').length + 1;
