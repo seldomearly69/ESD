@@ -9,20 +9,24 @@ There are 3 main scenarios that this web application supports.
 1. Hotel and flight booking<br><br>
 
    Search process:
-   <br>
+   <br> ![image](https://github.com/seldomearly69/ESD/assets/108080458/72beb19b-3adf-400e-b409-9f73973bc24b)
+
   
 
    Booking process:
-   <br>
+   <br> ![image](https://github.com/seldomearly69/ESD/assets/108080458/d3dc3b08-5b55-496c-a0c3-eeb3167f5e60)
+
   
 
 
 
 2. Hotel Administration<br><br>
+   ![image](https://github.com/seldomearly69/ESD/assets/108080458/ee1f794d-e3b6-47fe-afa4-41a2c7812ddd)
 
 
 
 3. Route planning and saving<br><br>
+![image](https://github.com/seldomearly69/ESD/assets/108080458/eb48e616-93d2-470e-b874-f37aa76a0904)
 
    
 
